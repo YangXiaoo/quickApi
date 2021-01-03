@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import quickcore.annotations.component.QApi;
-import quickcore.common.JsonModel;
+import quickcore.common.tools.JsonModel;
 
 import java.util.Map;
 

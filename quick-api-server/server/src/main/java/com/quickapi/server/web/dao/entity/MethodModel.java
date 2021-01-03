@@ -2,8 +2,8 @@ package com.quickapi.server.web.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 
-@TableName("api_data")
-public class ApiDataEntity {
+@TableName("method_model")
+public class MethodModel {
   private String dataApiId;
   private String projectName;
   private String name;

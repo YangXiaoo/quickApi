@@ -1,4 +1,4 @@
-package quickcore.common;
+package quickcore.common.constants;
 
 public interface JSON_MODEL_CODE {
     String SUCCESS = "000";

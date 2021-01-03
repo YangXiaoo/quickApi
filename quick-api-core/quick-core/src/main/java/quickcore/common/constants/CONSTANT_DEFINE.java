@@ -1,4 +1,4 @@
-package quickcore.common;
+package quickcore.common.constants;
 
 /**
  * 常量

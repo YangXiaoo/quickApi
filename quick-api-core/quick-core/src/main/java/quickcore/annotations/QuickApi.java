@@ -2,7 +2,7 @@ package quickcore.annotations;
 
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Import;
-import quickcore.web.controller.QuickApiController;
+import quickcore.web.service.QuickApiService;
 
 import java.lang.annotation.*;
 
@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Import({QuickApiController.class})
+@Import({QuickApiService.class})
 @ServletComponentScan
 public @interface QuickApi {
     String basePackages() default "";               // 配置的扫描包

@@ -1,30 +1,24 @@
-package quickcore.web.controller;
+package quickcore.web.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.jmx.export.annotation.ManagedResource;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import quickcore.annotations.QuickApi;
-import quickcore.common.JSON_MODEL_CODE;
-import quickcore.common.JsonModel;
+import quickcore.common.constants.JSON_MODEL_CODE;
+import quickcore.common.constants.SERVICE;
+import quickcore.common.tools.JsonModel;
+import quickcore.common.tools.RestTool;
 import quickcore.core.scanner.ApiScanner;
-import quickcore.core.utils.JsonUtils;
-import quickcore.core.utils.RequestUtil;
 import quickcore.core.utils.StringUtils;
 import quickcore.exception.BusinessException;
 import quickcore.models.MethodModel;
+import quickcore.web.logic.QuickApiLogic;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -36,11 +30,14 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/quickApi")
-public class QuickApiController {
-    private static final Logger logger = LoggerFactory.getLogger(QuickApiController.class);
+public class QuickApiService {
+    private static final Logger logger = LoggerFactory.getLogger(QuickApiService.class);
 
     @Autowired
     private WebApplicationContext applicationContext;
+
+    @Autowired
+    private QuickApiLogic apiLogic;
 
     @Value("${quickApi.basePackages:}")
     private String basePackages;
@@ -60,7 +57,7 @@ public class QuickApiController {
     private String author;
 
     /**
-     * 请求接口
+     * 前端请求本地接口
      * @param path 请求路径
      * @param contentType 请求内容类型
      * @param headerJson 请求头
@@ -72,79 +69,18 @@ public class QuickApiController {
      */
     @GetMapping("/callApi")
     public Object callApi(String path, String contentType, String headerJson, String queryData, String type) {
-        System.out.println(path + ", " + type + ", queryData: " + queryData + ", contentType" + contentType);
-        type = type.toLowerCase();
-        Map<String, Object> headerMap = JsonUtils.toMap(headerJson);
-        Map<String, Object> queryMap = JsonUtils.toMap(queryData);
-        RestTemplate restTemplate = new RestTemplate();
-
-        Object object = null;                                                                                           // 设置请求返回内容
-
-        // 设置请求头
-        HttpHeaders requestHeaders = new HttpHeaders();
-        Set<String> hSet = headerMap.keySet();
-        for (String key : hSet) {
-            requestHeaders.add(key, headerMap.get(key) == null ? "" : headerMap.get(key).toString());
-        }
-
-        // 设置参数
-        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
-        Set<String> qSet = queryMap.keySet();
-        String getPramData = "";
-        int i = 0;
-        for (String key : qSet) {
-            // post方法参数
-            requestBody.add(key, queryMap.get(key) == null ? "" : queryMap.get(key).toString());
-
-            // get方法参数
-            if (i == 0) {
-                getPramData = "?" + key + "=" + queryMap.get(key);
-            } else {
-                getPramData = getPramData + "&" + key + "=" + queryMap.get(key);
-            }
-            i++;
-        }
-        try {
-            if ("application/json".equals(contentType)) {
-                HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(queryMap, requestHeaders);
-                if (StringUtils.equals("get", type)) {
-                    return "请求内容格式为application/json时只支持post、put、delete请求!";
-                }
-                if (StringUtils.equals("post", type)) {
-                    object = restTemplate.exchange(path, HttpMethod.POST,requestEntity, Map.class);
-                }
-                if (StringUtils.equals("put", type)) {
-                    object = restTemplate.exchange(path,HttpMethod.PUT,requestEntity, Map.class);
-                }
-                if (StringUtils.equals("delete", type)) {
-                    object = restTemplate.exchange(path,HttpMethod.DELETE,requestEntity, Map.class);
-                }
-
-            } else {
-                HttpEntity<MultiValueMap> requestEntity = new HttpEntity<>(requestBody, requestHeaders);
-
-                if (StringUtils.equals("get", type)) {
-                    object = restTemplate.exchange(path + getPramData, HttpMethod.GET,null, Map.class);
-                }
-                if (StringUtils.equals("post", type)) {
-                    object = restTemplate.exchange(path, HttpMethod.POST, requestEntity, Map.class);
-                }
-                if (StringUtils.equals("put", type)) {
-                    object = restTemplate.exchange(path, HttpMethod.PUT, requestEntity, Map.class);
-                }
-                if (StringUtils.equals("delete", type)) {
-                    object = restTemplate.exchange(path, HttpMethod.DELETE, requestEntity, Map.class);
-                }
-            }
-
-            return object;
-        } catch (RestClientException e) {
-            return e.getLocalizedMessage();
-        }
+        return apiLogic.callApi(path, contentType, headerJson, queryData, type);
     }
 
+    /**
+     * 根据项目名获取该项目的所有接口信息
+     * @param map 请求参数
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/3 21:16
+     */
     @RequestMapping(value = "pullServiceData", method = RequestMethod.POST)
-    public JsonModel pullServiceData(@RequestBody Map<String, String> map) {
+    public JsonModel pullServiceData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
             String projectName = (String) map.get("projectName");
@@ -152,8 +88,8 @@ public class QuickApiController {
                 throw new BusinessException("项目名称为空");
             }
 
-
-            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
+            String url = serviceNames + SERVICE.PULL_DATA;
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, apiLogic.callService(url, map));
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
@@ -242,21 +178,31 @@ public class QuickApiController {
                 System.out.println(projectName);
                 List<MethodModel> preMethodModelList;
 
-                // TODO 检查网络是否连接
-                // 比较本地与服务器的接口信息看是否需要更新接口信息
-                JsonModel apiData = null;   // this.loadQApi(serverName); // TODO 测试，未创建服务器
-                if (apiData != null && StringUtils.equals(apiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
-                    preMethodModelList = (List<MethodModel>) apiData.getData();
-                    List<MethodModel> deleteMethodList = this.compareApiInfo2Delete(methodModelList, preMethodModelList);
-                    this.deleteMethodInfo(deleteMethodList);                    // 删除失效的方法
+                if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
+                    // 比较本地与服务器的接口信息看是否需要更新接口信息
+                    Map<String, Object> pullParam = new HashMap<>();
+                    pullParam.put("projectName", projectName);
+                    JsonModel serviceApiData = this.pullServiceData(pullParam);
 
-                    List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(methodModelList, preMethodModelList);
-                    this.pushLocalData(uploadMethodList);
+                    if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
+                        preMethodModelList = (List<MethodModel>) serviceApiData.getData();
 
-                    this.syncLocalData(methodModelList, preMethodModelList);    // 同步数据
+                        Map<String, MethodModel> localMapInfo = this.getMethodMapInfo(methodModelList);
+                        Map<String, MethodModel> serverMapInfo = this.getMethodMapInfo(preMethodModelList);
+
+                        List<MethodModel> deleteMethodList = this.compareApiInfo2Delete(localMapInfo, serverMapInfo);
+                        this.deleteMethodInfoList(deleteMethodList);                    // 删除失效的方法
+
+                        List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(localMapInfo, serverMapInfo);
+                        this.pushLocalData(uploadMethodList);
+
+                        this.syncLocalData(localMapInfo, serverMapInfo);    // 同步数据
+                    }
+                } else {
+                    logger.warn("远程服务器未连接成功, 只支持本地测试!");
                 }
 
-                this.updateMethodInfo(methodModelList);         // 更新
+                this.cacheMethodInfo(methodModelList);         // 缓存本地
                 apiMapInfo.put("apiInfo", methodModelList);
                 jsonModel.success("获取接口信息成功", apiMapInfo);
             } catch (BusinessException be) {
@@ -276,16 +222,13 @@ public class QuickApiController {
      * <p>
      *     本地不存在，服务端存且作者为本地开发者名称一致，则删除服务端数据
      * </p>
-     * @param newMethodModelList 本地api信息
-     * @param preMethodModelList 服务端api信息
+     * @param localMapInfo 本地api信息
+     * @param serverMapInfo 服务端api信息
      * @return java.util.List<quickcore.models.MethodModel>
      * @author yangxiao
      * @date 2020/12/27 17:44
      */
-    public List<MethodModel> compareApiInfo2Delete(List<MethodModel> newMethodModelList, List<MethodModel> preMethodModelList) {
-        Map<String, MethodModel> localMapInfo = this.getMethodMapInfo(newMethodModelList);
-        Map<String, MethodModel> serverMapInfo = this.getMethodMapInfo(preMethodModelList);
-
+    public List<MethodModel> compareApiInfo2Delete(Map<String, MethodModel> localMapInfo, Map<String, MethodModel> serverMapInfo) {
         List<MethodModel> deleteMethodList = new ArrayList<>();
         for (Map.Entry<String, MethodModel> it : serverMapInfo.entrySet()) {
             if (!localMapInfo.containsKey(it.getKey())) {
@@ -298,16 +241,13 @@ public class QuickApiController {
 
     /**
      * 比较本地和服务器的数据，将本地新增的数据同步到服务器中
-     * @param newMethodModelList 本地
-     * @param preMethodModelList 远程
+     * @param localMapInfo 本地api信息
+     * @param serverMapInfo 服务端api信息
      * @return java.util.List<quickcore.models.MethodModel>
      * @author yangxiao
      * @date 2020/12/27 22:32
      */
-    public List<MethodModel> compareApiInfo2Upload(List<MethodModel> newMethodModelList, List<MethodModel> preMethodModelList) {
-        Map<String, MethodModel> localMapInfo = this.getMethodMapInfo(newMethodModelList);
-        Map<String, MethodModel> serverMapInfo = this.getMethodMapInfo(preMethodModelList);
-
+    public List<MethodModel> compareApiInfo2Upload(Map<String, MethodModel> localMapInfo, Map<String, MethodModel> serverMapInfo) {
         List<MethodModel> uploadMethodList = new ArrayList<>();
         for (Map.Entry<String, MethodModel> it : localMapInfo.entrySet()) {
             if (!serverMapInfo.containsKey(it.getKey())) {
@@ -326,21 +266,23 @@ public class QuickApiController {
      * @date 2020/12/27 22:35
      */
     public void pushLocalData(List<MethodModel> methodModelList) {
-
+        String url = serviceNames + SERVICE.SAVE_METHOD_DATA;
+        Map<String, Object> map = new HashMap<>();
+        map.put("projectName", projectName);
+        map.put("data", methodModelList);
+        apiLogic.callService(url, map);     // TODO 失败时打印错误
     }
      
     /**
      * 将远程数据同步到本地
-     * @param newMethodModelList 本地
-     * @param preMethodModelList 服务端
+     * @param localMapInfo 本地api信息
+     * @param serverMapInfo 服务端api信息
      * @return
      * @author yangxiao
      * @date 2020/12/27 22:29
      */
-    public void syncLocalData(List<MethodModel> newMethodModelList, List<MethodModel> preMethodModelList) {
-        Map<String, MethodModel> localMapInfo = this.getMethodMapInfo(newMethodModelList);
-        Map<String, MethodModel> serverMapInfo = this.getMethodMapInfo(preMethodModelList);
-
+    public void syncLocalData(Map<String, MethodModel> localMapInfo, Map<String, MethodModel> serverMapInfo) {
+        // TODO 检查是否修改本地数据
         for (Map.Entry<String, MethodModel> it : serverMapInfo.entrySet()) {
             if (localMapInfo.containsKey(it.getKey())) {
                 MethodModel localMethodModel = localMapInfo.get(it.getKey());
@@ -356,7 +298,6 @@ public class QuickApiController {
                 }
             }
         }
-
     }
 
     /**
@@ -379,90 +320,51 @@ public class QuickApiController {
         return mapInfo;
     }
 
-    public void updateMethodInfo(List<MethodModel> data) {
+    /**
+     * 缓存接口数据
+     * <p>
+     *     当服务器重启时 session会被重置， 此时也会从服务器中拉取最新数据
+     * </p>
+     * @param data 接口数据
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/3 22:09
+     */
+    public void cacheMethodInfo(List<MethodModel> data) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
                 .getRequestAttributes()).getRequest();
         request.getSession().setAttribute(projectName, data);
     }
 
-    public void deleteMethodInfo(List<MethodModel> data) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder
-                .getRequestAttributes()).getRequest();
-        request.getSession().setAttribute(projectName, data);
-    }
-
-    @RequestMapping(value = "getProjectData", method = RequestMethod.POST)
-    public JsonModel getProjectData(@RequestBody Map<String, String> map, HttpServletRequest request) {
-        JsonModel jsonModel = new JsonModel();
-        try {
-            String projectName = map.get("projectName");
-            jsonModel.success("获得数据成功", request.getSession().getAttribute(projectName));
-        } catch (Exception e) {
-            jsonModel.error(e.getLocalizedMessage());
-        }
-
-        return jsonModel;
-    }
-
-    @RequestMapping(value = "savePageData", method = RequestMethod.POST)
-    public void saveData(@RequestBody Map<String, Object> map, HttpServletRequest request) {
-        String path = (String) map.get("path");
-        System.out.println(path);
-        request.getSession().setAttribute(path, map);
-    }
-
-    @RequestMapping(value = "getPageData")
-    public JsonModel getPageData(@RequestBody Map<String, String> map, HttpServletRequest request) {
-        JsonModel jsonModel = new JsonModel();
-        try {
-            String path = map.get("path");
-            jsonModel.success("获得数据成功", request.getSession().getAttribute(path));
-        } catch (Exception e) {
-            jsonModel.error(e.getLocalizedMessage());
-        }
-
-        return jsonModel;
+    /**
+     * 删除一组接口
+     * @param data 待删除的接口信息
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/3 21:48
+     */
+    public void deleteMethodInfoList(List<MethodModel> data) {
+        String url = serviceNames + SERVICE.DELETE_METHOD_INFO_LIST;
+        Map<String, Object> map = new HashMap<>();
+        map.put("projectName", projectName);
+        map.put("data", data);
+        apiLogic.callService(url, map);
     }
 
     /**
-     * 保存接口信息
-     * @param map
-     * @param request
-     * @return quickcore.common.JsonModel
+     * 检查服务器连接
+     * @return quickcore.common.tools.JsonModel
      * @author yangxiao
-     * @date 2020/12/27 22:18
+     * @date 2021/1/3 21:25
      */
-    @RequestMapping(value = "saveApiInfo")
-    public JsonModel saveApiInfo(@RequestBody Map<String, String> map, HttpServletRequest request) {
+    public JsonModel checkServerStatus() {
+        String url = serviceNames + SERVICE.CHECK_SERVER_STATUS;
+        Map<String, Object> map = new HashMap<>();  // 构造一个参数
         JsonModel jsonModel = new JsonModel();
         try {
-            String projectName = map.get("path");
-            // TODO
-            jsonModel.success("获得数据成功", "");
+            jsonModel = apiLogic.callService(url, map);
         } catch (Exception e) {
-            jsonModel.error(e.getLocalizedMessage());
-        }
-
-        return jsonModel;
-    }
-
-    /**
-     * 同步本地api数据到服务器
-     * @param map
-     * @param request
-     * @return quickcore.common.JsonModel
-     * @author yangxiao
-     * @date 2020/12/27 22:23
-     */
-    @RequestMapping(value = "pushLocalData")
-    public JsonModel pushLocalData(@RequestBody Map<String, String> map, HttpServletRequest request) {
-        JsonModel jsonModel = new JsonModel();
-        try {
-            String projectName = map.get("path");
-            // TODO
-            jsonModel.success("获得数据成功", "");
-        } catch (Exception e) {
-            jsonModel.error(e.getLocalizedMessage());
+            jsonModel.error("服务器连接失败");
         }
 
         return jsonModel;

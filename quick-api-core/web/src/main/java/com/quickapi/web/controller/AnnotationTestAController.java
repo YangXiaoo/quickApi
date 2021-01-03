@@ -1,12 +1,9 @@
 package com.quickapi.web.controller;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import quickcore.annotations.component.QApi;
-import quickcore.common.JsonModel;
-
-import java.util.Map;
+import quickcore.common.tools.JsonModel;
 
 @RestController
 @RequestMapping("/annotationA")

@@ -2,7 +2,7 @@ package com.quickapi.web.controller;
 
 import org.springframework.web.bind.annotation.*;
 import quickcore.annotations.component.QApi;
-import quickcore.common.JsonModel;
+import quickcore.common.tools.JsonModel;
 
 import java.util.Map;
 

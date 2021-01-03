@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import quickcore.annotations.component.QApi;
 import quickcore.annotations.component.QApiMethod;
-import quickcore.common.CONSTANT_DEFINE;
+import quickcore.common.constants.CONSTANT_DEFINE;
 import quickcore.core.utils.RequestUtil;
 import quickcore.core.utils.StringUtils;
 import quickcore.models.ApiModel;

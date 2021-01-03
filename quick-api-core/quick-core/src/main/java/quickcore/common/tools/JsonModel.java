@@ -1,4 +1,6 @@
-package quickcore.common;
+package quickcore.common.tools;
+
+import quickcore.common.constants.JSON_MODEL_CODE;
 
 /**
  * 定义返回格式
