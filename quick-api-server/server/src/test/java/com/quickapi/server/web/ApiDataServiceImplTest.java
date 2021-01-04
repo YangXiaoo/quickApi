@@ -1,25 +1,18 @@
 package com.quickapi.server.web;
 
 import com.quickapi.server.common.BaseTest;
-import com.quickapi.server.common.constant.CONSTANT_DEFINE;
-import com.quickapi.server.common.tools.DateTool;
-import com.quickapi.server.common.utils.JsonModel;
-import com.quickapi.server.common.utils.UUID;
-import com.quickapi.server.web.service.impl.ApiDataServiceImpl;
+import com.quickapi.server.web.service.impl.MethodDataServiceImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @Service
 public class ApiDataServiceImplTest extends BaseTest {
     private static final Logger logger = LoggerFactory.getLogger(ApiDataServiceImplTest.class);
     @Autowired
-    private ApiDataServiceImpl apiDataService;
+    private MethodDataServiceImpl apiDataService;
 
     @Test
     public void testInsert() {

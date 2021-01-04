@@ -1,17 +1,9 @@
 package com.quickapi.server.web.dao;
 
-import com.quickapi.server.web.dao.entity.ProjectInfoEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.quickapi.server.web.dao.entity.ProjectInfo;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface ProjectInfoDao {
-    int deleteByPrimaryKey(String projectInfoId);
-
-    int insert(ProjectInfoEntity record);
-
-    int insertSelective(ProjectInfoEntity record);
-
-    ProjectInfoEntity selectByPrimaryKey(String projectInfoId);
-
-    int updateByPrimaryKeySelective(ProjectInfoEntity record);
-
-    int updateByPrimaryKey(ProjectInfoEntity record);
+@Mapper
+public interface ProjectInfoDao extends BaseMapper<ProjectInfo> {
 }

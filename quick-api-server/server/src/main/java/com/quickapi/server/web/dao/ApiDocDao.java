@@ -1,19 +1,9 @@
 package com.quickapi.server.web.dao;
 
-import com.quickapi.server.web.dao.entity.ApiDocEntity;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.quickapi.server.web.dao.entity.ApiDoc;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface ApiDocDao {
-    int deleteByPrimaryKey(String apiDocId);
-
-    int insert(ApiDocEntity record);
-
-    int insertSelective(ApiDocEntity record);
-
-    ApiDocEntity selectByPrimaryKey(String apiDocId);
-
-    int updateByPrimaryKeySelective(ApiDocEntity record);
-
-    int updateByPrimaryKeyWithBLOBs(ApiDocEntity record);
-
-    int updateByPrimaryKey(ApiDocEntity record);
+@Mapper
+public interface ApiDocDao extends BaseMapper<ApiDoc> {
 }

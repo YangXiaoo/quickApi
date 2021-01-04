@@ -5,7 +5,7 @@ import com.quickapi.server.common.constant.JSON_MODEL_CODE;
 import com.quickapi.server.common.utils.JsonModel;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.entity.MethodModel;
-import com.quickapi.server.web.logic.ApiDataLogic;
+import com.quickapi.server.web.logic.MethodDataLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,17 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 接口方法
+ * @author yangxiao
+ */
 @RestController
-@RequestMapping("/api")
-public class ApiDataServiceImpl {
-    private static final Logger logger = LoggerFactory.getLogger(ApiDataServiceImpl.class);
+@RequestMapping("/api/methodData")
+public class MethodDataServiceImpl {
+    private static final Logger logger = LoggerFactory.getLogger(MethodDataServiceImpl.class);
 
     @Autowired
-    private ApiDataLogic apiDataLogic;
+    private MethodDataLogic methodDataLogic;
     /**
      * 根据项目名获取该项目的所有接口信息
      * @param map 项目名
@@ -28,8 +32,8 @@ public class ApiDataServiceImpl {
      * @author yangxiao
      * @date 2020/12/29 20:46
      */
-    @RequestMapping(value = "getApiDataByProjectName", method = RequestMethod.POST)
-    public JsonModel getApiDataByProjectName(@RequestBody Map<String, Object> map) {
+    @RequestMapping(value = "getMethodDataByProjectName", method = RequestMethod.POST)
+    public JsonModel getMethodDataByProjectName(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
             String projectName = (String) map.get("projectName");
@@ -37,11 +41,7 @@ public class ApiDataServiceImpl {
                 throw new BusinessException("没有传入项目名");
             }
 
-            List<MethodModel> res = apiDataLogic.findApiDataByProjectName(projectName);
-            if (res != null) {
-                logger.info(res.size() + "");
-            }
-
+            List<MethodModel> res = methodDataLogic.findApiDataByProjectName(projectName);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, res);
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
@@ -54,7 +54,7 @@ public class ApiDataServiceImpl {
     }
 
     /**
-     * 保存个接口信息
+     * 保存接口信息
      * @param map 接口信息
      * @return com.quickapi.server.common.utils.JsonModel
      * @author yangxiao
@@ -64,13 +64,11 @@ public class ApiDataServiceImpl {
     public JsonModel saveMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            MethodModel methodModel = (MethodModel) map.get("data");
+            MethodModel methodModel = (MethodModel) map.get("methodModel");
             if (methodModel == null) {
                 throw new BusinessException("没有数据");
             }
-
-            apiDataLogic.insertApiData(methodModel);
-
+            methodDataLogic.saveMethodData(methodModel);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
@@ -82,6 +80,7 @@ public class ApiDataServiceImpl {
     }
 
     /**
+     * 删除一组接口方法数据
      * @param map 查询条件
      *            projectName 项目名
      *            data List<MethodModel> 接口数据
@@ -89,12 +88,12 @@ public class ApiDataServiceImpl {
      * @author yangxiao
      * @date 2021/1/3 21:52
      */
-    @PostMapping("deleteMethodInfoList")
-    public JsonModel deleteMethodInfoList(@RequestBody Map<String, Object> map) {
-        // todo
+    @PostMapping("deleteMethodDataList")
+    public JsonModel deleteMethodDataList(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-
+            List<MethodModel> methodModelList = (List<MethodModel>) map.get("data");
+            methodDataLogic.deleteMethodDataList(methodModelList);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "删除数据成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
@@ -105,20 +104,13 @@ public class ApiDataServiceImpl {
         return jsonModel;
     }
 
-    /**
-     * 检查服务器是否连接成功
-     * @param map 无参数
-     * @return com.quickapi.server.common.utils.JsonModel
-     * @author yangxiao
-     * @date 2021/1/3 21:59
-     */
-    @PostMapping("checkServerStatus")
-    public JsonModel checkServerStatus(@RequestBody Map<String, Object> map) {
-        // todo
+    @PostMapping("updateMethodData")
+    public JsonModel updateMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-
-            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "服务器连接成功");
+            MethodModel methodModel = (MethodModel) map.get("data");
+            methodDataLogic.updateMethodData(methodModel);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "更新成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {

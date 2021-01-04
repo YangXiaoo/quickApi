@@ -2,27 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9491149b-1223-4a2c-ab96-18e46a921b51" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/constants/SERVICE.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/tools/RestTool.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/logic/QuickApiLogic.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/service/SendRequestService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/annotations/QuickApi.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/annotations/QuickApi.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/CONSTANT_DEFINE.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/constants/CONSTANT_DEFINE.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/JSON_MODEL_CODE.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/constants/JSON_MODEL_CODE.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/JsonModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/tools/JsonModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/core/scanner/ApiScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/core/scanner/ApiScanner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/core/utils/RequestUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/core/utils/RequestUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/controller/QuickApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/service/QuickApiService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationDTestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationDTestController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationTestAController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationTestAController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationTestBController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationTestBController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationTestCController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/web/src/main/java/com/quickapi/web/controller/AnnotationTestCController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/dao/entity/ProjectInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/entity/ApiDoc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/MethodApiDataLogic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ProjectInfoLogic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/CheckServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/MethodApiDataServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/ProjectInfoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/constants/SERVICE.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/common/constants/SERVICE.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/service/QuickApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/service/QuickApiService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/service/SendRequestService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../quick-api-core/quick-core/src/main/java/quickcore/web/service/SendRequestService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/7dda9c20-20af-48c7-b824-64e7c27a8776.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/7dda9c20-20af-48c7-b824-64e7c27a8776.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/ApiDataDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/MethodModelDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/entity/ApiDataEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/entity/MethodModel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ApiDataLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ApiDataLogic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/ApiDataServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/ApiDataServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/ApiDocDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/ApiDocDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/ProjectInfoDao.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/ProjectInfoDao.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/entity/ApiDocEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/entity/ProjectInfoEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/entity/ProjectInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ApiDataLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/MethodDataLogic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/IApiDataService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/ApiDataServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/MethodDataServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/server/src/test/java/com/quickapi/server/web/ApiDataServiceImplTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/server/src/test/java/com/quickapi/server/web/ApiDataServiceImplTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,6 +55,20 @@
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
         <item name="quickapi: schema" type="76f4a085:MysqlImplModel$Schema" />
       </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="quickapi@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="quickapi: schema" type="76f4a085:MysqlImplModel$Schema" />
+        <item name="method_model: table" type="285a2a93:MysqlImplModel$Table" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="quickapi@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="quickapi: schema" type="76f4a085:MysqlImplModel$Schema" />
+        <item name="project_info: table" type="285a2a93:MysqlImplModel$Table" />
+      </path>
     </expand>
     <select />
   </component>
@@ -79,12 +91,15 @@
     </option>
   </component>
   <component name="ProjectId" id="1mHmizQ8mPSqncj0BJf84y9kgHe" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DatabaseDriversLRU" value="mysql" />
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
@@ -93,7 +108,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../QuickApi/quickApi/quick-api-server" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/dao/entity" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Modules" />
@@ -171,12 +186,16 @@
       <workItem from="1609159097664" duration="7942000" />
       <workItem from="1609245272410" duration="6052000" />
       <workItem from="1609330432490" duration="50000" />
-      <workItem from="1609677749455" duration="3941000" />
+      <workItem from="1609677749455" duration="4304000" />
+      <workItem from="1609763072882" duration="7147000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="71" key="#Notifications" timestamp="1609163565156">
@@ -196,18 +215,22 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="389" y="90" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609159315189" />
-    <state x="508" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1609682614780">
+    <state x="508" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1609768892543">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="508" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609682614780" />
+    <state x="508" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609768892543" />
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1609251210585">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609251210585" />
-    <state x="549" y="153" key="FileChooserDialogImpl" timestamp="1609330454320">
+    <state x="343" y="6" key="CommitChangelistDialog2" timestamp="1609765540906">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="549" y="153" key="FileChooserDialogImpl/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609330454320" />
+    <state x="343" y="6" key="CommitChangelistDialog2/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609765540906" />
+    <state x="549" y="153" key="FileChooserDialogImpl" timestamp="1609769707884">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="549" y="153" key="FileChooserDialogImpl/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609769707884" />
     <state width="1493" height="216" key="GridCell.Tab.0.bottom" timestamp="1609251372960">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -268,6 +291,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="620" y="367" width="439" height="337" key="com.intellij.database.psi.DbRenamePsiElementProcessor.DbRenameDialog/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609682107310" />
+    <state x="414" y="54" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog" timestamp="1609769679211">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="414" y="54" key="com.intellij.database.view.ui.AbstractDbRefactoringDialog/0.0.1536.824/1920.104.1536.824@0.0.1536.824" timestamp="1609769679211" />
     <state x="178" y="113" key="new project wizard" timestamp="1609159385033">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -276,46 +303,5 @@
       <screen x="1920" y="104" width="1536" height="824" />
     </state>
     <state x="2351" y="249" width="672" height="678" key="search.everywhere.popup/0.0.1536.824/1920.104.1536.824@1920.104.1536.824" timestamp="1609162152333" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/ApiDataServiceImpl.java</url>
-          <line>34</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/ApiDataServiceImpl.java</url>
-          <line>44</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ApiDataLogic.java</url>
-          <line>46</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ApiDataLogic.java</url>
-          <line>45</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ApiDataLogic.java</url>
-          <line>44</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/logic/ApiDataLogic.java</url>
-          <line>48</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/server/src/main/java/com/quickapi/server/web/service/impl/ApiDataServiceImpl.java</url>
-          <line>39</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
