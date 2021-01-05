@@ -3,6 +3,8 @@ package com.quickapi.server.web.service.impl;
 import com.quickapi.server.common.constant.JSON_MODEL_CODE;
 import com.quickapi.server.common.utils.JsonModel;
 import com.quickapi.server.exception.BusinessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/check")
 public class CheckServiceImpl {
+    private static final Logger logger = LoggerFactory.getLogger(CheckServiceImpl.class);
     /**
      * 检查服务器是否连接成功
      * @param map 无参数
@@ -26,6 +29,7 @@ public class CheckServiceImpl {
      */
     @PostMapping("checkServerStatus")
     public JsonModel checkServerStatus(@RequestBody Map<String, Object> map) {
+        logger.info("checkServerStatus");
         JsonModel jsonModel = new JsonModel();
         try {
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "服务器连接成功");

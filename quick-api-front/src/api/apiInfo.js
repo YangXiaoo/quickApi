@@ -1,11 +1,38 @@
 import request from '@/utils/request'
 
-const baseURL = 'http://localhost:8899'
-
 export function getQApiRoutesInfo(params) {
   return request({
-    url: baseURL + '/quickapi/api',
+    url: '/api/quickApi/api',
     method: 'get',
     params
+  })
+}
+
+export function savePageData(data) {
+  return request({
+    url: '/api/service/saveMethodApiData',
+    method: 'post',
+    data
+  })
+}
+
+export function getPageData(path) {
+  return request({
+    url: '/api/service/getMethodApiData',
+    method: 'post',
+    data: {
+      path: path
+    }
+  })
+}
+
+export function getProjectData(projectName) {
+  console.log('getProjectData')
+  return request({
+    url: 'http://localhost:8899/api/service/getMethodDataByProjectName',
+    method: 'post',
+    data: {
+      projectName: projectName
+    }
   })
 }

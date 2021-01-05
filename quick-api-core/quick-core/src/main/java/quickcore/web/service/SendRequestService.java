@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import quickcore.common.constants.SERVICE;
 import quickcore.common.tools.JsonModel;
 import quickcore.exception.BusinessException;
-import quickcore.web.logic.QuickApiLogic;
+import quickcore.common.utils.RequestUtil;
 
 import java.util.Map;
 
@@ -17,9 +17,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/service")
 public class SendRequestService {
-    @Autowired
-    private QuickApiLogic apiLogic;
-
     @Value("${quickApi.basePackages:}")
     private String basePackages;
     @Value("${quickApi.projectName:quickApi接口}")
@@ -53,7 +50,7 @@ public class SendRequestService {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.GET_METHOD_API_DATA;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error(e.getLocalizedMessage());
         }
@@ -74,7 +71,7 @@ public class SendRequestService {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.GET_METHOD_DATA_BY_PROJECT_NAME;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
@@ -97,7 +94,7 @@ public class SendRequestService {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.SAVE_METHOD_DATA;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error(e.getLocalizedMessage());
         }
@@ -120,7 +117,7 @@ public class SendRequestService {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.SAVE_METHOD_API_DATA;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error(e.getLocalizedMessage());
         }
@@ -140,7 +137,7 @@ public class SendRequestService {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.UPDATE_METHOD_DATA;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error(e.getLocalizedMessage());
         }
@@ -155,12 +152,12 @@ public class SendRequestService {
      * @author yangxiao
      * @date 2021/1/4 20:52
      */
-    @PostMapping(value = "checkServerStatus")
+    @RequestMapping(value = "/checkServerStatus", method = RequestMethod.POST)
     public JsonModel checkServerStatus(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.CHECK_SERVER_STATUS;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error("服务器连接失败");
         }
@@ -180,7 +177,7 @@ public class SendRequestService {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.SAVE_PROJECT_INFO;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error("服务器连接失败");
         }

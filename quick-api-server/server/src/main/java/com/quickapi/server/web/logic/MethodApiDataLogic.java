@@ -2,13 +2,17 @@ package com.quickapi.server.web.logic;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.quickapi.server.common.tools.DateTool;
+import com.quickapi.server.common.utils.UUID;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.ApiDocDao;
 import com.quickapi.server.web.dao.entity.ApiDoc;
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -21,7 +25,7 @@ public class MethodApiDataLogic {
      * @param projectName 项目名
      * @param url 方法URL
      * @return com.quickapi.server.web.dao.entity.ApiDoc
-     * @author yangxiao
+     * @userId yangxiao
      * @date 2021/1/4 21:59
      */
     public ApiDoc findMethodApiData(String projectName, String url) {
@@ -43,5 +47,52 @@ public class MethodApiDataLogic {
         }
 
         return apiDoc;
+    }
+
+    /**
+     * @param projectName 项目名
+     * @param url 接口路由
+     * @param apiData 接口文档数据
+     * @param userId 创建者
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/5 20:42
+     */
+    public void saveMethodApiData(String projectName, String url, String apiData, String userId) {
+        if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url) 
+                || StringUtils.isBlank(apiData) || StringUtils.isBlank(userId)) {
+                    throw new BusinessException("saveMethodApiData()参数不完整");
+        }
+
+        ApiDoc apiDoc = new ApiDoc();
+        apiDoc.setProjectName(projectName);
+        apiDoc.setMethodUrl(url);
+        apiDoc.setApiJsonData(apiData);
+        apiDoc.setUserId(userId);
+        apiDoc.setCreateTime((Timestamp) DateTool.getCurrentDate());
+        apiDoc.setUserId(UUID.getUUID());
+        while (!CollectionUtils.isEmpty(selectById(apiDoc))) {
+            apiDoc.setUserId(UUID.getUUID());
+        }
+
+        apiDocDao.insert(apiDoc);
+    }
+
+    /**
+     * 根据ID查询接口文档
+     * @param apiDoc 查询条件
+     * @return java.util.List<com.quickapi.server.web.dao.entity.ApiDoc>
+     * @author yangxiao
+     * @date 2021/1/5 20:39
+     */
+    public List<ApiDoc> selectById(ApiDoc apiDoc) {
+        List<ApiDoc> ret = null;
+        if (apiDoc != null) {
+            QueryWrapper<ApiDoc> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("API_DOC_ID", apiDoc.getUserId());
+            ret = apiDocDao.selectList(queryWrapper);
+        }
+
+        return ret;
     }
 }

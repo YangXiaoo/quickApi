@@ -1,7 +1,6 @@
 package quickcore.web.dao.entity;
 
 public class ProjectInfo {
-
   private String projectInfoId;
   private String basePackages;
   private String projectName;

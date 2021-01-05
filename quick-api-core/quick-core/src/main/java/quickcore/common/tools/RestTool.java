@@ -20,13 +20,13 @@ public class RestTool {
      */
     public static JsonModel sendPostRequest(String url, MultiValueMap<String, Object> params){
         RestTemplate client = new RestTemplate();
+        MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(type);
         HttpMethod method = HttpMethod.POST;
-        // 以表单的方式提交
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        //将请求头部和参数合成一个请求
+        // 将请求头部和参数合成一个请求
         HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
-        //执行HTTP请求，将返回的结构使用ResultVO类格式化
+        // 执行HTTP请求，将返回的结构使用JsonModel类格式化
         ResponseEntity<JsonModel> response = client.exchange(url, method, requestEntity, JsonModel.class);
 
         return response.getBody();

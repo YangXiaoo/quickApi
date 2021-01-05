@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 public class MethodDataLogic {
-    @Autowired
+    @Autowired(required = false)
     private MethodModelDao methodModelDao;
 
     /**

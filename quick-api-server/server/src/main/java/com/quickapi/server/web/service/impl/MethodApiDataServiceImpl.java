@@ -67,10 +67,16 @@ public class MethodApiDataServiceImpl {
         try {
             String projectName = (String) map.get("projectName");
             String url = (String) map.get("url");
+            String apiData = (String) map.get("apiData");
+            String author = (String) map.get("author");
             if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url)) {
                 throw new BusinessException("getMethodApiData()参数不完整");
             }
-            jsonModel.success(JSON_MODEL_CODE.SUCCESS, apiDataLogic.findMethodApiData(projectName, url));
+
+
+            apiDataLogic.saveMethodApiData(projectName, url, apiData, author);
+
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {

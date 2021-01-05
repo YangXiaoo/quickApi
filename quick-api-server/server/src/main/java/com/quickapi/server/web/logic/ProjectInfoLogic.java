@@ -3,6 +3,7 @@ package com.quickapi.server.web.logic;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.quickapi.server.common.tools.DateTool;
+import com.quickapi.server.common.utils.UUID;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.ProjectInfoDao;
 import com.quickapi.server.web.dao.entity.ProjectInfo;
@@ -35,6 +36,10 @@ public class ProjectInfoLogic {
             List<ProjectInfo> projectInfoList = projectInfoDao.selectList(queryWrapper);
             if (CollectionUtils.isEmpty(projectInfoList)) {
                 projectinfo.setCreateTime((Timestamp) DateTool.getCurrentDate());
+                projectinfo.setProjectInfoId(UUID.getUUID());
+                while (!CollectionUtils.isEmpty(selectById(projectinfo))) {
+                    projectinfo.setProjectInfoId(UUID.getUUID());
+                }
                 projectInfoDao.insert(projectinfo);
             } else {
                 if (projectInfoList.size() > 1) {
@@ -47,5 +52,23 @@ public class ProjectInfoLogic {
                 }
             }
         }
+    }
+
+    /**
+     * 根据项目ID查找项目
+     * @param projectInfo 项目信息
+     * @return java.util.List<com.quickapi.server.web.dao.entity.ProjectInfo>
+     * @author yangxiao
+     * @date 2021/1/5 20:30
+     */
+    public List<ProjectInfo> selectById(ProjectInfo projectInfo) {
+        List<ProjectInfo> ret = null;
+        if (projectInfo != null) {
+            QueryWrapper<ProjectInfo> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("PROJECT_INFO_ID", projectInfo.getProjectInfoId());
+            ret = projectInfoDao.selectList(queryWrapper);
+        }
+
+        return ret;
     }
 }

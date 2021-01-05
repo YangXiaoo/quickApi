@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -13,13 +12,12 @@ import quickcore.annotations.QuickApi;
 import quickcore.common.constants.JSON_MODEL_CODE;
 import quickcore.common.constants.SERVICE;
 import quickcore.common.tools.JsonModel;
-import quickcore.common.tools.RestTool;
 import quickcore.core.scanner.ApiScanner;
 import quickcore.core.utils.StringUtils;
 import quickcore.exception.BusinessException;
 import quickcore.models.MethodModel;
 import quickcore.web.dao.entity.ProjectInfo;
-import quickcore.web.logic.QuickApiLogic;
+import quickcore.common.utils.RequestUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -36,9 +34,6 @@ public class QuickApiService {
 
     @Autowired
     private WebApplicationContext applicationContext;
-
-    @Autowired
-    private QuickApiLogic apiLogic;
 
     @Value("${quickApi.basePackages:}")
     private String basePackages;
@@ -72,7 +67,7 @@ public class QuickApiService {
      */
     @GetMapping("/callApi")
     public Object callApi(String path, String contentType, String headerJson, String queryData, String type) {
-        return apiLogic.callApi(path, contentType, headerJson, queryData, type);
+        return RequestUtil.callApi(path, contentType, headerJson, queryData, type);
     }
 
     /**
@@ -101,6 +96,7 @@ public class QuickApiService {
                 apiMapInfo.put("version", version);
                 apiMapInfo.put("author", author);
                 apiMapInfo.put("hostServiceName", hostServiceName);
+                logger.info("curBasePackages: " + curBasePackages);
                 if (!enabled) {
                     throw new BusinessException("接口已关闭");
                 }
@@ -142,13 +138,14 @@ public class QuickApiService {
                     throw new BusinessException("接口已关闭");
                 }
             }
-            this.saveProjectInfo(apiMapInfo);
+
             System.out.println("curBasePackages: " + curBasePackages);
             List<MethodModel>  methodModelList = ApiScanner.scanApi(curBasePackages.split(","), applicationContext);
             System.out.println(projectName);
             List<MethodModel> preMethodModelList;
 
             if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
+                this.saveProjectInfo(apiMapInfo);
                 // 比较本地与服务器的接口信息看是否需要更新接口信息
                 JsonModel serviceApiData = this.pullServiceData(projectName);
                 if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
@@ -207,7 +204,8 @@ public class QuickApiService {
         Map<String, Object> data = new HashMap<>();
         data.put("projectInfo", projectInfo);
         String url = hostServiceName + SERVICE.SAVE_PROJECT_INFO;
-        apiLogic.callService(url, data);
+        logger.info("url: " + url);
+        RequestUtil.callService(url, data);
     }
 
     /**
@@ -263,7 +261,7 @@ public class QuickApiService {
         Map<String, Object> map = new HashMap<>();
         map.put("projectName", projectName);
         map.put("data", methodModelList);
-        apiLogic.callService(url, map);     // TODO 失败时打印错误
+        RequestUtil.callService(url, map);     // TODO 失败时打印错误
     }
 
     /**
@@ -283,7 +281,7 @@ public class QuickApiService {
             map.put("projectName", projectName);
 
             String url = hostServiceName + SERVICE.GET_METHOD_DATA_BY_PROJECT_NAME;
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
@@ -384,7 +382,7 @@ public class QuickApiService {
         Map<String, Object> map = new HashMap<>();
         map.put("projectName", projectName);
         map.put("data", data);
-        apiLogic.callService(url, map);
+        RequestUtil.callService(url, map);
     }
 
     /**
@@ -398,7 +396,7 @@ public class QuickApiService {
         Map<String, Object> map = new HashMap<>();  // 构造一个参数
         JsonModel jsonModel = new JsonModel();
         try {
-            jsonModel = apiLogic.callService(url, map);
+            jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error("服务器连接失败");
         }

@@ -8,13 +8,16 @@ export const apiRouter = {
   path: '',
   name: '',
   component: MainLayout,
-  children: []
+  children: [],
+  meta: {
+    title: ''
+  }
 }
 
 export const childRouter = {
-  path: '',
-  name: '',
-  component: () => import('@/views/test/index'),
+  path: 'index',
+  name: 'index',
+  component: () => import('@/views/request/index'),
   meta: {
     title: ''
   }
@@ -32,29 +35,39 @@ export const subRouter = {
 export const constantRoutes = [
   {
     path: '/',
-    redirect: '/test',
+    redirect: '/home',
     component: MainLayout,
     children: [
       {
-        path: 'test',
-        name: 'Test',
-        component: () => import('@/views/test/index'),
+        path: 'home',
+        name: 'Home',
+        component: () => import('@/views/request/index'),
         meta: {
-          title: '测试'
+          title: '首页'
         }
       }
     ]
+  },
+  {
+    path: '*',
+    redirect: '/home'
   }
 ]
 
+const tmp = JSON.parse(JSON.stringify(childRouter))
+constantRoutes[0].children.push(tmp)
+
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
 
 const router = createRouter()
 
+/**
+ * 重置路由
+ */
 export function resetRouter () {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
