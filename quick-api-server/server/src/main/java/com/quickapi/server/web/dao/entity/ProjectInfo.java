@@ -1,6 +1,11 @@
 package com.quickapi.server.web.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 
 @TableName("project_info")
 public class ProjectInfo {
@@ -15,7 +20,8 @@ public class ProjectInfo {
   private String version;
   private String author;
   private String enable;
-  private java.sql.Timestamp createTime;
+  @TableField(fill = FieldFill.INSERT)
+  private Date createTime;
 
 
   public String getProjectInfoId() {
@@ -108,11 +114,11 @@ public class ProjectInfo {
   }
 
 
-  public java.sql.Timestamp getCreateTime() {
+  public Date getCreateTime() {
     return createTime;
   }
 
-  public void setCreateTime(java.sql.Timestamp createTime) {
+  public void setCreateTime(Date createTime) {
     this.createTime = createTime;
   }
 

@@ -23,7 +23,7 @@ public class ApiDataServiceImplTest extends BaseTest {
         //apiDataEntity.setClassName("apiclass");
         //apiDataEntity.setContentType("none");
         //apiDataEntity.setCreateTime(DateTool.getCurrentDate());
-        //apiDataEntity.setDataApiId(UUID.getUUID());
+        //apiDataEntity.setDataApiId(UUIDUtil.getUUID());
         //apiDataEntity.setDescription("desc");
         //apiDataEntity.setDownload(CONSTANT_DEFINE.NOT_DOWNLOAD);
         //apiDataEntity.setGroup("菜单1");

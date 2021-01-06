@@ -3,6 +3,7 @@ package quickcore.common.utils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -109,11 +110,12 @@ public class RequestUtil {
      * @date 2021/1/3 21:11
      */
     public static JsonModel callService(String url, Map<String, Object> map) {
-        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
-        for (Map.Entry<String, Object> it : map.entrySet()) {
-            params.add(it.getKey(), it.getValue());
-        }
+        MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(type);
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(map, headers);
+        RestTemplate client = new RestTemplate();
 
-        return RestTool.sendPostRequest(url, params);
+        return client.postForObject(url, request, JsonModel.class);
     }
 }

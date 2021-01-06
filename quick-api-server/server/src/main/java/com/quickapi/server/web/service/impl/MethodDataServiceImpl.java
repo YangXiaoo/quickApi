@@ -1,8 +1,10 @@
 package com.quickapi.server.web.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quickapi.server.common.constant.JSON_MODEL_CODE;
 import com.quickapi.server.common.utils.JsonModel;
+import com.quickapi.server.common.utils.ModelUtil;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.entity.MethodModel;
 import com.quickapi.server.web.logic.MethodDataLogic;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +39,7 @@ public class MethodDataServiceImpl {
     public JsonModel getMethodDataByProjectName(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            String projectName = (String) map.get("projectName");
+            String projectName = (String) map.get("projectName");   // TODO 传参有问题
             if (StringUtils.isBlank(projectName)) {
                 throw new BusinessException("没有传入项目名");
             }
@@ -47,7 +50,7 @@ public class MethodDataServiceImpl {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
             logger.error(e.getLocalizedMessage());
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;
@@ -64,7 +67,10 @@ public class MethodDataServiceImpl {
     public JsonModel saveMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            MethodModel methodModel = (MethodModel) map.get("methodModel");
+            Object object = map.get("methodModel");
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> methodModelMap = objectMapper.convertValue(object, Map.class);
+            MethodModel methodModel = ModelUtil.mapToMethodModel(methodModelMap);
             if (methodModel == null) {
                 throw new BusinessException("没有数据");
             }
@@ -73,7 +79,7 @@ public class MethodDataServiceImpl {
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;
@@ -92,13 +98,19 @@ public class MethodDataServiceImpl {
     public JsonModel deleteMethodDataList(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            List<MethodModel> methodModelList = (List<MethodModel>) map.get("data");
+            Object object = map.get("data");
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, Object>> objList = objectMapper.convertValue(object, List.class);
+            List<MethodModel> methodModelList = new ArrayList<>();
+            for (Map<String, Object> obj : objList) {
+                methodModelList.add(ModelUtil.mapToMethodModel(obj));
+            }
             methodDataLogic.deleteMethodDataList(methodModelList);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "删除数据成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;
@@ -114,7 +126,7 @@ public class MethodDataServiceImpl {
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;

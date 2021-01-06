@@ -1,5 +1,7 @@
 package quickcore.web.dao.entity;
 
+import java.util.Date;
+
 public class ProjectInfo {
   private String projectInfoId;
   private String basePackages;
@@ -11,7 +13,7 @@ public class ProjectInfo {
   private String version;
   private String author;
   private String enable;
-  private java.sql.Timestamp createTime;
+  private Date createTime;
 
 
   public String getProjectInfoId() {
@@ -104,11 +106,11 @@ public class ProjectInfo {
   }
 
 
-  public java.sql.Timestamp getCreateTime() {
+  public Date getCreateTime() {
     return createTime;
   }
 
-  public void setCreateTime(java.sql.Timestamp createTime) {
+  public void setCreateTime(Date createTime) {
     this.createTime = createTime;
   }
 

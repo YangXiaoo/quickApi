@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.quickapi.server.common.constant.CONSTANT_DEFINE;
+import com.quickapi.server.common.tools.DateTool;
+import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.MethodModelDao;
+import com.quickapi.server.web.dao.entity.MethodModel;
 import com.quickapi.server.web.dao.entity.MethodModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,9 @@ public class MethodDataLogic {
 
     /**
      * 保存一条接口信息
+     * <p>
+     *     TODO 存在则更新，不存在则插入
+     * </p>
      * @param methodModel 单个接口信息
      * @return void
      * @author yangxiao
@@ -28,10 +34,32 @@ public class MethodDataLogic {
      */
     public void saveMethodData(MethodModel methodModel) {
         if (methodModel != null) {
+            methodModel.setDataApiId(UUIDUtil.getUUID());
+            while (!CollectionUtils.isEmpty(selectById(methodModel))) {
+                methodModel.setDataApiId(UUIDUtil.getUUID());
+            }
+            methodModel.setCreateTime(DateTool.getCurrentDate());
             methodModelDao.insert(methodModel);
         }
     }
 
+    /**
+     * 根据ID查询
+     * @param methodModel MethodModel
+     * @return java.util.List<com.quickapi.server.web.dao.entity.MethodModel>
+     * @author yangxiao
+     * @date 2021/1/6 22:47
+     */
+    public List<MethodModel> selectById(MethodModel methodModel) {
+        List<MethodModel> ret = null;
+        if (methodModel != null) {
+            QueryWrapper<MethodModel> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("DATA_API_ID", methodModel.getDataApiId());
+            ret = methodModelDao.selectList(queryWrapper);
+        }
+
+        return ret;
+    }
     /**
      * 根据项目名称查找项目所有接口
      * @param projectName 项目名称

@@ -9,7 +9,9 @@ import quickcore.core.utils.StringUtils;
 public class MethodModel implements Comparable<MethodModel>{
     private String name;                // 注解值
     private String group;               // 所属组别
+    private String projectName;
     private String description;
+
     private String methodName;          // 方法名
     private String className;           // 所在类名
     private String requestType;
@@ -54,6 +56,7 @@ public class MethodModel implements Comparable<MethodModel>{
                 && StringUtils.equals(obj.getAuthor(), author)
                 && StringUtils.equals(obj.getCreateTime(), createTime)
                 && StringUtils.equals(obj.getUpdateTime(), updateTime)
+                && StringUtils.equals(obj.getProjectName(), projectName)
                 && obj.isDownload() == download
                 && obj.isToken() == token;
     }
@@ -150,5 +153,14 @@ public class MethodModel implements Comparable<MethodModel>{
     public void setDelete(boolean delete) {
         this.delete = delete;
     }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
 }
 

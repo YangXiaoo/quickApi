@@ -3,11 +3,10 @@ package com.quickapi.server.web.logic;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.quickapi.server.common.tools.DateTool;
-import com.quickapi.server.common.utils.UUID;
+import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.ApiDocDao;
 import com.quickapi.server.web.dao.entity.ApiDoc;
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -70,9 +69,9 @@ public class MethodApiDataLogic {
         apiDoc.setApiJsonData(apiData);
         apiDoc.setUserId(userId);
         apiDoc.setCreateTime((Timestamp) DateTool.getCurrentDate());
-        apiDoc.setUserId(UUID.getUUID());
+        apiDoc.setUserId(UUIDUtil.getUUID());
         while (!CollectionUtils.isEmpty(selectById(apiDoc))) {
-            apiDoc.setUserId(UUID.getUUID());
+            apiDoc.setUserId(UUIDUtil.getUUID());
         }
 
         apiDocDao.insert(apiDoc);

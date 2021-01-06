@@ -1,5 +1,6 @@
 package quickcore.web.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import quickcore.core.scanner.ApiScanner;
 import quickcore.core.utils.StringUtils;
 import quickcore.exception.BusinessException;
 import quickcore.models.MethodModel;
+import quickcore.models.MethodModelEntity;
 import quickcore.web.dao.entity.ProjectInfo;
 import quickcore.common.utils.RequestUtil;
 
@@ -25,6 +27,9 @@ import java.util.List;
 
 /**
  * 接口处理
+ * <p>
+ *     求放入一个类中
+ * </p>
  * @author yangxiao
  */
 @RestController
@@ -96,6 +101,7 @@ public class QuickApiService {
                 apiMapInfo.put("version", version);
                 apiMapInfo.put("author", author);
                 apiMapInfo.put("hostServiceName", hostServiceName);
+                apiMapInfo.put("basePackages", basePackages);
                 logger.info("curBasePackages: " + curBasePackages);
                 if (!enabled) {
                     throw new BusinessException("接口已关闭");
@@ -116,6 +122,7 @@ public class QuickApiService {
                         }
 
                         apiMapInfo.put("projectName", quickApiAnnotation.projectName());
+                        apiMapInfo.put("basePackages", quickApiAnnotation.basePackages());
                         apiMapInfo.put("description", quickApiAnnotation.description());
                         this.projectName = quickApiAnnotation.projectName();
                         apiMapInfo.put("enabled", quickApiAnnotation.enabled() ? "Yes" : "No");
@@ -145,7 +152,7 @@ public class QuickApiService {
             List<MethodModel> preMethodModelList;
 
             if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
-                this.saveProjectInfo(apiMapInfo);
+                this.saveLocalProjectInfo(apiMapInfo);
                 // 比较本地与服务器的接口信息看是否需要更新接口信息
                 JsonModel serviceApiData = this.pullServiceData(projectName);
                 if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
@@ -161,6 +168,9 @@ public class QuickApiService {
                     this.pushLocalData(uploadMethodList);
 
                     this.syncLocalData(localMapInfo, serverMapInfo);    // 同步数据
+                } else {
+                    // 上传本地接口方法数据
+                    this.pushLocalData(methodModelList);
                 }
             } else {
                 logger.warn("远程服务器未连接成功, 只支持本地测试!");
@@ -190,9 +200,10 @@ public class QuickApiService {
      * @author yangxiao
      * @date 2021/1/4 22:28
      */
-    public void saveProjectInfo(Map<String, Object> map) {
+    public void saveLocalProjectInfo(Map<String, Object> map) {
         ProjectInfo projectInfo = new ProjectInfo();
         projectInfo.setProjectName((String) map.get("projectName"));
+        projectInfo.setBasePackages((String) map.get("basePackages"));
         projectInfo.setDescription((String) map.get("description"));
         projectInfo.setEnable((String) map.get("enabled"));
         projectInfo.setServerNames((String) map.get("serviceNames"));
@@ -259,9 +270,11 @@ public class QuickApiService {
     public void pushLocalData(List<MethodModel> methodModelList) {
         String url = hostServiceName + SERVICE.SAVE_METHOD_DATA;
         Map<String, Object> map = new HashMap<>();
-        map.put("projectName", projectName);
-        map.put("data", methodModelList);
-        RequestUtil.callService(url, map);     // TODO 失败时打印错误
+        for (MethodModel methodModel : methodModelList) {
+            methodModel.setProjectName(projectName);
+            map.put("methodModel", methodModel);
+            RequestUtil.callService(url, map);
+        }
     }
 
     /**
@@ -282,10 +295,34 @@ public class QuickApiService {
 
             String url = hostServiceName + SERVICE.GET_METHOD_DATA_BY_PROJECT_NAME;
             jsonModel = RequestUtil.callService(url, map);
+            Object data = jsonModel.getData();
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, Object>> methodModelEntityList = objectMapper.convertValue(data, List.class);
+            List<MethodModel> methodModelList = new ArrayList<>();
+            for (Map<String, Object> methodModelEntity : methodModelEntityList) {
+                MethodModel methodModel = new MethodModel();
+                methodModel.setProjectName((String)methodModelEntity.get("projectName"));
+                methodModel.setDescription((String)methodModelEntity.get("methodDescription"));
+                methodModel.setMethodName((String)methodModelEntity.get("methodName"));
+                methodModel.setRequestType((String)methodModelEntity.get("requestType"));
+                methodModel.setContentType((String)methodModelEntity.get("contentType"));
+                methodModel.setGroup((String)methodModelEntity.get("methodGroup"));
+                methodModel.setClassName((String)methodModelEntity.get("className"));
+                methodModel.setUrl((String)methodModelEntity.get("url"));
+                methodModel.setName((String)methodModelEntity.get("name"));
+                methodModel.setVersion((String)methodModelEntity.get("version"));
+                methodModel.setAuthor((String)methodModelEntity.get("author"));
+                // TODO 设置创建时间和更新时间
+                methodModel.setDownload(methodModelEntity.get("download") == "true");
+                methodModel.setToken(methodModelEntity.get("token") == "true");
+
+                methodModelList.add(methodModel);
+            }
+            jsonModel.setData(methodModelList);
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;
@@ -380,7 +417,6 @@ public class QuickApiService {
     public void deleteMethodDataList(List<MethodModel> data) {
         String url = hostServiceName + SERVICE.DELETE_METHOD_DATA_LIST;
         Map<String, Object> map = new HashMap<>();
-        map.put("projectName", projectName);
         map.put("data", data);
         RequestUtil.callService(url, map);
     }
@@ -396,6 +432,157 @@ public class QuickApiService {
         Map<String, Object> map = new HashMap<>();  // 构造一个参数
         JsonModel jsonModel = new JsonModel();
         try {
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error("服务器连接失败");
+        }
+
+        return jsonModel;
+    }
+
+    /******************************************************转发请求*****************************************************/
+    /**
+     * 获得方法接口信息
+     * @param map 查询条件
+     *            path 接口方法在项目中的路由
+     *            projectName 方法名
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/3 22:16
+     */
+    @PostMapping(value = "getMethodApiData")
+    public JsonModel getMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_METHOD_API_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 获得项目信息
+     * @param map 查询条件
+     *            projectName 方法名
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/3 22:18
+     */
+    @PostMapping(value = "getMethodDataByProjectName")
+    public JsonModel getMethodDataByProjectName(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_METHOD_DATA_BY_PROJECT_NAME;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error("未知错误!");
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 保存接口方法信息
+     * @param map 条件
+     *            methodModel 接口方法信息
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2020/12/27 22:18
+     */
+    @PostMapping(value = "saveMethodData")
+    public JsonModel saveMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.SAVE_METHOD_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+
+    /**
+     * 保存接口文档
+     * @param map 请求参数
+     *            path 接口路由
+     *            data 保存的数据
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/3 22:33
+     */
+    @PostMapping(value = "saveMethodApiData")
+    public JsonModel saveMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.SAVE_METHOD_API_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 更新接口方法信息
+     * @param map 请求参数
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/4 21:11
+     */
+    @PostMapping(value = "updateMethodData")
+    public JsonModel updateMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.UPDATE_METHOD_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 检查服务器是否连接
+     * @param map 无参数（构造）
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/4 20:52
+     */
+    @RequestMapping(value = "/checkServerStatus", method = RequestMethod.POST)
+    public JsonModel checkServerStatus(@RequestBody Map<String, Object> map) {
+        System.out.println("checkServerStatus");
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.CHECK_SERVER_STATUS;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error("服务器连接失败");
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 检查服务器是否连接
+     * @param map 无参数（构造）
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/4 20:52
+     */
+    @PostMapping(value = "saveProjectInfo")
+    public JsonModel saveProjectInfo(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.SAVE_PROJECT_INFO;
             jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error("服务器连接失败");
