@@ -8,6 +8,7 @@ const state = {
   routerSettingFlag: false,
   description: '',
   projectName: '',
+  localProjectName: '',
   serviceNames: '',
   localServiceName: '',
   hostServiceName: '',
@@ -48,6 +49,11 @@ const mutations = {
   },
   SET_GROUP_LIST: (state, groupList) => {
     state.groupList = groupList
+  },
+  SET_LOCAL_PROJECT_INFO: (state, data) => {
+    state.apiInfo = data.apiInfo
+    state.localServiceName = data.localServiceName
+    state.localProjectName = data.projectName
   }
 }
 
@@ -59,10 +65,7 @@ const actions = {
               reject(res.message || '获取接口数据失败')
           }
 
-
-          commit('SET_API_INFO', res.data.data.apiInfo)
-          commit('SET_LOCAL_SERVICE_NAME', res.data.data.localServiceName)
-
+          commit('SET_LOCAL_PROJECT_INFO', res.data.data)
           // 设置一级菜单名称
           const groupMap = getGroup(res.data.data.apiInfo)
           commit('SET_GROUP_LIST', Object.keys(groupMap))
@@ -108,19 +111,19 @@ const actions = {
   },
     /**
    * 修改接口信息
-   * @param {*} path 
-   * @param {*} newName
+   * @param {*} url 
+   * @param {*} name
    * @param {*} methodGroup 
    */
-  changeApiInfo({ commit, state }, {path, newName, methodGroup}) {
+  updateMethodData({ commit, state }, {url, name, methodGroup}) {
     const apiInfo = state.apiInfo
     for (let api of apiInfo) {
       console.log(api)
-      if (api.url === path) {
-        console.log('api.url: ' + path)
+      if (api.url === url) {
+        console.log('api.url: ' + url)
         
-        if (newName) {
-          api.name = newName
+        if (name) {
+          api.name = name
         }
         if (methodGroup) {
           api.group = methodGroup

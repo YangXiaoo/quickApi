@@ -25,7 +25,7 @@ public class MethodDataLogic {
     /**
      * 保存一条接口信息
      * <p>
-     *     TODO 存在则更新，不存在则插入
+     *     存在则更新，不存在则插入
      * </p>
      * @param methodModel 单个接口信息
      * @return void
@@ -34,15 +34,48 @@ public class MethodDataLogic {
      */
     public void saveMethodData(MethodModel methodModel) {
         if (methodModel != null) {
-            methodModel.setDataApiId(UUIDUtil.getUUID());
-            while (!CollectionUtils.isEmpty(selectById(methodModel))) {
+            List<MethodModel> methodModelList = this.findByMethodName(methodModel);
+            if (!CollectionUtils.isEmpty(methodModelList)) {
+                for (MethodModel cur : methodModelList) {
+                    cur.setUpdateTime(DateTool.getCurrentDate());
+
+                    UpdateWrapper<MethodModel> updateWrapper = new UpdateWrapper<>();
+                    updateWrapper.eq("PROJECT_NAME", cur.getProjectName());
+                    updateWrapper.eq("URL", cur.getUrl());
+                    updateWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
+                    methodModelDao.update(cur, updateWrapper);
+                }
+            } else {
                 methodModel.setDataApiId(UUIDUtil.getUUID());
+                while (!CollectionUtils.isEmpty(selectById(methodModel))) {
+                    methodModel.setDataApiId(UUIDUtil.getUUID());
+                }
+                methodModel.setCreateTime(DateTool.getCurrentDate());
+                methodModelDao.insert(methodModel);
             }
-            methodModel.setCreateTime(DateTool.getCurrentDate());
-            methodModelDao.insert(methodModel);
         }
     }
 
+    /**
+     * 根据项目名和方法URL查找未删除的方法
+     * @param methodModel MethodModel
+     * @return java.util.List<com.quickapi.server.web.dao.entity.MethodModel>
+     * @author yangxiao
+     * @date 2021/1/8 20:48
+     */
+    public List<MethodModel> findByMethodName(MethodModel methodModel) {
+        List<MethodModel> ret = null;
+        if (methodModel != null) {
+            QueryWrapper<MethodModel> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("PROJECT_NAME", methodModel.getProjectName());
+            queryWrapper.eq("URL", methodModel.getUrl());
+            queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
+
+            ret = methodModelDao.selectList(queryWrapper);
+        }
+
+        return ret;
+    }
     /**
      * 根据ID查询
      * @param methodModel MethodModel
@@ -99,17 +132,41 @@ public class MethodDataLogic {
 
     /**
      * 更新接口方法信息
-     * @param methodModel 接口方法
+     * @param url 路径
+     * @param projectName 项目名称
+     * @param name 菜单名
+     * @param methodGroup 所属菜单组
      * @return void
      * @author yangxiao
-     * @date 2021/1/4 21:45
+     * @date 2021/1/8 22:22
      */
-    public void updateMethodData(MethodModel methodModel) {
-        if (methodModel != null) {
-            UpdateWrapper<MethodModel> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("PROJECT_NAME", methodModel.getProjectName());
-            updateWrapper.eq("URL", methodModel.getUrl());
-            methodModelDao.update(methodModel, updateWrapper);
+    public void updateMethodData(String url, String projectName,
+                                 String name, String methodGroup) {
+        if (StringUtils.isBlank(url) || StringUtils.isBlank(name)
+                || StringUtils.isBlank(projectName) || StringUtils.isBlank(methodGroup)) {
+            throw new BusinessException("updateMethodData(), 参数不完整");
         }
+
+        MethodModel methodModel;                                            // 定义待更新的接口方法
+
+        MethodModel tmp = new MethodModel();
+        tmp.setProjectName(projectName);
+        tmp.setUrl(url);
+        List<MethodModel> methodModelList = this.findByMethodName(tmp);
+        if (CollectionUtils.isEmpty(methodModelList)) {
+            throw new BusinessException("没有找到相关接口方法");
+        } else {
+            if (methodModelList.size() > 1) {
+                throw new BusinessException("找到至少两个方法");
+            }
+            methodModel = methodModelList.get(0);
+            methodModel.setName(name);
+            methodModel.setMethodGroup(methodGroup);
+        }
+
+        UpdateWrapper<MethodModel> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("PROJECT_NAME", projectName);
+        updateWrapper.eq("URL", url);
+        methodModelDao.update(methodModel, updateWrapper);
     }
 }

@@ -269,7 +269,7 @@ import { mapGetters } from "vuex";
 import vueJsonEditor from "vue-json-editor";
 import { callApi } from "@/api/request";
 import { setData, getData } from "@/utils/storage";
-import { getPageData, savePageData } from "@/api/apiInfo";
+import { getMethodApiData, savePageData } from "@/api/apiInfo";
 
 export default {
   name: "Team",
@@ -277,7 +277,7 @@ export default {
     vueJsonEditor,
   },
   computed: {
-    ...mapGetters(["localServiceName", "pageStatus"]),
+    ...mapGetters(["localServiceName", "pageStatus", 'localProjectName']),
   },
   data() {
     return {
@@ -391,11 +391,16 @@ export default {
       }
     },
     initCurData() {
-      const curPagePath = this.path;
-      const curData = getPageData(curPagePath).then((res) => {
+      const curPath = this.$route.path
+      const data = {
+        projectName: this.localProjectName,
+        url: curPath.substring(curPath.substring(1).indexOf("/") + 1)
+      }
+
+      const curData = getMethodApiData(data).then((res) => {
         if (res.data.code === "000") {
           if (res.data.data) {
-            Object.assign(this.$data, res.data.data.pageData);
+            Object.assign(this.$data, JSON.parse(res.data.data.apiJsonData));
           }
         }
       });

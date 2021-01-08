@@ -120,8 +120,11 @@ public class MethodDataServiceImpl {
     public JsonModel updateMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            MethodModel methodModel = (MethodModel) map.get("data");
-            methodDataLogic.updateMethodData(methodModel);
+            String url = (String) map.get("url");
+            String projectName = (String) map.get("projectName");
+            String name = (String) map.get("name");
+            String methodGroup = (String) map.get("methodGroup");
+            methodDataLogic.updateMethodData(url, projectName, name, methodGroup);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "更新成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());

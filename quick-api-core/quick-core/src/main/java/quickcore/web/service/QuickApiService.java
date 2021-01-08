@@ -13,6 +13,7 @@ import quickcore.annotations.QuickApi;
 import quickcore.common.constants.JSON_MODEL_CODE;
 import quickcore.common.constants.SERVICE;
 import quickcore.common.tools.JsonModel;
+import quickcore.common.utils.ModelUtil;
 import quickcore.core.scanner.ApiScanner;
 import quickcore.core.utils.StringUtils;
 import quickcore.exception.BusinessException;
@@ -296,29 +297,7 @@ public class QuickApiService {
             String url = hostServiceName + SERVICE.GET_METHOD_DATA_BY_PROJECT_NAME;
             jsonModel = RequestUtil.callService(url, map);
             Object data = jsonModel.getData();
-            ObjectMapper objectMapper = new ObjectMapper();
-            List<Map<String, Object>> methodModelEntityList = objectMapper.convertValue(data, List.class);
-            List<MethodModel> methodModelList = new ArrayList<>();
-            for (Map<String, Object> methodModelEntity : methodModelEntityList) {
-                MethodModel methodModel = new MethodModel();
-                methodModel.setProjectName((String)methodModelEntity.get("projectName"));
-                methodModel.setDescription((String)methodModelEntity.get("methodDescription"));
-                methodModel.setMethodName((String)methodModelEntity.get("methodName"));
-                methodModel.setRequestType((String)methodModelEntity.get("requestType"));
-                methodModel.setContentType((String)methodModelEntity.get("contentType"));
-                methodModel.setGroup((String)methodModelEntity.get("methodGroup"));
-                methodModel.setClassName((String)methodModelEntity.get("className"));
-                methodModel.setUrl((String)methodModelEntity.get("url"));
-                methodModel.setName((String)methodModelEntity.get("name"));
-                methodModel.setVersion((String)methodModelEntity.get("version"));
-                methodModel.setAuthor((String)methodModelEntity.get("author"));
-                // TODO 设置创建时间和更新时间
-                methodModel.setDownload(methodModelEntity.get("download") == "true");
-                methodModel.setToken(methodModelEntity.get("token") == "true");
-
-                methodModelList.add(methodModel);
-            }
-            jsonModel.setData(methodModelList);
+            jsonModel.setData(this.convertMethodModel(data));
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
@@ -328,6 +307,23 @@ public class QuickApiService {
         return jsonModel;
     }
 
+    /**
+     * 将对象转换为MethodModel
+     * @param data Object
+     * @return java.util.List<quickcore.models.MethodModel>
+     * @author yangxiao
+     * @date 2021/1/8 21:52
+     */
+    public List<MethodModel> convertMethodModel(Object data) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, Object>> methodModelEntityList = objectMapper.convertValue(data, List.class);
+        List<MethodModel> methodModelList = new ArrayList<>();
+        for (Map<String, Object> methodModelEntity : methodModelEntityList) {
+            methodModelList.add(ModelUtil.convert2MethodModel(methodModelEntity));
+        }
+
+        return methodModelList;
+    }
     /**
      * 将远程数据同步到本地
      * @param localMapInfo 本地api信息
@@ -344,6 +340,7 @@ public class QuickApiService {
                 MethodModel remoteMethodModel = it.getValue();
                 if (!localMethodModel.equalsValue(remoteMethodModel)) {
                     if (!remoteMethodModel.isDelete()) {
+                        localMethodModel.setName(remoteMethodModel.getName());
                         localMethodModel.setGroup(remoteMethodModel.getGroup());
                         localMethodModel.setContentType(remoteMethodModel.getContentType());
                         localMethodModel.setRequestType(remoteMethodModel.getRequestType());
@@ -477,6 +474,7 @@ public class QuickApiService {
         try {
             String url = hostServiceName + SERVICE.GET_METHOD_DATA_BY_PROJECT_NAME;
             jsonModel = RequestUtil.callService(url, map);
+            jsonModel.setData(this.convertMethodModel(jsonModel.getData()));
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {

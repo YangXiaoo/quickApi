@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -49,6 +48,7 @@ public class MethodApiDataLogic {
     }
 
     /**
+     * 保存项目接口
      * @param projectName 项目名
      * @param url 接口路由
      * @param apiData 接口文档数据
@@ -68,10 +68,10 @@ public class MethodApiDataLogic {
         apiDoc.setMethodUrl(url);
         apiDoc.setApiJsonData(apiData);
         apiDoc.setUserId(userId);
-        apiDoc.setCreateTime((Timestamp) DateTool.getCurrentDate());
-        apiDoc.setUserId(UUIDUtil.getUUID());
+        apiDoc.setCreateTime(DateTool.getCurrentDate());
+        apiDoc.setApiDocId(UUIDUtil.getUUID());
         while (!CollectionUtils.isEmpty(selectById(apiDoc))) {
-            apiDoc.setUserId(UUIDUtil.getUUID());
+            apiDoc.setApiDocId(UUIDUtil.getUUID());
         }
 
         apiDocDao.insert(apiDoc);

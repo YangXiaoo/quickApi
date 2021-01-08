@@ -10,29 +10,39 @@ export function getQApiRoutesInfo(params) {
 
 export function savePageData(data) {
   return request({
-    url: '/api/service/saveMethodApiData',
+    url: '/api/quickApi/saveMethodApiData',
     method: 'post',
     data
   })
 }
 
-export function getPageData(path) {
+export function getMethodApiData(data) {
   return request({
-    url: '/api/service/getMethodApiData',
+    url: '/api/quickApi/getMethodApiData',
     method: 'post',
-    data: {
-      path: path
-    }
+    data
   })
 }
 
 export function getProjectData(projectName) {
   console.log('getProjectData')
   return request({
-    url: 'http://localhost:8899/api/service/getMethodDataByProjectName',
+    url: '/api/quickApi/getMethodDataByProjectName',
     method: 'post',
     data: {
       projectName: projectName
     }
+  })
+}
+
+/**
+ * 更新方法信息
+ * @param {Object} data 方法数据
+ */
+export function updateMethodData(data) {
+  return request({
+    url: '/api/quickApi/updateMethodData',
+    method: 'post',
+    data
   })
 }

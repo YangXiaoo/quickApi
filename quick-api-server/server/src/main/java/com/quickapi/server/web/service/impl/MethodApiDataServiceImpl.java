@@ -48,7 +48,7 @@ public class MethodApiDataServiceImpl {
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;
@@ -80,7 +80,7 @@ public class MethodApiDataServiceImpl {
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;

@@ -36,7 +36,7 @@ public class CheckServiceImpl {
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
-            jsonModel.error("未知错误!");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;

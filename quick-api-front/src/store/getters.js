@@ -10,6 +10,7 @@ const getters = {
   routerSettingFlag: state => state.api.routerSettingFlag,
   pageStatus: state => state.api.pageStatus,
   localServiceName: state => state.api.localServiceName,
+  localProjectName: state => state.api.localProjectName,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews
 }

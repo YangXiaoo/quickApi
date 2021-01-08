@@ -277,7 +277,7 @@ import { mapGetters } from "vuex";
 import vueJsonEditor from "vue-json-editor";
 import { callApi } from "@/api/request";
 import { setData, getData } from "@/utils/storage";
-import { getPageData, savePageData, saveApiInfo } from "@/api/apiInfo";
+import { getMethodApiData, savePageData, updateMethodData } from "@/api/apiInfo";
 import { getRoutes } from "@/utils/routerTool";
 export default {
   name: "Request",
@@ -285,7 +285,12 @@ export default {
     vueJsonEditor,
   },
   computed: {
-    ...mapGetters(["localServiceName", "pageStatus", "routes", "groupList"]),
+    ...mapGetters(["localServiceName", 
+    "pageStatus", 
+    "routes", 
+    "groupList",
+    'localProjectName'
+    ]),
   },
   data() {
     return {
@@ -385,12 +390,14 @@ export default {
       this.dialogTableVisible = false; // 关闭对话框
 
       // 保存页面数据
-      const curData = JSON.parse(JSON.stringify(this.$data));
-      const dataKey = this.path;
+      const curData = JSON.stringify(this.$data);
+      const curPath = this.$route.path
       const data = {
-        path: dataKey,
-        pageData: curData,
-      };
+        projectName: this.localProjectName,
+        url: curPath.substring(curPath.substring(1).indexOf("/") + 1),
+        apiData: curData,
+        author: 'dummyUser'
+      }
 
       savePageData(data)
         .then((res) => {
@@ -420,11 +427,16 @@ export default {
       }
     },
     initCurData() {
-      const curPagePath = this.$route.path;
-      const curData = getPageData(curPagePath).then((res) => {
+      const curPath = this.$route.path
+      const data = {
+        projectName: this.localProjectName,
+        url: curPath.substring(curPath.substring(1).indexOf("/") + 1)
+      }
+
+      const curData = getMethodApiData(data).then((res) => {
         if (res.data.code === "000") {
           if (res.data.data) {
-            Object.assign(this.$data, res.data.data.pageData);
+            Object.assign(this.$data, JSON.parse(res.data.data.apiJsonData));
           }
         }
       });
@@ -509,19 +521,22 @@ export default {
     // 修改方法名
     handleSaveMethodName() {
       // 获得菜单，根据菜单path对菜单的title进行修改
-      const path = this.$route.path.substring(
+      const url = this.$route.path.substring(
         this.$route.path.substring(1).indexOf("/") + 1
       );
       const param = {
-        path: path,
-        newName: this.methodName,
+        url: url,
+        projectName: this.localProjectName,
+        name: this.methodName,
         methodGroup: this.methodGroup,
+        author: 'dummy-x'
       }
       // 修改本地routes信息
-      this.$store.dispatch("api/changeApiInfo", param);
+      this.$store.dispatch("api/updateMethodData", param);
 
+      console.log('call updateMethodData()')
       // 上传修改信息至服务器, 生成路由时, 从服务器获得api信息解析时进行设置
-      saveApiInfo(param).then(res => {
+      updateMethodData(param).then(res => {
         if (res.data.code === '000') {
           // 成功
           this.$message({

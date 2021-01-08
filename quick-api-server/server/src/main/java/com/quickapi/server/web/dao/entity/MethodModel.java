@@ -1,11 +1,13 @@
 package com.quickapi.server.web.dao.entity;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
 
 @TableName("method_model")
 public class MethodModel {
+  @TableId
   private String dataApiId;
   private String projectName;
   private String name;
