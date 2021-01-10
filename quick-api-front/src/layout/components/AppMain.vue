@@ -2,7 +2,7 @@
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
       <!-- <keep-alive :include="cachedViews"> -->
-        <keep-alive :exclude="['_none__']">
+      <keep-alive :exclude="['_none__']">
         <router-view :key="key" />
       </keep-alive>
     </transition>

@@ -10,7 +10,7 @@
 
     <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
-        <i class="style:blue" v-if="!sidebar.opened">{{ item.meta.title.substring(0, 4) }}</i>
+        <!-- <i class="style:blue" v-if="!sidebar.opened">{{ item.meta.title.substring(0, 4) }}</i> -->
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
       <sidebar-item
@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'sidebar',
+      'sidebar'
     ])
   },
   methods: {

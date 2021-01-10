@@ -1,5 +1,5 @@
 import { getQApiRoutesInfo, getProjectData } from '@/api/apiInfo'
-import { getRoutes, getTeamRoutes, getGroup, getRoutesFromGroupMap } from '@/utils/routerTool'
+import { getTeamRoutes, getGroup, getRoutesFromGroupMap } from '@/utils/routerTool'
 
 const state = {
   apiInfo: [],
@@ -61,23 +61,23 @@ const actions = {
   getApiRoutes({ commit }, params) {
     return new Promise((resolve, reject) => {
       getQApiRoutesInfo(params).then(res => {
-          if (res.data.code !== '000') {
-              reject(res.message || '获取接口数据失败')
-          }
+        if (res.data.code !== '000') {
+          reject(res.message || '获取接口数据失败')
+        }
 
-          commit('SET_LOCAL_PROJECT_INFO', res.data.data)
-          // 设置一级菜单名称
-          const groupMap = getGroup(res.data.data.apiInfo)
-          commit('SET_GROUP_LIST', Object.keys(groupMap))
-          
-          const routes = getRoutesFromGroupMap(groupMap)
-          commit('SET_ROUTES', routes)
+        commit('SET_LOCAL_PROJECT_INFO', res.data.data)
+        // 设置一级菜单名称
+        const groupMap = getGroup(res.data.data.apiInfo)
+        commit('SET_GROUP_LIST', Object.keys(groupMap))
 
-          resolve(routes)
-          }).catch(error => {
-              reject(error || '异常错误')
-          })
+        const routes = getRoutesFromGroupMap(groupMap)
+        commit('SET_ROUTES', routes)
+
+        resolve(routes)
+      }).catch(error => {
+        reject(error || '异常错误')
       })
+    })
   },
   setRouterSettingFlag({ commit }, flag) {
     commit('SET_ROUTER_FLAG', flag)
@@ -90,45 +90,45 @@ const actions = {
     return new Promise((resolve, reject) => {
       getProjectData(params).then(res => {
         console.log(res)
-          if (res.data.code !== '000') {
-              reject(res.message || '获取接口数据失败')
-          }
+        if (res.data.code !== '000') {
+          reject(res.message || '获取接口数据失败')
+        }
 
-          commit('SET_TEAM_API_INFO', params, res.data.data)
-          commit('SET_TEAM_LOCAL_SERVICE_NAME', res.data.data.localServiceName)
-          
-          const routes = getTeamRoutes(res.data.data)
-          commit('SET_TEAM_ROUTES', routes)
+        commit('SET_TEAM_API_INFO', params, res.data.data)
+        commit('SET_TEAM_LOCAL_SERVICE_NAME', res.data.data.localServiceName)
 
-          resolve(routes)
-          }).catch(error => {
-              reject(error || '异常错误')
-          })
+        const routes = getTeamRoutes(res.data.data)
+        commit('SET_TEAM_ROUTES', routes)
+
+        resolve(routes)
+      }).catch(error => {
+        reject(error || '异常错误')
       })
+    })
   },
   teamRouterSettingFlag({ commit }, flag) {
     commit('SET_ROUTER_FLAG', flag)
   },
-    /**
+  /**
    * 修改接口信息
-   * @param {*} url 
+   * @param {*} url
    * @param {*} name
-   * @param {*} methodGroup 
+   * @param {*} methodGroup
    */
-  updateMethodData({ commit, state }, {url, name, methodGroup}) {
+  updateMethodData({ commit, state }, { url, name, methodGroup }) {
     const apiInfo = state.apiInfo
-    for (let api of apiInfo) {
+    for (const api of apiInfo) {
       console.log(api)
       if (api.url === url) {
         console.log('api.url: ' + url)
-        
+
         if (name) {
           api.name = name
         }
         if (methodGroup) {
           api.group = methodGroup
         }
-        
+
         commit('SET_API_INFO', apiInfo)
         const groupMap = getGroup(apiInfo)
         commit('SET_GROUP_LIST', Object.keys(groupMap))

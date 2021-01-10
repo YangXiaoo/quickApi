@@ -77,11 +77,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+  @import "~@/styles/variables.scss";
 .scroll-container {
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  padding-left: $sideBarWidth;
   width: 100%;
+  // width: calc(100% - #{$sideBarWidth});
   ::v-deep {
     .el-scrollbar__bar {
       bottom: 0px;

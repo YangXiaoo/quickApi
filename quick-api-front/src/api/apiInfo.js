@@ -24,7 +24,7 @@ export function getMethodApiData(data) {
   })
 }
 
-export function getProjectData(projectName) {
+export function getMethodDataByProjectName(projectName) {
   console.log('getProjectData')
   return request({
     url: '/api/quickApi/getMethodDataByProjectName',

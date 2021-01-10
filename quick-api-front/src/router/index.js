@@ -41,9 +41,10 @@ export const constantRoutes = [
       {
         path: 'home',
         name: 'Home',
-        component: () => import('@/views/request/index'),
+        component: () => import('@/views/home/index'),
         meta: {
-          title: '首页'
+          title: '首页',
+          affix: true // 不关闭
         }
       }
     ]
@@ -68,7 +69,7 @@ const router = createRouter()
 /**
  * 重置路由
  */
-export function resetRouter () {
+export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher
 }
