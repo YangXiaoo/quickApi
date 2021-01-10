@@ -1,6 +1,5 @@
 import MainLayout from '@/layout'
 import router from '@/router'
-import { endsWith } from './String'
 
 /**
  * 从api信息中获得路由
@@ -26,7 +25,7 @@ export function getRoutesFromGroupMap(groupMap) {
       component: MainLayout,
       children: [],
       meta: {
-			  title: ''
+        title: ''
       }
     }
 
@@ -41,8 +40,8 @@ export function getRoutesFromGroupMap(groupMap) {
         name: '',
         component: () => import('@/views/request/index'),
         meta: {
-				  title: '',
-				  group: ''
+          title: '',
+          group: ''
         }
       }
       curChildRouter.path = api.url.substring(1)
@@ -76,8 +75,8 @@ export function getTeamRoutes(apiInfo) {
       component: MainLayout,
       children: [],
       meta: {
-			  title: '',
-			  group: ''
+        title: '',
+        group: ''
       }
     }
 
@@ -92,7 +91,7 @@ export function getTeamRoutes(apiInfo) {
         name: '',
         component: () => import('@/views/team/index'),
         meta: {
-				  title: ''
+          title: ''
         }
       }
       curChildRouter.path = api.url.substring(1)
@@ -143,7 +142,6 @@ export function setRoutes(routes) {
  */
 export function changeApiInfo(apiInfo, path, methodName, methodGroup) {
   for (const api of apiInfo) {
-    console.log(api)
     if (api.url === path) {
       api.name = methodName
       api.group = methodGroup
@@ -151,4 +149,43 @@ export function changeApiInfo(apiInfo, path, methodName, methodGroup) {
       break
     }
   }
+}
+
+/**
+ * 生成一个页面的路由
+ */
+export function generatePage() {
+  const pageUrl = UUID()
+  const curRouter = {
+    path: pageUrl,
+    component: MainLayout,
+    children: [],
+    meta: {
+      title: 'undefined-class',
+      group: 'undefined'
+    }
+  }
+  const curChildRouter = {
+    path: 'undefinedPage',
+    name: pageUrl,
+    component: () => import('@/views/home/index'),
+    meta: {
+      title: 'undefined'
+    }
+  }
+  curRouter.children.push(curChildRouter)
+  console.log(curRouter)
+  setRoutes([curRouter])
+
+  return pageUrl
+}
+
+/**
+ * 生成UUID
+ */
+function UUID() {
+  function S4() {
+    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+  }
+  return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
 }

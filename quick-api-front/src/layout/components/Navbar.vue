@@ -1,5 +1,13 @@
 <template>
   <div class="navbar">
+    <div class="left-menu">
+      <div class="left-menu-item" @click="handleHomeClick">
+        <i class="el-icon-s-home" />
+      </div>
+      <div class="left-menu-item" @click="handleNewTabClick">
+        <i class="el-icon-plus" />
+      </div>
+    </div>
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -13,7 +21,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { generatePage } from '@/utils/routerTool'
 export default {
   data() {
     return {
@@ -26,11 +34,26 @@ export default {
     ])
   },
   methods: {
+    /**
+     * 返回首页
+     */
+    handleHomeClick() {
+      this.$router.push({ name: 'Home' })
+    },
+    /**
+     * 新建页面
+     */
+    handleNewTabClick() {
+      const url = generatePage()
+      console.log(url)
+      this.$router.push({ name: url })
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+  @import "~@/styles/variables.scss";
 .navbar {
   height: 40px;
   overflow: hidden;
@@ -39,12 +62,38 @@ export default {
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .left-menu {
-    float: right;
+    float: left;
     height: 100%;
     line-height: 40px;
+    padding-left: $sideBarWidth;
 
     &:focus {
       outline: none;
+    }
+
+    .left-menu-item {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      font-size: 18px;
+      color: #5a5e66;
+      vertical-align: text-bottom;
+
+      &:hover {
+        cursor: pointer;
+        transition: background .3s;
+        background: rgba(59, 224, 133, 0.025)
+      }
+
+      &.hover-effect {
+        cursor: pointer;
+        transition: background .3s;
+
+        &:hover {
+          cursor: pointer;
+          background: rgba(0, 0, 0, .025)
+        }
+      }
     }
   }
 
