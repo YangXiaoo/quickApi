@@ -110,6 +110,8 @@ export default {
     },
     moveToCurrentTag() {
       const tags = this.$refs.tag
+      console.log(tags)
+      console.log(this.$route.path)
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
@@ -163,7 +165,7 @@ export default {
         // you can adjust it according to your needs.
         if (view.name === 'Dashboard') {
           // to reload home page
-          this.$router.replace({ path: '/redirect' + view.fullPath })
+          this.$router.replace({ path: view.fullPath })
         } else {
           this.$router.push('/')
         }

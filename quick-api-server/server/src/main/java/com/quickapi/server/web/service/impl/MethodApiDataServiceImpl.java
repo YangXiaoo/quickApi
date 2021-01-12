@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.quickapi.server.common.constant.JSON_MODEL_CODE;
 import com.quickapi.server.common.utils.JsonModel;
 import com.quickapi.server.exception.BusinessException;
-import com.quickapi.server.web.dao.entity.MethodModel;
 import com.quickapi.server.web.logic.MethodApiDataLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

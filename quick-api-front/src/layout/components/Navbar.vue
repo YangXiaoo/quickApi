@@ -4,17 +4,29 @@
       <div class="left-menu-item" @click="handleHomeClick">
         <i class="el-icon-s-home" />
       </div>
+      <div class="left-menu-item" @click="handleImportClick">
+        <i class="el-icon-bottom" />
+      </div>
       <div class="left-menu-item" @click="handleNewTabClick">
         <i class="el-icon-plus" />
       </div>
     </div>
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
+      <!-- <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
-      </el-dropdown>
+      </el-dropdown> -->
+      <div class="right-menu-item" @click="handleSettingClick">
+        <i class="el-icon-setting" />
+      </div>
+      <div class="right-menu-item" @click="handleRecordClick">
+        <i class="el-icon-time" />
+      </div>
+      <div class="right-menu-item" @click="handleLoginClick">
+        <i class="el-icon-user" />
+      </div>
     </div>
   </div>
 </template>
@@ -47,6 +59,30 @@ export default {
       const url = generatePage()
       console.log(url)
       this.$router.push({ name: url })
+    },
+    handleImportClick() {
+      this.$message({
+        type: 'info',
+        message: '导入功能，暂未开发'
+      })
+    },
+    handleSettingClick() {
+      this.$message({
+        type: 'info',
+        message: '设置功能，暂未开发'
+      })
+    },
+    handleRecordClick() {
+      this.$message({
+        type: 'info',
+        message: '提交记录功能，暂未开发'
+      })
+    },
+    handleLoginClick() {
+      this.$message({
+        type: 'info',
+        message: '用户登录功能，暂未开发'
+      })
     }
   }
 }
@@ -113,6 +149,12 @@ export default {
       font-size: 18px;
       color: #5a5e66;
       vertical-align: text-bottom;
+
+      &:hover {
+        cursor: pointer;
+        transition: background .3s;
+        background: rgba(59, 224, 133, 0.025)
+      }
 
       &.hover-effect {
         cursor: pointer;

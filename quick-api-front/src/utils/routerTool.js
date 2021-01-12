@@ -166,7 +166,7 @@ export function generatePage() {
     }
   }
   const curChildRouter = {
-    path: 'undefinedPage',
+    path: pageUrl,
     name: pageUrl,
     component: () => import('@/views/home/index'),
     meta: {

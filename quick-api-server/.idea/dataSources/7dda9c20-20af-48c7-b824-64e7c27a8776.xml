@@ -926,168 +926,177 @@
     <table id="233" parent="7" name="api_doc"/>
     <table id="234" parent="7" name="method_model"/>
     <table id="235" parent="7" name="project_info"/>
-    <column id="236" parent="233" name="API_DOC_ID">
+    <table id="236" parent="7" name="user_api">
+      <Comment>我的接口</Comment>
+    </table>
+    <table id="237" parent="7" name="user_method">
+      <Comment>用户接口方法</Comment>
+    </table>
+    <table id="238" parent="7" name="user_project_info">
+      <Comment>用户拥有的项目信息</Comment>
+    </table>
+    <column id="239" parent="233" name="API_DOC_ID">
       <Position>1</Position>
       <DataType>varchar(32)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="237" parent="233" name="PROJECT_NAME">
+    <column id="240" parent="233" name="PROJECT_NAME">
       <Position>2</Position>
       <Comment>项目名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="238" parent="233" name="METHOD_URL">
+    <column id="241" parent="233" name="METHOD_URL">
       <Position>3</Position>
       <Comment>路由</Comment>
       <DataType>varchar(1000)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="239" parent="233" name="API_JSON_DATA">
+    <column id="242" parent="233" name="API_JSON_DATA">
       <Position>4</Position>
       <Comment>页面json数据</Comment>
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="240" parent="233" name="USER_NAME">
+    <column id="243" parent="233" name="USER_NAME">
       <Position>5</Position>
       <Comment>创建者</Comment>
       <DataType>varchar(64)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="241" parent="233" name="USER_ID">
+    <column id="244" parent="233" name="USER_ID">
       <Position>6</Position>
       <Comment>创建者ID</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="242" parent="233" name="CREATE_TIME">
+    <column id="245" parent="233" name="CREATE_TIME">
       <Position>7</Position>
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="243" parent="233" name="UPDATE_TIME">
+    <column id="246" parent="233" name="UPDATE_TIME">
       <Position>8</Position>
       <Comment>更新时间</Comment>
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="244" parent="233" name="PRIMARY">
+    <key id="247" parent="233" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>API_DOC_ID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="245" parent="234" name="DATA_API_ID">
+    <column id="248" parent="234" name="DATA_API_ID">
       <Position>1</Position>
       <DataType>varchar(32)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="246" parent="234" name="PROJECT_NAME">
+    <column id="249" parent="234" name="PROJECT_NAME">
       <Position>2</Position>
       <Comment>项目名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="247" parent="234" name="NAME">
+    <column id="250" parent="234" name="NAME">
       <Position>3</Position>
       <Comment>菜单名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="248" parent="234" name="METHOD_GROUP">
+    <column id="251" parent="234" name="METHOD_GROUP">
       <Position>4</Position>
       <Comment>所属组别名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="249" parent="234" name="METHOD_DESCRIPTION">
+    <column id="252" parent="234" name="METHOD_DESCRIPTION">
       <Position>5</Position>
       <Comment>方法描述</Comment>
       <DataType>varchar(256)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="250" parent="234" name="METHOD_NAME">
+    <column id="253" parent="234" name="METHOD_NAME">
       <Position>6</Position>
       <Comment>方法名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="251" parent="234" name="CLASS_NAME">
+    <column id="254" parent="234" name="CLASS_NAME">
       <Position>7</Position>
       <Comment>方法所在类名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="252" parent="234" name="REQUEST_TYPE">
+    <column id="255" parent="234" name="REQUEST_TYPE">
       <Position>8</Position>
       <Comment>请求类型</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="253" parent="234" name="CONTENT_TYPE">
+    <column id="256" parent="234" name="CONTENT_TYPE">
       <Position>9</Position>
       <Comment>响应类型</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="254" parent="234" name="URL">
+    <column id="257" parent="234" name="URL">
       <Position>10</Position>
       <Comment>路由</Comment>
       <DataType>varchar(1000)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="255" parent="234" name="VERSION">
+    <column id="258" parent="234" name="VERSION">
       <Position>11</Position>
       <Comment>版本号</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="256" parent="234" name="AUTHOR">
+    <column id="259" parent="234" name="AUTHOR">
       <Position>12</Position>
       <Comment>作者</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="257" parent="234" name="CREATE_TIME">
+    <column id="260" parent="234" name="CREATE_TIME">
       <Position>13</Position>
       <Comment>创建时间</Comment>
       <DataType>datetime|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="258" parent="234" name="UPDATE_TIME">
+    <column id="261" parent="234" name="UPDATE_TIME">
       <Position>14</Position>
       <Comment>修改时间</Comment>
       <DataType>datetime|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="259" parent="234" name="DOWNLOAD">
+    <column id="262" parent="234" name="DOWNLOAD">
       <Position>15</Position>
       <Comment>是否为下载方法,00不是, 01是</Comment>
       <DataType>varchar(10)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="260" parent="234" name="TOKEN">
+    <column id="263" parent="234" name="TOKEN">
       <Position>16</Position>
       <Comment>是否需要token,00不需要,01需要</Comment>
       <DataType>varchar(10)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="261" parent="234" name="DELETE_FLAG">
+    <column id="264" parent="234" name="DELETE_FLAG">
       <Position>17</Position>
       <Comment>是否删除,00否,01删除</Comment>
       <DataType>char(2)|0s</DataType>
@@ -1095,71 +1104,71 @@
       <DefaultExpression>&apos;00&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="262" parent="234" name="PRIMARY">
+    <key id="265" parent="234" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>DATA_API_ID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="263" parent="235" name="PROJECT_INFO_ID">
+    <column id="266" parent="235" name="PROJECT_INFO_ID">
       <Position>1</Position>
       <DataType>varchar(32)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="264" parent="235" name="BASE_PACKAGES">
+    <column id="267" parent="235" name="BASE_PACKAGES">
       <Position>2</Position>
       <Comment>项目配置的扫描包</Comment>
       <DataType>varchar(256)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="265" parent="235" name="PROJECT_NAME">
+    <column id="268" parent="235" name="PROJECT_NAME">
       <Position>3</Position>
       <Comment>项目名</Comment>
       <DataType>varchar(256)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="266" parent="235" name="DESCRIPTION">
+    <column id="269" parent="235" name="DESCRIPTION">
       <Position>4</Position>
       <Comment>项目描述</Comment>
       <DataType>varchar(256)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="267" parent="235" name="SERVER_NAMES">
+    <column id="270" parent="235" name="SERVER_NAMES">
       <Position>5</Position>
       <Comment>项目服务器名用,分开</Comment>
       <DataType>varchar(500)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="268" parent="235" name="HOST_SERVICE_NAME">
+    <column id="271" parent="235" name="HOST_SERVICE_NAME">
       <Position>6</Position>
       <Comment>数据管理服务器名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="269" parent="235" name="LOCAL_SERVICE_NAME">
+    <column id="272" parent="235" name="LOCAL_SERVICE_NAME">
       <Position>7</Position>
       <Comment>项目本地服务器名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="270" parent="235" name="VERSION">
+    <column id="273" parent="235" name="VERSION">
       <Position>8</Position>
       <Comment>项目版本</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="271" parent="235" name="AUTHOR">
+    <column id="274" parent="235" name="AUTHOR">
       <Position>9</Position>
       <Comment>项目作者</Comment>
       <DataType>varchar(256)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="272" parent="235" name="ENABLE">
+    <column id="275" parent="235" name="ENABLE">
       <Position>10</Position>
       <Comment>默认开启,00不开启, 01开启</Comment>
       <DataType>varchar(10)|0s</DataType>
@@ -1167,15 +1176,99 @@
       <DefaultExpression>&apos;Yes&apos;</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="273" parent="235" name="CREATE_TIME">
+    <column id="276" parent="235" name="CREATE_TIME">
       <Position>11</Position>
       <Comment>创建时间</Comment>
       <DataType>datetime|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="274" parent="235" name="PRIMARY">
+    <key id="277" parent="235" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>PROJECT_INFO_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="278" parent="236" name="MY_API_ID">
+      <Position>1</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="279" parent="236" name="METHOD_ID">
+      <Position>2</Position>
+      <Comment>方法ID</Comment>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="280" parent="236" name="API_JSON_DATA">
+      <Position>3</Position>
+      <Comment>接口页面信息</Comment>
+      <DataType>text|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="281" parent="236" name="USER_ID">
+      <Position>4</Position>
+      <Comment>用户ID</Comment>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="282" parent="236" name="USER_NAME">
+      <Position>5</Position>
+      <Comment>用户姓名</Comment>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="283" parent="236" name="CREATE_TIME">
+      <Position>6</Position>
+      <DataType>datetime|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="284" parent="236" name="UPDATE_TIME">
+      <Position>7</Position>
+      <DataType>datetime|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="285" parent="236" name="DELETE_FLAG">
+      <Position>8</Position>
+      <DataType>varchar(2)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="286" parent="236" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>MY_API_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="287" parent="237" name="USER_METHOD_ID">
+      <Position>1</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="288" parent="237" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>USER_METHOD_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="289" parent="238" name="USER_PROJECT_INFO_ID">
+      <Position>1</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="290" parent="238" name="PROJECT_INFO_ID">
+      <Position>2</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="291" parent="238" name="PROJECT_NAME">
+      <Position>3</Position>
+      <DataType>varchar(64)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="292" parent="238" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>USER_PROJECT_INFO_ID</ColNames>
       <Primary>1</Primary>
     </key>
   </database-model>
