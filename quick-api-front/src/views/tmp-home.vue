@@ -2,23 +2,6 @@
   <div>
     <el-card>
       <div style="margin-top: 70px">
-        <div>
-          <div style="display: inline">
-            {{ methodName }}
-            <i class="el-icon-edit" @click="handleMethodChangeClick" />
-          </div>
-          <div style="display: inline; margin-left: 20px">
-            <!-- <el-dropdown>
-              <span class="el-dropdown-link">
-                例子<i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>成功示例</el-dropdown-item>
-                <el-dropdown-item>失败示例</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown> -->
-          </div>
-        </div>
         <el-row>
           <el-col :span="4">
             <el-select v-model="pageStatus.requestType" placeholder="请选择" @change="handlerequestTypeClick">
@@ -187,7 +170,7 @@
         <el-button type="primary" @click="handleSaveData">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="修改方法名" :visible.sync="dialogEditMethodData.dialogMethodDataVisible">
+    <!-- <el-dialog title="修改方法名" :visible.sync="dialogEditMethodData.dialogMethodDataVisible">
       <el-form>
         <el-form-item label="所属组">
           <el-select v-model="dialogEditMethodData.methodGroup" filterable allow-create default-first-option placeholder="请选择组别">
@@ -202,33 +185,27 @@
         <el-button @click="dialogEditMethodData.dialogMethodDataVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleSaveMethodName">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
-import { callApi } from '@/api/localProject'
-// import { setData, getData } from '@/utils/storage'
+import { callApi } from '@/api/request'
 import {
   getMethodApiData,
-  saveMethodApiData
-} from '@/api/methodApiData'
-import { updateMethodData } from '@/api/methodData'
+  savePageData,
+  updateMethodData
+} from '@/api/apiInfo'
 // import { getRoutes } from '@/utils/routerTool'
+
+import RequestTemplate from '@/views/component/requestTemplate'
 export default {
-  name: 'Request',
+  name: 'Home',
   components: {
-    vueJsonEditor
-  },
-  computed: {
-    ...mapGetters([
-      'localServiceName',
-      'routes',
-      'groupList',
-      'localProjectName'
-    ])
+    vueJsonEditor,
+    RequestTemplate
   },
   data() {
     return {
@@ -273,6 +250,14 @@ export default {
         methodGroup: ''
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'localServiceName',
+      'routes',
+      'groupList',
+      'localProjectName'
+    ])
   },
   mounted() {
     this.setRequestUrl()
@@ -388,7 +373,7 @@ export default {
         author: 'dummyUser'
       }
 
-      saveMethodApiData(data)
+      savePageData(data)
         .then((res) => {
           if (res.data.code === '000') {
             this.$message({

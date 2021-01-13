@@ -168,13 +168,12 @@ export function generatePage() {
   const curChildRouter = {
     path: pageUrl,
     name: pageUrl,
-    component: () => import('@/views/home/index'),
+    component: () => import('@/views/tab/index'),
     meta: {
       title: 'undefined'
     }
   }
   curRouter.children.push(curChildRouter)
-  console.log(curRouter)
   setRoutes([curRouter])
 
   return pageUrl

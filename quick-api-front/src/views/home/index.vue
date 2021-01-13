@@ -1,75 +1,19 @@
 <template>
   <div>
-    <el-card>
-      <div style="margin-top: 70px">
-        <el-row>
-          <el-col :span="4">
-            <el-select v-model="pageStatus.requestType" placeholder="请选择" @change="handlerequestTypeClick">
-              <el-option label="POST" value="POST" />
-              <el-option label="GET" value="GET" />
-              <el-option label="PUT" value="PUT" />
-              <el-option label="DELETE" value="DELETE" />
-            </el-select>
-          </el-col>
-          <el-col :span="16">
-            <el-input v-model="pageStatus.path" placeholder="请输入内容" class="input-with-select" />
-          </el-col>
-          <el-col :span="2">
-            <el-button type="primary" style="margin-left: 15px" @click="handleSendRequest">
-              发送
-            </el-button>
-          </el-col>
-          <el-col :span="2">
-            <el-button type="primary" @click="handleClickSave">保存<i class="el-icon-upload el-icon--right" /></el-button>
-          </el-col>
-        </el-row>
-      </div>
-      <div class="option-bar" style="margin-top: 15px">
-        <el-tabs v-model="pageStatus.requestActiveName" @tab-click="handleClickRequest">
-          <el-tab-pane label="Param" name="Param">
-            <vue-json-editor v-model="pageStatus.getTypeParam" :show-btns="false" :mode="'code'" lang="zh" @json-change="onParamChange" />
-          </el-tab-pane>
-          <el-tab-pane label="Header" name="Header">
-            <vue-json-editor v-model="pageStatus.headerJson" :show-btns="false" :mode="'code'" lang="zh" @json-change="onHeaderChange" />
-          </el-tab-pane>
-          <el-tab-pane label="Body" name="Body">
-            <el-radio-group v-model="pageStatus.contentType" style="margin-bottom: 10px" @change="changeBodyType">
-              <el-radio label="none">none</el-radio>
-              <el-radio label="application/json">application/json</el-radio>
-              <el-radio label="bodyFile">文件</el-radio>
-            </el-radio-group>
-            <vue-json-editor v-show="pageStatus.bodyNoneShow" v-model="bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
-            <vue-json-editor v-show="pageStatus.bodyJsonShow" v-model="bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
-            <el-card v-show="pageStatus.bodyFileShow" class="body-file-box">
-              <el-upload class="body-upload-file" action="" multiple :limit="1" :file-list="pageStatus.fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">可上传任意格式文件</div>
-              </el-upload>
-            </el-card>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-      <el-divider>Response</el-divider>
-      <div class="request-result" style="margin-top: 15px">
-        <el-tabs v-model="pageStatus.responseActiveName" @tab-click="handleClickResponse">
-          <el-tab-pane label="Body" name="Body">
-            <vue-json-editor v-model="pageStatus.responseBody" :show-btns="false" :mode="'code'" lang="zh" @json-change="onResponseBodyChange" />
-          </el-tab-pane>
-          <!-- <el-tab-pane label="Cookies" name="Cookies">
-            <el-card class="response-cookies-box"> 没有Cookies </el-card>
-          </el-tab-pane> -->
-          <el-tab-pane label="Headers" name="Headers">
-            <vue-json-editor v-model="pageStatus.responseHeader" :show-btns="false" :mode="'code'" lang="zh" @json-change="onResponseHeaderChange" />
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </el-card>
+    <request-template
+      :page-data="pageData"
+      :url="url"
+      :is-local-project="false"
+      :project-name="projectName"
+      @clickSave="handleClickSave"
+      @clickSaveAs="handleClickSaveAs"
+    />
 
     <!-- 保存弹框 -->
     <el-dialog title="完善文档" :visible.sync="dialogSavePage.dialogTableVisible">
       <el-divider>文档名</el-divider>
       <el-input v-model="dialogSavePage.docTitle" />
-      <div v-show="pageStatus.headerJson">
+      <div v-show="pageData.headerJson">
         <el-divider>请求头说明</el-divider>
         <el-table :data="dialogSavePage.headerJsonValues" border fit highlight-current-row>
           <!-- 参数名 -->
@@ -92,7 +36,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-show="pageStatus.getTypeParam">
+      <div v-show="pageData.getTypeParam">
         <el-divider>get参数说明</el-divider>
         <el-table :data="dialogSavePage.getTypeParamValues" border fit highlight-current-row>
           <!-- 参数名 -->
@@ -115,7 +59,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-show="pageStatus.bodyJsonData">
+      <div v-show="pageData.bodyJsonData">
         <el-divider>POST参数说明</el-divider>
         <el-table :data="dialogSavePage.bodyJsonDataValues" border fit highlight-current-row>
           <!-- 参数名 -->
@@ -138,7 +82,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-show="pageStatus.responseBody">
+      <div v-show="pageData.responseBody">
         <el-divider>响应值说明</el-divider>
         <el-table :data="dialogSavePage.responseBodyValues" border fit highlight-current-row>
           <!-- 参数名 -->
@@ -161,7 +105,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-show="pageStatus.responseHeader">
+      <div v-show="pageData.responseHeader">
         <el-divider>响应头说明</el-divider>
         <el-input v-model="dialogSavePage.responseHeaderDesc" type="textarea" :rows="4" placeholder="请输入说明" />
       </div>
@@ -191,23 +135,22 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import vueJsonEditor from 'vue-json-editor'
-import { callApi } from '@/api/request'
+import { callApi } from '@/api/localProject'
 import {
-  getMethodApiData,
-  savePageData,
-  updateMethodData
-} from '@/api/apiInfo'
-// import { getRoutes } from '@/utils/routerTool'
+  getMethodApiData
+} from '@/api/methodApiData'
+import { updateMethodData } from '@/api/methodData'
+
+import RequestTemplate from '../component/requestTemplate.vue'
 export default {
   name: 'Home',
   components: {
-    vueJsonEditor
+    RequestTemplate
   },
   data() {
     return {
       // 页面数据
-      pageStatus: {
+      pageData: {
         requestActiveName: 'Body',
         responseActiveName: 'Body',
         path: '',
@@ -251,7 +194,6 @@ export default {
   computed: {
     ...mapGetters([
       'localServiceName',
-      'routes',
       'groupList',
       'localProjectName'
     ])
@@ -265,10 +207,10 @@ export default {
     // 设置当前输入框的请求路径
     setRequestUrl() {
       if (this.$route.path === '/home') {
-        this.pageStatus.path = 'http://localhost'
+        this.pageData.path = 'http://localhost'
       } else {
         console.log('this.localServiceName: ' + this.localServiceName)
-        this.pageStatus.path =
+        this.pageData.path =
           this.localServiceName +
           this.$route.path.substring(
             this.$route.path.substring(1).indexOf('/') + 1
@@ -288,7 +230,7 @@ export default {
       getMethodApiData(data).then((res) => {
         if (res.data.code === '000') {
           if (res.data.data) {
-            Object.assign(this.$data.pageStatus, JSON.parse(res.data.data.apiJsonData).pageStatus) // 只初始化页面请求数据，不初始化文档
+            Object.assign(this.$data.pageData, JSON.parse(res.data.data.apiJsonData).pageData) // 只初始化页面请求数据，不初始化文档
           }
         }
       })
@@ -310,30 +252,30 @@ export default {
      */
     handleSendRequest() {
       let queryData = null
-      let contentType = this.pageStatus.contentType
-      if (this.pageStatus.requestType === 'POST') {
-        if (this.pageStatus.contentType === 'none') {
-          queryData = this.pageStatus.bodyStringData
+      let contentType = this.pageData.contentType
+      if (this.pageData.requestType === 'POST') {
+        if (this.pageData.contentType === 'none') {
+          queryData = this.pageData.bodyStringData
           contentType = ''
-        } else if (this.pageStatus.contentType === 'application/json') {
-          queryData = this.pageStatus.bodyJsonData
+        } else if (this.pageData.contentType === 'application/json') {
+          queryData = this.pageData.bodyJsonData
         }
-      } else if (this.pageStatus.requestType === 'GET') {
-        queryData = this.pageStatus.getTypeParam
+      } else if (this.pageData.requestType === 'GET') {
+        queryData = this.pageData.getTypeParam
         contentType = ''
       }
 
       callApi(
-        this.pageStatus.path,
+        this.pageData.path,
         contentType,
-        this.pageStatus.headerJson,
+        this.pageData.headerJson,
         queryData,
-        this.pageStatus.requestType
+        this.pageData.requestType
       )
         .then((res) => {
           console.log(res)
-          this.pageStatus.responseBody = res.data
-          this.pageStatus.responseHeader = res.headers
+          this.pageData.responseBody = res.data
+          this.pageData.responseHeader = res.headers
           this.$message({
             message: res.statusText || '请求成功',
             type: 'success'
@@ -351,10 +293,10 @@ export default {
       this.dialogSavePage.dialogTableVisible = true
 
       // 解析各参数为表单数据
-      this.dialogSavePage.headerJsonValues = this.parseParams(this.pageStatus.headerJson)
-      this.dialogSavePage.getTypeParamValues = this.parseParams(this.pageStatus.getTypeParam)
-      this.dialogSavePage.bodyJsonDataValues = this.parseParams(this.pageStatus.bodyJsonData)
-      this.dialogSavePage.responseBodyValues = this.parseParams(this.pageStatus.responseBody)
+      this.dialogSavePage.headerJsonValues = this.parseParams(this.pageData.headerJson)
+      this.dialogSavePage.getTypeParamValues = this.parseParams(this.pageData.getTypeParam)
+      this.dialogSavePage.bodyJsonDataValues = this.parseParams(this.pageData.bodyJsonData)
+      this.dialogSavePage.responseBodyValues = this.parseParams(this.pageData.responseBody)
     },
     /* 保存文档数据 */
     handleSaveData() {

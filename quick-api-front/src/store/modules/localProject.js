@@ -1,4 +1,5 @@
-import { getQApiRoutesInfo, getProjectData } from '@/api/apiInfo'
+import { getQApiRoutesInfo } from '@/api/localProject'
+import { getMethodDataByProjectName } from '@/api/methodData'
 import { getTeamRoutes, getGroup, getRoutesFromGroupMap } from '@/utils/routerTool'
 
 const state = {
@@ -88,7 +89,7 @@ const actions = {
   getTeamRoutes({ commit }, params) {
     console.log('inter - team route')
     return new Promise((resolve, reject) => {
-      getProjectData(params).then(res => {
+      getMethodDataByProjectName(params).then(res => {
         console.log(res)
         if (res.data.code !== '000') {
           reject(res.message || '获取接口数据失败')

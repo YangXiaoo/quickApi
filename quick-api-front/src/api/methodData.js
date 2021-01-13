@@ -1,29 +1,24 @@
 import request from '@/utils/request'
 
-export function getQApiRoutesInfo(params) {
+/** 个人接口 - 获得用户的接口方法 */
+export function getUserMethodDataList(data) {
   return request({
-    url: '/api/quickApi/api',
-    method: 'get',
-    params
-  })
-}
-
-export function savePageData(data) {
-  return request({
-    url: '/api/quickApi/saveMethodApiData',
+    url: '/api/quickApi/getUserMethodDataList',
     method: 'post',
     data
   })
 }
 
-export function getMethodApiData(data) {
+/** 修改用户方法信息 */
+export function updateUserMethodData(data) {
   return request({
-    url: '/api/quickApi/getMethodApiData',
+    url: '/api/quickApi/updateUserMethodData',
     method: 'post',
     data
   })
 }
 
+/** 测试项目 - 根据项目名获得所有方法数据 */
 export function getMethodDataByProjectName(projectName) {
   console.log('getProjectData')
   return request({
@@ -35,10 +30,7 @@ export function getMethodDataByProjectName(projectName) {
   })
 }
 
-/**
- * 更新方法信息
- * @param {Object} data 方法数据
- */
+/** 测试项目 - 更新方法信息 */
 export function updateMethodData(data) {
   return request({
     url: '/api/quickApi/updateMethodData',

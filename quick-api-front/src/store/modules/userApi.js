@@ -1,5 +1,5 @@
 const state = {
-  methodData: [], // 方法数据
+  methodDataList: [], // 方法数据
   groupList: [] // 一级菜单
 }
 
@@ -26,7 +26,7 @@ const actions = {
    */
   getMyMethodData({ commit }, data) {
     // dummy
-  },
+  }
 }
 
 export default {

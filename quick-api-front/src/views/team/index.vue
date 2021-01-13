@@ -202,10 +202,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
-import { callApi } from '@/api/request'
-// import { setData, getData } from '@/utils/storage'
-import { getMethodApiData, savePageData } from '@/api/apiInfo'
-
+import { callApi } from '@/api/localProject'
+import { getMethodApiData, saveMethodApiData } from '@/api/methodApiData'
 export default {
   name: 'Team',
   components: {
@@ -301,7 +299,7 @@ export default {
         pageData: curData,
       }
 
-      savePageData(data)
+      saveMethodApiData(data)
         .then((res) => {
           this.$message({
             message: '保存成功',

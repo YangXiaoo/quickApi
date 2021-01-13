@@ -20,7 +20,15 @@
             </el-button>
           </el-col>
           <el-col :span="2">
-            <el-button type="primary" @click="handleClickSave">保存<i class="el-icon-upload el-icon--right" /></el-button>
+            <!-- <el-button type="primary" @click="handleClickSave">保存<i class="el-icon-upload el-icon--right" /></el-button> -->
+            <el-dropdown>
+              <el-button type="primary" @click="handleClickSave">
+                保存<i class="el-icon-upload el-icon--right" />
+              </el-button>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click="handleClickSaveAs">另存为</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </el-col>
         </el-row>
       </div>
@@ -38,8 +46,8 @@
               <el-radio label="application/json">application/json</el-radio>
               <el-radio label="bodyFile">文件</el-radio>
             </el-radio-group>
-            <vue-json-editor v-show="pageData.bodyNoneShow" v-model="bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
-            <vue-json-editor v-show="pageData.bodyJsonShow" v-model="bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
+            <vue-json-editor v-show="pageData.bodyNoneShow" v-model="pageData.bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
+            <vue-json-editor v-show="pageData.bodyJsonShow" v-model="pageData.bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
             <el-card v-show="pageData.bodyFileShow" class="body-file-box">
               <el-upload class="body-upload-file" action="" multiple :limit="1" :file-list="pageData.fileList">
                 <el-button size="small" type="primary">点击上传</el-button>
@@ -70,8 +78,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
-import { callApi } from '@/api/request'
-import { getMethodApiData } from '@/api/apiInfo'
+import { callApi } from '@/api/localProject'
+import { getMethodApiData } from '@/api/methodApiData'
 export default {
   name: 'RequestTemplate',
   components: {
@@ -107,24 +115,10 @@ export default {
     ])
   },
   mounted() {
-    this.setRequestUrl()
     this.initMethodApiData()
   },
   created() { },
   methods: { // 按照页面功能顺序定义方法
-    // 设置当前输入框的请求路径
-    setRequestUrl() {
-      if (this.$route.path === '/home') {
-        this.pageData.path = 'http://localhost'
-      } else {
-        console.log('this.localServiceName: ' + this.localServiceName)
-        this.pageData.path =
-          this.localServiceName +
-          this.$route.path.substring(
-            this.$route.path.substring(1).indexOf('/') + 1
-          )
-      }
-    },
     /**
      * 从服务端请求初始化当前页面数据
      */
@@ -139,10 +133,9 @@ export default {
           return
         }
 
-        const curPath = this.$route.path
         const data = {
           projectName: this.projectName,
-          url: curPath.substring(curPath.substring(1).indexOf('/') + 1)
+          url: this.url
         }
 
         getMethodApiData(data).then((res) => {
@@ -187,7 +180,7 @@ export default {
       }
 
       callApi(
-        this.pageData.path,
+        this.url,
         contentType,
         this.pageData.headerJson,
         queryData,
@@ -246,15 +239,6 @@ export default {
         this.requestActiveName = 'Param'
         this.contentType = 'none'
       }
-    },
-    // 获得接口信息
-    setMethodData() {
-      this.dialogEditMethodData.methodName = this.$route.meta.title
-      this.dialogEditMethodData.methodGroup = this.$route.meta.group
-    },
-    // 弹框修改方法名和组别
-    handleMethodChangeClick() {
-      this.dialogMethodDataVisible = true
     },
     // json输入框事件处理, 无用
     onParamChange(value) {
