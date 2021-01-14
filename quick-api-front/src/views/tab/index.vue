@@ -175,8 +175,8 @@ export default {
     saveMethodData() {
       const data = {
         userName: this.userName, // 推荐使用邮箱
-        url: this.url,
-        name: this.name,
+        url: this.url, // 路由
+        name: this.name, // 方法名
         methodGroup: this.methodGroup
       }
       this.$store.dispatch('userApi/updateUserMethodData', data)

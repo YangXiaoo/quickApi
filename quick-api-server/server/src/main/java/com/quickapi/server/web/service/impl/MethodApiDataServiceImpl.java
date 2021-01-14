@@ -71,10 +71,61 @@ public class MethodApiDataServiceImpl {
             if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url)) {
                 throw new BusinessException("getMethodApiData()参数不完整");
             }
-
-
             apiDataLogic.saveMethodApiData(projectName, url, apiData, author);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
 
+        return jsonModel;
+    }
+
+    /**
+     * 根据URL查询用户接口文档数据
+     * @param map 查询条件
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 20:59
+     */
+    @PostMapping("getUserMethodApiData")
+    public JsonModel getUserMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String userName = (String) map.get("userName");
+            String url = (String) map.get("url");
+            if (StringUtils.isBlank(userName) || StringUtils.isBlank(url)) {
+                throw new BusinessException("getUserMethodApiData()参数不完整");
+            }
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, apiDataLogic.findUserMethodApiData(userName, url));
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 保存用户接口文档数据
+     * @param map 保存参数
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:00
+     */
+    @PostMapping("saveUserMethodApiData")
+    public JsonModel saveUserMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String userName = (String) map.get("userName");
+            String url = (String) map.get("url");
+            String apiData = (String) map.get("apiData");
+            if (StringUtils.isBlank(userName) || StringUtils.isBlank(url)) {
+                throw new BusinessException("saveUserMethodApiData()参数不完整");
+            }
+            apiDataLogic.saveUserMethodApiData(userName, url, apiData);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());

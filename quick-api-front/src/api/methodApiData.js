@@ -11,27 +11,26 @@ export function getUserMethodApiData(data) {
   })
 }
 
-/** 获得用户的接口方法 */
-export function getUserMethodDataList(data) {
-  return request({
-    url: '/api/quickApi/getUserMethodDataList',
-    method: 'post',
-    data
-  })
-}
-
 /** 保存用户的页面数据 */
-export function saveUserPageData(data) {
+export function saveUserMethodApiData(data) {
   return request({
-    url: '/api/quickApi/saveUserPageData',
+    url: '/api/quickApi/saveUserMethodApiData',
     method: 'post',
     data
   })
 }
 
-export function updateUserMethodData(data) {
+export function saveMethodApiData(data) {
   return request({
-    url: '/api/quickApi/updateUserMethodData',
+    url: '/api/quickApi/saveMethodApiData',
+    method: 'post',
+    data
+  })
+}
+
+export function getMethodApiData(data) {
+  return request({
+    url: '/api/quickApi/getMethodApiData',
     method: 'post',
     data
   })

@@ -6,7 +6,9 @@ import com.quickapi.server.common.tools.DateTool;
 import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.ApiDocDao;
+import com.quickapi.server.web.dao.UserApiDao;
 import com.quickapi.server.web.dao.entity.ApiDoc;
+import com.quickapi.server.web.dao.entity.UserApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -17,6 +19,8 @@ import java.util.List;
 public class MethodApiDataLogic {
     @Autowired
     private ApiDocDao apiDocDao;
+    @Autowired
+    private UserApiDao userApiDao;
 
     /**
      * 查找接口文档数据
@@ -70,7 +74,7 @@ public class MethodApiDataLogic {
         apiDoc.setUserId(userId);
         apiDoc.setCreateTime(DateTool.getCurrentDate());
         apiDoc.setApiDocId(UUIDUtil.getUUID());
-        while (!CollectionUtils.isEmpty(selectById(apiDoc))) {
+        while (!CollectionUtils.isEmpty(selectApiById(apiDoc))) {
             apiDoc.setApiDocId(UUIDUtil.getUUID());
         }
 
@@ -84,12 +88,87 @@ public class MethodApiDataLogic {
      * @author yangxiao
      * @date 2021/1/5 20:39
      */
-    public List<ApiDoc> selectById(ApiDoc apiDoc) {
+    public List<ApiDoc> selectApiById(ApiDoc apiDoc) {
         List<ApiDoc> ret = null;
         if (apiDoc != null) {
             QueryWrapper<ApiDoc> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("API_DOC_ID", apiDoc.getUserId());
+            queryWrapper.eq("API_DOC_ID", apiDoc.getApiDocId());
             ret = apiDocDao.selectList(queryWrapper);
+        }
+
+        return ret;
+    }
+
+    /**
+     * 根据URL查询用户的接口文档数据
+     * @param userName 用户姓名
+     * @param url url
+     * @return com.quickapi.server.web.dao.entity.UserApi
+     * @author yangxiao
+     * @date 2021/1/14 20:58
+     */
+    public UserApi findUserMethodApiData(String userName, String url) {
+        if (StringUtils.isBlank(userName) || StringUtils.isBlank(url)) {
+            throw new BusinessException("findUserMethodApiData()参数不完整");
+        }
+        UserApi apiDoc = null;
+        QueryWrapper<UserApi> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("USER_NAME", userName);
+        queryWrapper.eq("METHOD_URL", url);
+        List<UserApi> apiDocList = userApiDao.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(apiDocList)) {
+            if (apiDocList.size() > 1) {
+                throw new BusinessException("findUserMethodApiData(), userName: " + userName
+                        + "method url: " + url + ", 找到超过两条数据");
+            }
+
+            apiDoc = apiDocList.get(0);
+        }
+
+        return apiDoc;
+    }
+
+    /**
+     * 保存用户接口文档数据
+     * @param userName 用户姓名
+     * @param url 路由
+     * @param apiData 页面接口文档数据
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/14 21:07
+     */
+    public void saveUserMethodApiData(String userName, String url, String apiData) {
+        if (StringUtils.isBlank(userName) || StringUtils.isBlank(url)
+                || StringUtils.isBlank(apiData)) {
+            throw new BusinessException("saveUserMethodApiData()参数不完整");
+        }
+
+        UserApi apiDoc = new UserApi();
+        apiDoc.setUserName(userName);
+        apiDoc.setMethodUrl(url);
+        apiDoc.setApiJsonData(apiData);
+        apiDoc.setCreateTime(DateTool.getCurrentDate());
+        apiDoc.setUserApiId(UUIDUtil.getUUID());
+        while (!CollectionUtils.isEmpty(selectUserApiById(apiDoc))) {
+            apiDoc.setUserApiId(UUIDUtil.getUUID());
+        }
+
+        userApiDao.insert(apiDoc);
+    }
+
+    /**
+     * 根据用户接口ID查询数据
+     * @param apiDoc UserApi
+     * @return java.util.List<com.quickapi.server.web.dao.entity.UserApi>
+     * @author yangxiao
+     * @date 2021/1/14 21:05
+     */
+    public List<UserApi> selectUserApiById(UserApi apiDoc) {
+        List<UserApi> ret = null;
+        if (apiDoc != null) {
+            QueryWrapper<UserApi> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("USER_API_ID", apiDoc.getUserApiId());
+            ret = userApiDao.selectList(queryWrapper);
         }
 
         return ret;

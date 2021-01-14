@@ -63,7 +63,7 @@ public class MethodDataServiceImpl {
      * @author yangxiao
      * @date 2020/12/29 21:43
      */
-    @RequestMapping(value = "saveMethodData", method = RequestMethod.POST)
+    @PostMapping("saveMethodData")
     public JsonModel saveMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
@@ -116,6 +116,13 @@ public class MethodDataServiceImpl {
         return jsonModel;
     }
 
+    /**
+     * 更新方法信息
+     * @param map 保存数据
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:09
+     */
     @PostMapping("updateMethodData")
     public JsonModel updateMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
@@ -126,6 +133,103 @@ public class MethodDataServiceImpl {
             String methodGroup = (String) map.get("methodGroup");
             methodDataLogic.updateMethodData(url, projectName, name, methodGroup);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "更新成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 保存用户方法信息
+     * @param map 保存条件
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:54
+     */
+    @PostMapping("saveUserMethodData")
+    public JsonModel saveUserMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = (String) map.get("url");
+            String userName = (String) map.get("userName");
+            String name = (String) map.get("name");
+            String methodGroup = (String) map.get("methodGroup");
+            methodDataLogic.saveUserMethodData(url, userName, name, methodGroup);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+    /**
+     * 查询用户所有方法信息
+     * @param map 查询条件
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:16
+     */
+    @PostMapping("getUserMethodDataList")
+    public JsonModel getUserMethodDataList(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String userName = (String) map.get("userName");
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, methodDataLogic.getUserMethodDataList(userName));
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 更新用户方法信息
+     * @param map 更新条件
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:28
+     */
+    @PostMapping("updateUserMethodData")
+    public JsonModel updateUserMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = (String) map.get("url");
+            String userName = (String) map.get("userName");
+            String name = (String) map.get("name");
+            String methodGroup = (String) map.get("methodGroup");
+            methodDataLogic.updateUserMethodData(url, userName, name, methodGroup);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "更新成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 删除用户接口方法
+     * @param map 删除条件
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:51
+     */
+    @PostMapping("deleteUserMethodData")
+    public JsonModel deleteUserMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = (String) map.get("url");
+            String userName = (String) map.get("userName");
+            methodDataLogic.deleteUserMethodData(url, userName);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "删除成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {

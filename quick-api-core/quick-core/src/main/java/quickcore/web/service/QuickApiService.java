@@ -555,7 +555,7 @@ public class QuickApiService {
      * @author yangxiao
      * @date 2021/1/4 20:52
      */
-    @RequestMapping(value = "/checkServerStatus", method = RequestMethod.POST)
+    @PostMapping("/checkServerStatus")
     public JsonModel checkServerStatus(@RequestBody Map<String, Object> map) {
         System.out.println("checkServerStatus");
         JsonModel jsonModel = new JsonModel();
@@ -584,6 +584,126 @@ public class QuickApiService {
             jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error("服务器连接失败");
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 根据URL查询用户接口文档数据
+     * @param map 查询条件
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:53
+     */
+    @PostMapping("getUserMethodApiData")
+    public JsonModel getUserMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_USER_METHOD_API_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 保存用户接口文档数据
+     * @param map 保存参数
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:53
+     */
+    @PostMapping("saveUserMethodApiData")
+    public JsonModel saveUserMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.SAVE_USER_METHOD_API_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 保存用户方法信息
+     * @param map 保存条件
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:53
+     */
+    @PostMapping("saveUserMethodData")
+    public JsonModel saveUserMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.SAVE_USER_METHOD_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 查询用户所有方法信息
+     * @param map 查询条件
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:53
+     */
+    @PostMapping("getUserMethodDataList")
+    public JsonModel getUserMethodDataList(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_USER_METHOD_DATA_LIST;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 更新用户方法信息
+     * @param map 更新条件
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:53
+     */
+    @PostMapping("updateUserMethodData")
+    public JsonModel updateUserMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.UPDATE_USER_METHOD_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 删除用户接口方法
+     * @param map 删除条件
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/14 21:53
+     */
+    @PostMapping("deleteUserMethodData")
+    public JsonModel deleteUserMethodData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.DELETE_USER_METHOD_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;

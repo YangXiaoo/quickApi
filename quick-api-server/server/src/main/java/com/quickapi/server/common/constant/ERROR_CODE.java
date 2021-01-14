@@ -1,4 +1,4 @@
 package com.quickapi.server.common.constant;
 
-public interface ErrorCode {
+public interface ERROR_CODE {
 }

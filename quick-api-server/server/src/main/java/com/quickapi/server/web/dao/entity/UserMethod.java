@@ -5,53 +5,53 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
 
-@TableName("api_doc")
-
-public class ApiDoc {
+@TableName("user_method")
+public class UserMethod {
   @TableId
-  private String apiDocId;
-  private String projectName;
-  private String methodUrl;
-  private String apiJsonData;
+  private String userMethodId;
+  private String url;
+  private String methodName;
+  private String methodGroup;
   private String userName;
   private String userId;
   private Date createTime;
   private Date updateTime;
+  private String deleteFlag;
 
 
-  public String getApiDocId() {
-    return apiDocId;
+  public String getUserMethodId() {
+    return userMethodId;
   }
 
-  public void setApiDocId(String apiDocId) {
-    this.apiDocId = apiDocId;
-  }
-
-
-  public String getProjectName() {
-    return projectName;
-  }
-
-  public void setProjectName(String projectName) {
-    this.projectName = projectName;
+  public void setUserMethodId(String userMethodId) {
+    this.userMethodId = userMethodId;
   }
 
 
-  public String getMethodUrl() {
-    return methodUrl;
+  public String getUrl() {
+    return url;
   }
 
-  public void setMethodUrl(String methodUrl) {
-    this.methodUrl = methodUrl;
+  public void setUrl(String url) {
+    this.url = url;
   }
 
 
-  public String getApiJsonData() {
-    return apiJsonData;
+  public String getMethodName() {
+    return methodName;
   }
 
-  public void setApiJsonData(String apiJsonData) {
-    this.apiJsonData = apiJsonData;
+  public void setMethodName(String methodName) {
+    this.methodName = methodName;
+  }
+
+
+  public String getMethodGroup() {
+    return methodGroup;
+  }
+
+  public void setMethodGroup(String methodGroup) {
+    this.methodGroup = methodGroup;
   }
 
 
@@ -88,6 +88,15 @@ public class ApiDoc {
 
   public void setUpdateTime(Date updateTime) {
     this.updateTime = updateTime;
+  }
+
+
+  public String getDeleteFlag() {
+    return deleteFlag;
+  }
+
+  public void setDeleteFlag(String deleteFlag) {
+    this.deleteFlag = deleteFlag;
   }
 
 }

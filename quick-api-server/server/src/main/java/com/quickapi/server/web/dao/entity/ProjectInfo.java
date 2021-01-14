@@ -2,14 +2,14 @@ package com.quickapi.server.web.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
 @TableName("project_info")
 public class ProjectInfo {
-
+  @TableId
   private String projectInfoId;
   private String basePackages;
   private String projectName;
