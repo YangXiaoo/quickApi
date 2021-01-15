@@ -39,7 +39,7 @@ public class MethodDataServiceImpl {
     public JsonModel getMethodDataByProjectName(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            String projectName = (String) map.get("projectName");   // TODO 传参有问题
+            String projectName = (String) map.get("projectName");
             if (StringUtils.isBlank(projectName)) {
                 throw new BusinessException("没有传入项目名");
             }
@@ -155,7 +155,7 @@ public class MethodDataServiceImpl {
         try {
             String url = (String) map.get("url");
             String userName = (String) map.get("userName");
-            String name = (String) map.get("name");
+            String name = (String) map.get("methodName");
             String methodGroup = (String) map.get("methodGroup");
             methodDataLogic.saveUserMethodData(url, userName, name, methodGroup);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");

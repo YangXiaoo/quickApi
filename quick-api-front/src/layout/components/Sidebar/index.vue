@@ -84,7 +84,7 @@ export default {
   watch: {
     // 监听路由信息
     routes(newVal) {
-      // this.sideMenu = newVal
+      this.sideMenu = newVal
     }
   },
   mounted() {

@@ -31,7 +31,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getUserMethodApiData, saveUserMethodApiData } from '@/api/methodApiData'
-import { updateUserMethodData } from '@/api/methodData'
+import { updateUserMethodData, saveUserMethodData } from '@/api/methodData'
 
 import RequestTemplate from '../component/requestTemplate.vue'
 export default {
@@ -90,7 +90,7 @@ export default {
   created() { },
   methods: { // 按照页面功能顺序定义方法
     initBaseData() {
-      this.userName = this.$store.getters.name
+      this.userName = this.$store.getters.name || 'dummyUser' // 测试使用
       this.name = this.$route.meta.title
       this.group = this.$route.meta.group
     },
@@ -121,7 +121,7 @@ export default {
     },
     /* 保存当前页面数据 */
     handleClickSave() {
-      if (this.title === 'undefined') { // 需要保存页面信息
+      if (this.name === 'undefined') { // 需要保存页面信息
         this.dialogObj.dialogTitle = '保存方法信息'
         this.dialogObj.visible = true
       } else {
@@ -131,6 +131,7 @@ export default {
     handleDialogSave() {
       if (this.dialogObj.dialogTitle === '保存方法信息') { // 保存方法
         this.saveMethodData()
+        this.saveMethodApiData()
         this.resetDialog()
       } else {
         // 另存为新的页面
@@ -176,11 +177,11 @@ export default {
       const data = {
         userName: this.userName, // 推荐使用邮箱
         url: this.url, // 路由
-        name: this.name, // 方法名
+        methodName: this.name, // 方法名
         methodGroup: this.methodGroup
       }
-      this.$store.dispatch('userApi/updateUserMethodData', data)
-      updateUserMethodData(data).then(res => {
+      this.$store.dispatch('methodData/saveUserMethodData', data)
+      saveUserMethodData(data).then(res => {
         if (res.data.code === '000') {
           this.$message({
             message: '保存成功',

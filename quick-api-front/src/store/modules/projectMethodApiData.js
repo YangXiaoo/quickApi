@@ -1,8 +1,10 @@
+/**
+ * 针对项目接口文档
+ */
 import { getMethodDataByProjectName } from '@/api/methodData'
 import { getTeamRoutes } from '@/utils/routerTool'
 const state = {
-  teamApiInfo: {},
-  teamRoutes: {}
+
 }
 
 const mutations = {
@@ -11,7 +13,6 @@ const mutations = {
 
 const actions = {
   getTeamRoutes({ commit }, params) {
-    console.log('inter - team route')
     return new Promise((resolve, reject) => {
       getMethodDataByProjectName(params).then(res => {
         console.log(res)
@@ -31,6 +32,7 @@ const actions = {
       })
     })
   }
+
 }
 
 export default {

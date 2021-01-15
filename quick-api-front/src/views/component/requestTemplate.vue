@@ -180,7 +180,7 @@ export default {
       }
 
       callApi(
-        this.url,
+        this.pageData.path,
         contentType,
         this.pageData.headerJson,
         queryData,

@@ -44,7 +44,6 @@ service.interceptors.response.use(
    */
   response => {
     console.log(response)
-    const res = response.data
 
     return response
     // // if the custom code is not 000, it is judged as an error.

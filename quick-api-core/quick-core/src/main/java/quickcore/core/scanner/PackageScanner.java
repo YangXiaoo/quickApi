@@ -71,8 +71,8 @@ public class PackageScanner {
             URL url = resources.nextElement();
             String path = java.net.URLDecoder.decode(url.getFile(),"utf-8");
             String filePath = StringUtils.getRootPath(path);
-            List<String> names = null;
-            if (isJarFile(filePath)) {  // 先判断是否是jar包，如果是jar包，通过JarInputStream产生的JarEntity去递归查询所有类
+            List<String> names;
+            if (isJarFile(filePath)) {
                 names = readFromJarFile(filePath, splashPath);
                 if (names != null) {
                     for (String name : names) {
@@ -175,13 +175,5 @@ public class PackageScanner {
     private boolean isJarFile(String name) {
         if (name == null) return false;
         return name.endsWith(".jar");
-    }
-
-    public static void main(String[] args) throws IOException {
-        PackageScanner packageScanner = new PackageScanner("quickcore");
-        List<String> list = packageScanner.getFullyQualifiedClassNameList();
-        for (String s : list) {
-            System.out.println(s);
-        }
     }
 }

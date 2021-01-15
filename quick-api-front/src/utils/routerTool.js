@@ -1,13 +1,13 @@
 import MainLayout from '@/layout'
 import router from '@/router'
-
+import { getUUID32 } from './uuid'
 /**
  * 从api信息中获得路由
  * @param {Object} apiInfo
  * @author yangxiao
  */
 export function getRoutes(apiInfo) {
-  const groupMap = getGroup(apiInfo)
+  const groupMap = getProjectMethodGroupMap(apiInfo)
   return getRoutesFromGroupMap(groupMap)
 }
 
@@ -62,11 +62,9 @@ export function getRoutesFromGroupMap(groupMap) {
 
 /**
  * 从api信息中获得路由
- * @param {Object} apiInfo
- * @author yangxiao
  */
-export function getTeamRoutes(apiInfo) {
-  const groupMap = getGroup(apiInfo)
+export function getProjectRoutesFromMethodDataList(apiInfo) {
+  const groupMap = getProjectMethodGroupMap(apiInfo)
   const routes = []
   let groupIndex = 0
   for (const key in groupMap) {
@@ -105,15 +103,15 @@ export function getTeamRoutes(apiInfo) {
     routes.push(curRouter)
     groupIndex += 1
   }
-  console.log(routes)
+
   return routes
 }
 
 /**
- * 获得路由的映射数据
+ * 获得项目路由的映射数据
  * @param {*} apiInfo
  */
-export function getGroup(apiInfo) {
+export function getProjectMethodGroupMap(apiInfo) {
   const data = {}
   for (const api of apiInfo) {
     if (api.group in data) {
@@ -125,11 +123,29 @@ export function getGroup(apiInfo) {
 
   return data
 }
+
+/** 将用户拥有的方法按所属组分类 */
+export function getUserMethodGroupMap(methodDataList) {
+  const methodGroupMap = {}
+
+  methodDataList.map(item => {
+    if (item.methodGroup in methodGroupMap) {
+      methodGroupMap[item.methodGroup].push(item)
+    } else {
+      methodGroupMap[item.methodGroup] = [item]
+    }
+  })
+}
 /**
  * 设置路由
  * @param {Object} routes
  */
 export function setRoutes(routes) {
+  router.addRoutes(routes)
+}
+
+/** 添加个人方法路由 */
+export function addUserMethodDataRoutes(routes) {
   router.addRoutes(routes)
 }
 
@@ -155,7 +171,7 @@ export function changeApiInfo(apiInfo, path, methodName, methodGroup) {
  * 生成一个页面的路由
  */
 export function generatePage() {
-  const pageUrl = UUID()
+  const pageUrl = getUUID32()
   const curRouter = {
     path: pageUrl,
     component: MainLayout,
@@ -179,12 +195,46 @@ export function generatePage() {
   return pageUrl
 }
 
-/**
- * 生成UUID
- */
-function UUID() {
-  function S4() {
-    return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
+/** 生成用户方法的路由 */
+export function getUserRoutesFromMthodGroupMap(methodGroupMap) {
+  const routes = []
+  let groupIndex = 0
+  for (const key in methodGroupMap) {
+    const curRouter = {
+      path: '/user-',
+      component: MainLayout,
+      children: [],
+      meta: {
+        title: ''
+      }
+    }
+
+    // 设置菜单组别名称
+    curRouter.path += groupIndex
+    curRouter.meta.title = key
+
+    // 设置子菜单
+    for (const methodData of methodGroupMap[key]) {
+      const curChildRouter = {
+        path: '',
+        name: '',
+        component: () => import('@/views/tab/index'),
+        meta: {
+          title: '',
+          group: ''
+        }
+      }
+      curChildRouter.path = methodData.url
+      curChildRouter.name = methodData.url
+      curChildRouter.meta.title = methodData.methodName // 设置子菜单名称
+      curChildRouter.meta.group = methodData.methodGroup // 设置子菜单名称
+
+      curRouter.children.push(curChildRouter)
+    }
+
+    routes.push(curRouter)
+    groupIndex += 1
   }
-  return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
+
+  return routes
 }

@@ -9,6 +9,15 @@ export function getUserMethodDataList(data) {
   })
 }
 
+/** 个人接口 - 保存用户接口方法 */
+export function saveUserMethodData(data) {
+  return request({
+    url: '/api/quickApi/saveUserMethodData',
+    method: 'post',
+    data
+  })
+}
+
 /** 修改用户方法信息 */
 export function updateUserMethodData(data) {
   return request({
