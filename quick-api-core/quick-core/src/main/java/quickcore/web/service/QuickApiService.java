@@ -178,7 +178,7 @@ public class QuickApiService {
             }
 
             this.cacheMethodInfo(methodModelList);         // 缓存本地
-            apiMapInfo.put("apiInfo", methodModelList);
+            apiMapInfo.put("methodDataList", methodModelList);
             jsonModel.success("获取接口信息成功", apiMapInfo);
         } catch (BusinessException be) {
             logger.error("错误", be);

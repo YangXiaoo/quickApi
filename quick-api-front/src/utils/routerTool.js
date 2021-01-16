@@ -1,10 +1,9 @@
 import MainLayout from '@/layout'
 import router from '@/router'
-import { getUUID32 } from './uuid'
+// import { getUUID32 } from '@/utils/uuid'
 /**
  * 从api信息中获得路由
  * @param {Object} apiInfo
- * @author yangxiao
  */
 export function getRoutes(apiInfo) {
   const groupMap = getProjectMethodGroupMap(apiInfo)
@@ -14,7 +13,6 @@ export function getRoutes(apiInfo) {
 /**
  * 从api信息中获得路由
  * @param {Object} groupMap
- * @author yangxiao
  */
 export function getRoutesFromGroupMap(groupMap) {
   const routes = []
@@ -136,6 +134,14 @@ export function getUserMethodGroupMap(methodDataList) {
     }
   })
 }
+
+/**
+ * 将项目的方法路由挂载到Router中
+ */
+export function addProjectMethodDataRoutes(routes) {
+  router.addRoutes(routes)
+}
+
 /**
  * 设置路由
  * @param {Object} routes
@@ -170,10 +176,11 @@ export function changeApiInfo(apiInfo, path, methodName, methodGroup) {
 /**
  * 生成一个页面的路由
  */
-export function generatePage() {
+export function generateNewTabPage() {
   const pageUrl = getUUID32()
+  const groupUrl = S4()
   const curRouter = {
-    path: pageUrl,
+    path: '/' + groupUrl, // 此处必须要加'/', 否则是相对路由
     component: MainLayout,
     children: [],
     meta: {
@@ -183,16 +190,17 @@ export function generatePage() {
   }
   const curChildRouter = {
     path: pageUrl,
-    name: pageUrl,
+    name: groupUrl,
     component: () => import('@/views/tab/index'),
     meta: {
       title: 'undefined'
     }
   }
   curRouter.children.push(curChildRouter)
+  console.log('generatePage', curRouter)
   setRoutes([curRouter])
 
-  return pageUrl
+  return groupUrl
 }
 
 /** 生成用户方法的路由 */
@@ -237,4 +245,12 @@ export function getUserRoutesFromMthodGroupMap(methodGroupMap) {
   }
 
   return routes
+}
+
+export function getUUID32() {
+  return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
+}
+
+function S4() {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
 }

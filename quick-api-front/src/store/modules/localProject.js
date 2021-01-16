@@ -1,40 +1,33 @@
-import { getQApiRoutesInfo } from '@/api/localProject'
-import { getMethodDataByProjectName } from '@/api/methodData'
-import { getTeamRoutes, getGroup, getRoutesFromGroupMap } from '@/utils/routerTool'
+/**
+ * 本地测试项目
+ */
+import { getLocalProjectData } from '@/api/localProject'
+import {
+  getProjectMethodGroupMap,
+  getRoutesFromGroupMap,
+  addProjectMethodDataRoutes
+} from '@/utils/routerTool'
 
 const state = {
-  apiInfo: [],
-  routes: [],
-  groupList: [], // 组别名
-  routerSettingFlag: false,
+  methodDataList: [], // 方法列表
+  localProjectRoutes: [], // 用于存储测试项目的路由
+  localProjectGroupList: [], // 组别名
   description: '',
-  projectName: '',
-  localProjectName: '',
-  serviceNames: '',
-  localServiceName: '',
-  hostServiceName: '',
-  version: '',
-  pageStatus: {},
-  teamRouterSettingFlag: false,
-  teamApiInfo: {},
-  teamRoutes: {}
+  localProjectName: '', // 项目名，用于数据修改，唯一ID
+  serviceNames: '', // 项目组其余服务方
+  localServiceName: '', // 本地IP
+  hostServiceName: '', // QuickApi数据管理服务端
+  version: '', // 项目版本
+  author: '',
+  localPageData: {} // 缓存本地页面数据
 }
 
 const mutations = {
-  SET_ROUTES: (state, routes) => {
-    state.routes = routes
+  SET_LOCAL_PROJECT_ROUTES: (state, localProjectRoutes) => {
+    state.localProjectRoutes = localProjectRoutes
   },
-  SET_ROUTER_FLAG: (state, flag) => {
-    state.routerSettingFlag = flag
-  },
-  SET_API_INFO: (state, apiInfo) => {
-    state.apiInfo = apiInfo
-  },
-  SET_TEAM_API_INFO: (state, projectName, apiInfo) => {
-    state.teamApiInfo[projectName] = apiInfo
-  },
-  SET_TEAM_ROUTES: (state, projectName, routes) => {
-    state.teamRoutes[projectName] = routes
+  SET_LOCAL_METHOD_DATA_LIST: (state, methodDataList) => {
+    state.methodDataList = methodDataList
   },
   SET_HOST_SERVICE_NAME: (state, hostName) => {
     state.hostServiceName = hostName
@@ -45,101 +38,59 @@ const mutations = {
   SET_TEAM_SERVICE_NAME: (state, hostName) => {
     state.teamServiceName = hostName
   },
-  SET_PAGE_STATUS: (state, page, status) => {
-    state.pageStatus[page] = status
+  SET_LOCAL_PAGE_DATA: (state, page, status) => {
+    state.localPageData[page] = status
   },
-  SET_GROUP_LIST: (state, groupList) => {
-    state.groupList = groupList
+  SET_LOCAL_PROJECT_GROUP_LIST: (state, localProjectGroupList) => {
+    state.localProjectGroupList = localProjectGroupList
   },
   SET_LOCAL_PROJECT_INFO: (state, data) => {
-    state.apiInfo = data.apiInfo
+    state.methodDataList = data.methodDataList
     state.localServiceName = data.localServiceName
     state.localProjectName = data.projectName
+    state.author = data.author
   }
 }
 
 const actions = {
-  getApiRoutes({ commit }, params) {
+  /** 获得本地项目数据，并将方法路由挂载到Router中 */
+  setLocalProjectRoutes({ commit }, data) {
     return new Promise((resolve, reject) => {
-      getQApiRoutesInfo(params).then(res => {
+      getLocalProjectData(data).then(res => {
         if (res.data.code !== '000') {
-          reject(res.message || '获取接口数据失败')
+          reject(res.message || '获取测试项目数据失败')
         }
 
         commit('SET_LOCAL_PROJECT_INFO', res.data.data)
-        // 设置一级菜单名称
-        const groupMap = getGroup(res.data.data.apiInfo)
-        commit('SET_GROUP_LIST', Object.keys(groupMap))
+        const groupMap = getProjectMethodGroupMap(res.data.data.methodDataList)
+        commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
 
-        const routes = getRoutesFromGroupMap(groupMap)
-        commit('SET_ROUTES', routes)
+        const localProjectRoutes = getRoutesFromGroupMap(groupMap)
+        commit('SET_LOCAL_PROJECT_ROUTES', localProjectRoutes)
+        addProjectMethodDataRoutes(localProjectRoutes)
 
-        resolve(routes)
+        resolve(localProjectRoutes)
       }).catch(error => {
         reject(error || '异常错误')
       })
     })
   },
-  setRouterSettingFlag({ commit }, flag) {
-    commit('SET_ROUTER_FLAG', flag)
-  },
-  setPageStatus({ commit }, page, status) {
-    commit('SET_PAGE_STATUS', page, status)
-  },
-  getTeamRoutes({ commit }, params) {
-    console.log('inter - team route')
-    return new Promise((resolve, reject) => {
-      getMethodDataByProjectName(params).then(res => {
-        console.log(res)
-        if (res.data.code !== '000') {
-          reject(res.message || '获取接口数据失败')
-        }
-
-        commit('SET_TEAM_API_INFO', params, res.data.data)
-        commit('SET_TEAM_LOCAL_SERVICE_NAME', res.data.data.localServiceName)
-
-        const routes = getTeamRoutes(res.data.data)
-        commit('SET_TEAM_ROUTES', routes)
-
-        resolve(routes)
-      }).catch(error => {
-        reject(error || '异常错误')
-      })
-    })
-  },
-  teamRouterSettingFlag({ commit }, flag) {
-    commit('SET_ROUTER_FLAG', flag)
-  },
-  /**
-   * 修改接口信息
-   * @param {*} url
-   * @param {*} name
-   * @param {*} methodGroup
-   */
-  updateMethodData({ commit, state }, { url, name, methodGroup }) {
-    const apiInfo = state.apiInfo
-    for (const api of apiInfo) {
-      console.log(api)
-      if (api.url === url) {
-        console.log('api.url: ' + url)
-
-        if (name) {
-          api.name = name
-        }
-        if (methodGroup) {
-          api.group = methodGroup
-        }
-
-        commit('SET_API_INFO', apiInfo)
-        const groupMap = getGroup(apiInfo)
-        commit('SET_GROUP_LIST', Object.keys(groupMap))
-
-        const routes = getRoutesFromGroupMap(groupMap)
-        commit('SET_ROUTES', routes)
-
+  /** 修改接口信息 */
+  updateProjectMethodData({ commit, state }, data) {
+    for (const api of state.methodDataList) {
+      if (api.url === data.url) {
+        api.name = data.name
+        api.group = data.methodGroup
         break
       }
     }
+    commit('SET_LOCAL_METHOD_DATA_LIST', state.methodDataList)
+    const groupMap = getProjectMethodGroupMap(state.methodDataList)
+    commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
+
+    // 左侧菜单监听localProjectRoutes并更新菜单
+    const localProjectRoutes = getRoutesFromGroupMap(groupMap)
+    commit('SET_LOCAL_PROJECT_ROUTES', localProjectRoutes)
   }
 }
 

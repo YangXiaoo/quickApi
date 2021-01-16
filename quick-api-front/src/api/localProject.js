@@ -18,7 +18,7 @@ export function callApi(path, contentType, headerJson, queryData, type) {
 }
 
 /** 测试项目 - 本地 - 获得接口信息 */
-export function getQApiRoutesInfo(params) {
+export function getLocalProjectData(params) {
   return request({
     url: '/api/quickApi/api',
     method: 'get',

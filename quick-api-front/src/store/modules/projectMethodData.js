@@ -17,7 +17,7 @@ const state = {
 const mutations = {
   SET_PROJECT_METHOD_LIST: (state, { projectName, methodDataList }) => {
     state.projectMethodDataList[projectName] = methodDataList
-  },
+  }
 }
 
 const actions = {
@@ -29,6 +29,9 @@ const actions = {
         }
 
         const methodDataList = res.data.data
+        if (!methodDataList || methodDataList.length === 0) {
+          reject('该项目不存在')
+        }
         const projectMethodDataListData = {
           projectName: data.projectName,
           methodDataList: methodDataList

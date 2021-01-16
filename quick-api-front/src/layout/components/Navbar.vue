@@ -33,7 +33,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { generatePage } from '@/utils/routerTool'
+import { generateNewTabPage } from '@/utils/routerTool'
 export default {
   data() {
     return {
@@ -41,8 +41,6 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'sidebar',
-      'avatar'
     ])
   },
   methods: {
@@ -56,9 +54,8 @@ export default {
      * 新建页面
      */
     handleNewTabClick() {
-      const url = generatePage()
-      console.log(url)
-      this.$router.push({ name: url })
+      const pageUrl = generateNewTabPage()
+      this.$router.replace({ name: pageUrl })
     },
     handleImportClick() {
       this.$message({
