@@ -15,12 +15,12 @@
     />
 
     <!-- 保存弹框 -->
-    <el-dialog title="完善文档" :visible.sync="dialogSavePage.dialogTableVisible">
+    <el-dialog title="完善文档" :visible.sync="dialogSaveMethodApiData.dialogTableVisible">
       <el-divider>文档名</el-divider>
-      <el-input v-model="dialogSavePage.docTitle" />
+      <el-input v-model="dialogSaveMethodApiData.docTitle" />
       <div v-show="pageData.headerJson">
         <el-divider>请求头说明</el-divider>
-        <el-table :data="dialogSavePage.headerJsonValues" border fit highlight-current-row>
+        <el-table :data="dialogSaveMethodApiData.headerJsonValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -43,7 +43,7 @@
       </div>
       <div v-show="pageData.getTypeParam">
         <el-divider>get参数说明</el-divider>
-        <el-table :data="dialogSavePage.getTypeParamValues" border fit highlight-current-row>
+        <el-table :data="dialogSaveMethodApiData.getTypeParamValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -66,7 +66,7 @@
       </div>
       <div v-show="pageData.bodyJsonData">
         <el-divider>POST参数说明</el-divider>
-        <el-table :data="dialogSavePage.bodyJsonDataValues" border fit highlight-current-row>
+        <el-table :data="dialogSaveMethodApiData.bodyJsonDataValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -89,7 +89,7 @@
       </div>
       <div v-show="pageData.responseBody">
         <el-divider>响应值说明</el-divider>
-        <el-table :data="dialogSavePage.responseBodyValues" border fit highlight-current-row>
+        <el-table :data="dialogSaveMethodApiData.responseBodyValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -112,11 +112,11 @@
       </div>
       <div v-show="pageData.responseHeader">
         <el-divider>响应头说明</el-divider>
-        <el-input v-model="dialogSavePage.responseHeaderDesc" type="textarea" :rows="4" placeholder="请输入说明" />
+        <el-input v-model="dialogSaveMethodApiData.responseHeaderDesc" type="textarea" :rows="4" placeholder="请输入说明" />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogSavePage.dialogTableVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handleSaveData">确 定</el-button>
+        <el-button @click="dialogSaveMethodApiData.dialogTableVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleSaveMethodApiData">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog title="修改方信息" :visible.sync="dialogObj.visible">
@@ -140,16 +140,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import { saveMethodApiData } from '@/api/methodApiData'
 import {
-  getMethodApiData,
-  saveMethodApiData
-} from '@/api/methodApiData'
+  getUserProjectMethodPageData,
+  saveUserProjectMethodPageData
+} from '@/api/pageData'
 import { getLocalProjectPath, parseParams } from '@/utils/commonHelper'
 
 import RequestTemplate from '../component/requestTemplate.vue'
 
 export default {
-  name: 'Request',
+  name: 'LocalProject',
   components: {
     RequestTemplate
   },
@@ -180,7 +181,7 @@ export default {
       },
 
       // 文档相关
-      dialogSavePage: {
+      dialogSaveMethodApiData: {
         dialogTableVisible: false, // 文档保存弹框
         docTitle: '',
         headerJsonValues: [], // 头参数说明
@@ -218,7 +219,7 @@ export default {
   },
   mounted() {
     this.initBaseData()
-    this.initLocalProjectMethodApiData()
+    this.initLocalProjectMethodPageData()
   },
   created() { },
   methods: {
@@ -232,13 +233,14 @@ export default {
     /**
      * 从服务端请求初始化当前页面数据
      */
-    initLocalProjectMethodApiData() {
+    initLocalProjectMethodPageData() {
       const data = {
         projectName: this.localProjectName,
-        url: this.url
+        url: this.url,
+        author: this.author
       }
 
-      getMethodApiData(data).then((res) => {
+      getUserProjectMethodPageData(data).then((res) => {
         if (res.data.code === '000') {
           if (res.data.data) {
             Object.assign(this.$data.pageData, JSON.parse(res.data.data.apiJsonData)) // 只初始化页面请求数据，不初始化文档
@@ -247,14 +249,14 @@ export default {
       })
     },
     /* 保存文档数据 */
-    handleSaveData() {
-      this.dialogSavePage.dialogTableVisible = false // 关闭对话框
+    handleSaveMethodApiData() {
+      this.dialogSaveMethodApiData.dialogTableVisible = false // 关闭对话框
 
       // 保存页面数据
       const data = {
         projectName: this.localProjectName,
         url: this.url,
-        apiData: JSON.stringify(this.$data.pageData),
+        apiData: JSON.stringify(this.dialogSaveMethodApiData),
         author: this.author
       }
 
@@ -308,24 +310,47 @@ export default {
       })
       this.resetDialog()
     },
-    /** 保存页面请求返回数据 */
+    /** 保存页面数据 */
     handleClickSave() {
-      // todo
+      // 保存页面数据
+      const data = {
+        projectName: this.localProjectName,
+        url: this.url,
+        pageData: JSON.stringify(this.pageData),
+        author: this.author
+      }
+      saveUserProjectMethodPageData(data).then(res => {
+        if (res.data.code === '000') {
+          this.$message({
+            message: '保存成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: '保存失败',
+            type: 'warning'
+          })
+        }
+      }).catch((error) => {
+        this.$message({
+          message: error || '保存失败',
+          type: 'warning'
+        })
+      })
     },
     /** 另存为 */
     handleClickSaveAs(command) {
       if (command === 'saveDoc') {
         this.saveMethodApiData()
       }
-
     },
     saveMethodApiData() {
       // 解析各参数为表单数据
-      this.dialogSavePage.headerJsonValues = parseParams(this.pageData.headerJson)
-      this.dialogSavePage.getTypeParamValues = parseParams(this.pageData.getTypeParam)
-      this.dialogSavePage.bodyJsonDataValues = parseParams(this.pageData.bodyJsonData)
-      this.dialogSavePage.responseBodyValues = parseParams(this.pageData.responseBody)
-      this.dialogSavePage.dialogTableVisible = true // 关闭对话框
+      this.dialogSaveMethodApiData.headerJsonValues = parseParams(this.pageData.headerJson)
+      this.dialogSaveMethodApiData.getTypeParamValues = parseParams(this.pageData.getTypeParam)
+      this.dialogSaveMethodApiData.bodyJsonDataValues = parseParams(this.pageData.bodyJsonData)
+      this.dialogSaveMethodApiData.responseBodyValues = parseParams(this.pageData.responseBody)
+      this.dialogSaveMethodApiData.dialogTableVisible = true // 关闭对话框
     },
     resetDialog() {
       this.dialogObj.dialogTitle = ''
@@ -344,36 +369,5 @@ export default {
   border-radius: 5px;
   font-size: 13px;
   color: #303133;
-}
-
-.el-tag {
-  margin-left: 10px;
-}
-
-.request-type {
-  display: inline-flex;
-}
-
-.input-with-select .el-input-group__prepend {
-  background-color: #fff;
-}
-.jsoneditor-poweredBy {
-  display: none;
-}
-.body-file-box {
-  align-items: center;
-  height: 185px;
-  text-align: center;
-}
-.body-upload-file {
-  margin-top: 50px;
-}
-.response-cookies-box {
-  align-items: center;
-  height: 185px;
-  text-align: center;
-}
-.jsoneditor-menu a {
-  display: none !important;
 }
 </style>

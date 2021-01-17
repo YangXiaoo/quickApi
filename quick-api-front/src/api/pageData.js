@@ -3,7 +3,7 @@ import request from '@/utils/request'
 /**
  * 获取用户页面数据
  */
-export function getUserMegetUserProjectMethodPageDatathodApiData(data) {
+export function getUserProjectMethodPageData(data) {
   return request({
     url: '/api/quickApi/getUserProjectMethodPageData',
     method: 'post',

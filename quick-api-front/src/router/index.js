@@ -4,34 +4,6 @@ import MainLayout from '@/layout'
 
 Vue.use(Router)
 
-export const apiRouter = {
-  path: '',
-  name: '',
-  component: MainLayout,
-  children: [],
-  meta: {
-    title: ''
-  }
-}
-
-export const childRouter = {
-  path: 'index',
-  name: 'index',
-  component: () => import('@/views/request/index'),
-  meta: {
-    title: ''
-  }
-}
-
-export const subRouter = {
-  path: '',
-  name: '',
-  meta: {
-    title: ''
-  },
-  children: []
-}
-
 export const constantRoutes = [
   {
     path: '/',
@@ -54,9 +26,6 @@ export const constantRoutes = [
     redirect: '/home'
   }
 ]
-
-const tmp = JSON.parse(JSON.stringify(childRouter))
-constantRoutes[0].children.push(tmp)
 
 const createRouter = () => new Router({
   mode: 'history', // require service support

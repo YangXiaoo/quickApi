@@ -61,10 +61,11 @@ public class MethodPageDataServiceImpl {
         try {
             String projectName = (String) map.get("projectName");
             String url = (String) map.get("url");
-            if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url)) {
+            String userName = (String) map.get("author");
+            if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url) || StringUtils.isBlank(userName)) {
                 throw new BusinessException("getUserProjectMethodPageData()参数不完整");
             }
-            jsonModel.success(JSON_MODEL_CODE.SUCCESS, methodPageDataLogic.getUserProjectMethodPageData(projectName, url));
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, methodPageDataLogic.getUserProjectMethodPageData(projectName, url, userName));
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {

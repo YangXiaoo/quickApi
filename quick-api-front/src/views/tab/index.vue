@@ -237,35 +237,4 @@ export default {
   font-size: 13px;
   color: #303133;
 }
-
-.el-tag {
-  margin-left: 10px;
-}
-
-.request-type {
-  display: inline-flex;
-}
-
-.input-with-select .el-input-group__prepend {
-  background-color: #fff;
-}
-.jsoneditor-poweredBy {
-  display: none;
-}
-.body-file-box {
-  align-items: center;
-  height: 185px;
-  text-align: center;
-}
-.body-upload-file {
-  margin-top: 50px;
-}
-.response-cookies-box {
-  align-items: center;
-  height: 185px;
-  text-align: center;
-}
-.jsoneditor-menu a {
-  display: none !important;
-}
 </style>
