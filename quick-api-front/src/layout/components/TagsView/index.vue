@@ -44,9 +44,6 @@ export default {
   computed: {
     ...mapGetters([
       'visitedViews',
-      'localProjectRoutes',
-      'projectRoutes',
-      'userRoutes',
       'constantRoutes'
     ]),
     /** 页面初始化时，需要在TagViews展示的标签 */
@@ -110,7 +107,6 @@ export default {
     },
     addTags() {
       const { name } = this.$route
-      console.log('addTags', name)
       if (name) {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
@@ -118,8 +114,6 @@ export default {
     },
     moveToCurrentTag() {
       const tags = this.$refs.tag
-      console.log('已添加的标签', tags)
-      console.log('当前页面', this.$route.path)
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {

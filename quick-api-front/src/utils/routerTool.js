@@ -54,7 +54,6 @@ export function getRoutesFromGroupMap(groupMap) {
     groupIndex += 1
   }
 
-  console.log(routes)
   return routes
 }
 
@@ -125,7 +124,6 @@ export function getProjectMethodGroupMap(apiInfo) {
 /** 将用户拥有的方法按所属组分类 */
 export function getUserMethodGroupMap(methodDataList) {
   const methodGroupMap = {}
-
   methodDataList.map(item => {
     if (item.methodGroup in methodGroupMap) {
       methodGroupMap[item.methodGroup].push(item)
@@ -133,6 +131,8 @@ export function getUserMethodGroupMap(methodDataList) {
       methodGroupMap[item.methodGroup] = [item]
     }
   })
+
+  return methodGroupMap
 }
 
 /**

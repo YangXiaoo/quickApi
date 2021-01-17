@@ -126,6 +126,7 @@ export default {
     /** 初始化测试项目的路由，设置左侧菜单 */
     setLocalProjectRoutes() {
       this.$store.dispatch('localProject/setLocalProjectRoutes', '').then(res => {
+        console.log('sideBar.setLocalProjectRoutes', res)
         this.localProjectMethodMenu = res
       }).catch(error => {
         this.$message(error || '加载测试项目api接口失败')
@@ -133,7 +134,11 @@ export default {
     },
     /** 初始化个人接口路由，并设置左侧菜单 */
     setUserMethodDataRoutes() {
-      this.$store.dispatch('userMethodData/setUserMethodDataRoutes', this.author).then(res => {
+      const data = {
+        userName: 'wejh3ncx43ihc34cshg4v' // this.author
+      }
+      this.$store.dispatch('userMethodData/setUserMethodDataRoutes', data).then(res => {
+        console.log('sideBar.setUserMethodDataRoutes', res)
         this.userMethodMenu = res
       }).catch(error => {
         this.$message(error || '初始化个人接口方法信息失败')

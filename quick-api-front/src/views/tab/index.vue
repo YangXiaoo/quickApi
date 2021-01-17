@@ -1,5 +1,10 @@
 <template>
   <div>
+    <el-card style="margin-top: 70px">
+      <div class="method-title">
+        {{ methodName }} <i class="el-icon-edit" @click="handleMethodChangeClick" />
+      </div>
+    </el-card>
     <request-template
       :page-data="pageData"
       :url="url"
@@ -12,12 +17,12 @@
     <el-dialog :title="dialogObj.dialogTitle" :visible.sync="dialogObj.visible">
       <el-form>
         <el-form-item label="所属组">
-          <el-select v-model="dialogObj.group" filterable allow-create default-first-option placeholder="请选择组别">
+          <el-select v-model="dialogObj.methodGroup" filterable allow-create default-first-option placeholder="请选择组别">
             <el-option v-for="item of userGroupList" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="接口名">
-          <el-input v-model="dialogObj.name" />
+          <el-input v-model="dialogObj.methodName" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -31,7 +36,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import { getUserMethodApiData, saveUserMethodApiData } from '@/api/methodApiData'
-import { updateUserMethodData, saveUserMethodData } from '@/api/methodData'
 
 import RequestTemplate from '../component/requestTemplate.vue'
 export default {
@@ -68,19 +72,20 @@ export default {
       dialogObj: {
         dialogTitle: '',
         visible: false,
-        name: '',
-        group: ''
+        methodName: '',
+        methodGroup: ''
       },
 
       url: '', // 页面接口的url，一旦创建不会改变
-      name: '',
-      group: '',
+      methodName: '',
+      methodGroup: '',
       userName: ''
     }
   },
   computed: {
     ...mapGetters([
-      'userGroupList'
+      'userGroupList',
+      'author'
     ])
   },
   mounted() {
@@ -90,20 +95,18 @@ export default {
   created() { },
   methods: { // 按照页面功能顺序定义方法
     initBaseData() {
-      this.userName = this.$store.getters.name || 'dummyUser' // 测试使用
-      this.name = this.$route.meta.title
-      this.group = this.$route.meta.group
+      this.url = this.$route.path // 页面URL在新建时已确定
+      this.userName = this.author || 'dummyUser' // 测试使用
+      this.methodName = this.$route.meta.title
+      this.methodGroup = this.$route.meta.group
     },
     /**
      * 从服务端请求初始化当前页面数据
      */
     initMethodApiData() {
-      const curPath = this.$route.path
-      if (curPath === '/home') { // 首页不初始化
-        this.url = 'http://localhost'
+      console.log('initMethodApiData', this.methodName)
+      if (this.methodName === 'undefined') {
         return
-      } else {
-        this.url = curPath.substring(curPath.substring(1).indexOf('/') + 1)
       }
 
       const data = {
@@ -114,28 +117,32 @@ export default {
       getUserMethodApiData(data).then((res) => {
         if (res.data.code === '000') {
           if (res.data.data) {
-            Object.assign(this.$data.pageData, JSON.parse(res.data.data.apiJsonData).pageData) // 只初始化页面请求数据，不初始化文档
+            Object.assign(this.$data.pageData, JSON.parse(res.data.data.apiJsonData)) // 只初始化页面请求数据，不初始化文档
           }
         }
       })
     },
     /* 保存当前页面数据 */
     handleClickSave() {
-      if (this.name === 'undefined') { // 需要保存页面信息
+      // 对于新建的页面则需要定义方法名等信息
+      if (this.methodName === 'undefined') {
         this.dialogObj.dialogTitle = '保存方法信息'
         this.dialogObj.visible = true
       } else {
+        // 对已经创建的页面，点击保存只保存页面数据
         this.saveMethodApiData()
       }
     },
     handleDialogSave() {
-      if (this.dialogObj.dialogTitle === '保存方法信息') { // 保存方法
+      if (this.dialogObj.dialogTitle === '保存方法信息') {
+        // 第一次保存时，不仅要保存方法信息还要保存接口数据
         this.saveMethodData()
         this.saveMethodApiData()
-        this.resetDialog()
-      } else {
-        // 另存为新的页面
+      } else if (this.dialogObj.dialogTitle === '修改方法信息') {
+        // 修改方法信息
+        this.updateUserMethodData()
       }
+      this.resetDialog()
     },
     saveMethodApiData() {
       // 保存页面数据
@@ -177,37 +184,56 @@ export default {
       const data = {
         userName: this.userName, // 推荐使用邮箱
         url: this.url, // 路由
-        methodName: this.name, // 方法名
-        methodGroup: this.methodGroup
+        methodName: this.dialogObj.methodName, // 方法名
+        methodGroup: this.dialogObj.methodGroup
       }
-      this.$store.dispatch('methodData/saveUserMethodData', data)
-      saveUserMethodData(data).then(res => {
-        if (res.data.code === '000') {
-          this.$message({
-            message: '保存成功',
-            type: 'success'
-          })
-        } else {
-          this.$message({
-            message: res.data.message || '保存失败',
-            type: 'error'
-          })
-        }
+      this.$store.dispatch('userMethodData/saveUserMethodData', data)
+      this.methodName = this.dialogObj.methodName
+      this.methodGroup = this.dialogObj.methodGroup
+    },
+    updateUserMethodData() {
+      const data = {
+        userName: this.userName, // 推荐使用邮箱
+        url: this.url, // 路由
+        methodName: this.dialogObj.methodName, // 方法名
+        methodGroup: this.dialogObj.methodGroup
+      }
+      this.$store.dispatch('userMethodData/updateUserMethodData', data).then(res => {
+        this.methodName = data.methodName
+        this.methodGroup = data.methodGroup
+      }).catch((error) => {
+        this.$message({
+          message: error || '更新失败',
+          type: 'warning'
+        })
       })
     },
     // 弹框修改方法名和组别
     handleMethodChangeClick() {
+      this.dialogObj.dialogTitle = '修改方法信息'
+      this.dialogObj.methodName = this.methodName
+      this.dialogObj.methodGroup = this.methodGroup
+      this.dialogObj.visible = true
     },
     resetDialog() {
       this.dialogObj.dialogTitle = ''
       this.dialogObj.visible = false
-      this.dialogObj.name = ''
-      this.dialogObj.group = ''
+      this.dialogObj.methodName = ''
+      this.dialogObj.methodGroup = ''
     }
   }
 }
 </script>
 <style scoped>
+.method-title {
+  /* background-color: #fff; */
+  height: 20px;
+  margin: 0px 10px 0px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  color: #303133;
+}
+
 .el-tag {
   margin-left: 10px;
 }

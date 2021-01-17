@@ -36,35 +36,41 @@ const mutations = {
 
 const actions = {
   /** 保存用户的方法信息 */
-  saveUserMethodData({ commit, state }, data) {
+  saveUserMethodData({ commit, state, dispatch }, data) {
     return new Promise((resolve, reject) => {
       saveUserMethodData(data).then(res => {
         commit('ADD_USER_METHOD', data)
 
-        resolve(this.setRoutes(state.userMethodDataList)) // 左侧菜单栏需要监听此数据，完成左侧菜单的更新
+        // 左侧菜单栏需要监听routes，完成左侧菜单的更新
+        dispatch('setRoutes', state.userMethodDataList)
+        resolve(state.userRoutes)
       }).catch(error => {
         reject(error || '异常错误')
       })
     })
   },
   /** 更新用户方法信息 */
-  updateMethodData({ commit, state }, data) {
+  updateUserMethodData({ commit, state, dispatch }, data) {
     return new Promise((resolve, reject) => {
       updateUserMethodData(data).then(res => {
         if (res.data.code !== '000') {
           reject(res.message || '更新失败')
         }
-
-        const userMethodDataList = state.userMethodDataList
-        for (const methodData in userMethodDataList) {
+        console.log('updateUserMethodData.url', data.url)
+        const methodDataList = state.userMethodDataList
+        for (const methodData of methodDataList) {
+          console.log('updateUserMethodData.methodData', methodData)
           if (methodData.url === data.url) {
+            console.log('updateUserMethodData', data.url, '修改成功')
             methodData.methodName = data.methodName
             methodData.methodGroup = data.methodGroup
             break
           }
         }
 
-        resolve(this.setRoutes(userMethodDataList))
+        dispatch('setRoutes', methodDataList)
+        console.log('updateUserMethodData.userRoutes', state.userRoutes)
+        resolve(state.userRoutes)
       }).catch(error => {
         reject(error || '异常错误')
       })
@@ -87,7 +93,7 @@ const actions = {
     })
   },
   /** 设置用户路由 */
-  setUserMethodDataRoutes({ commit, state }, data) {
+  setUserMethodDataRoutes({ commit, state, dispatch }, data) {
     return new Promise((resolve, reject) => {
       getUserMethodDataList(data).then(res => {
         if (res.data.code !== '000') {
@@ -96,12 +102,9 @@ const actions = {
         const userMethodDataList = res.data.data
         commit('SET_USER_METHOD_LIST', userMethodDataList)
 
-        const groupMap = getUserMethodGroupMap(data)
-        commit('SET_USER_GROUP_LIST', Object.keys(groupMap))
-
-        const routes = this.setRoutes(userMethodDataList)
-        addUserMethodDataRoutes(routes) // 将路由挂载到VUE的router中
-        resolve(routes)
+        dispatch('setRoutes', state.userMethodDataList)
+        addUserMethodDataRoutes(state.userRoutes) // 将路由挂载到VUE的router中
+        resolve(state.userRoutes)
       }).catch(error => {
         reject(error || '异常错误')
       })

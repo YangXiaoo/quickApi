@@ -202,7 +202,7 @@ public class MethodDataServiceImpl {
         try {
             String url = (String) map.get("url");
             String userName = (String) map.get("userName");
-            String name = (String) map.get("name");
+            String name = (String) map.get("methodName");
             String methodGroup = (String) map.get("methodGroup");
             methodDataLogic.updateUserMethodData(url, userName, name, methodGroup);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "更新成功");

@@ -9,7 +9,7 @@ public interface SERVICE {
     String GET_METHOD_DATA_BY_PROJECT_NAME = "/api/methodData/getMethodDataByProjectName";              // 根据项目名称获得项目所有接口方法信息
     String GET_METHOD_API_DATA = "/api/methodApiData/getMethodApiData";                                 // 获得方法接口文档数据
     String GET_USER_METHOD_API_DATA = "/api/methodApiData/getUserMethodApiData";
-    String GET_USER_METHOD_DATA_LIST = "/api/methodApiData/getUserMethodDataList";
+    String GET_USER_METHOD_DATA_LIST = "/api/methodData/getUserMethodDataList";
 
     // 保存方法
     String SAVE_METHOD_DATA = "/api/methodData/saveMethodData";                                         // 保存接口方法信息

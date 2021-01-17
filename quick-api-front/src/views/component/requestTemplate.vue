@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <div style="margin-top: 70px">
+      <div style="">
         <el-row>
           <el-col :span="4">
             <el-select v-model="pageData.requestType" placeholder="请选择" @change="handlerequestTypeClick">
