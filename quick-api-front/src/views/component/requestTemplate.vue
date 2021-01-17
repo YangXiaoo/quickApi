@@ -3,7 +3,7 @@
     <el-card>
       <div style="">
         <el-row>
-          <el-col :span="4">
+          <el-col :span="3">
             <el-select v-model="pageData.requestType" placeholder="请选择" @change="handlerequestTypeClick">
               <el-option label="POST" value="POST" />
               <el-option label="GET" value="GET" />
@@ -19,14 +19,12 @@
               发送
             </el-button>
           </el-col>
-          <el-col :span="2">
+          <el-col v-show="isShowSave" :span="3">
             <!-- <el-button type="primary" @click="handleClickSave">保存<i class="el-icon-upload el-icon--right" /></el-button> -->
-            <el-dropdown>
-              <el-button type="primary" @click="handleClickSave">
-                保存<i class="el-icon-upload el-icon--right" />
-              </el-button>
+            <el-dropdown type="primary" split-button @click="handleClickSave" @command="handleClickSaveAs">
+              保存
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click="handleClickSaveAs">另存为</el-dropdown-item>
+                <el-dropdown-item v-for="item of saveItem" :key="item" :command="item.command">{{ item.label }}</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </el-col>
@@ -79,7 +77,6 @@
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
 import { callApi } from '@/api/localProject'
-import { getMethodApiData } from '@/api/methodApiData'
 export default {
   name: 'RequestTemplate',
   components: {
@@ -104,6 +101,16 @@ export default {
     projectName: {
       type: String,
       default: ''
+    },
+    saveItem: {
+      type: Array,
+      default: () => {
+        return [] // [{ command: '', label: ''}]
+      }
+    },
+    isShowSave: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -115,40 +122,9 @@ export default {
     ])
   },
   mounted() {
-    this.initMethodApiData()
   },
   created() { },
   methods: { // 按照页面功能顺序定义方法
-    /**
-     * 从服务端请求初始化当前页面数据
-     */
-    initMethodApiData() {
-      if (this.isLocalProject) {
-        if (!this.projectName) {
-          this.$message({
-            type: 'warning',
-            message: '没有项目名'
-          })
-
-          return
-        }
-
-        const data = {
-          projectName: this.projectName,
-          url: this.url
-        }
-
-        getMethodApiData(data).then((res) => {
-          if (res.data.code === '000') {
-            if (res.data.data) {
-              Object.assign(this.$data.pageData, JSON.parse(res.data.data.apiJsonData).pageData) // 只初始化页面请求数据，不初始化文档
-            }
-          }
-        })
-      } else {
-        // 非本地项目时页面初始化接口不一致
-      }
-    },
     /**
      * 点击请求类型Tab
      */
@@ -204,10 +180,12 @@ export default {
     },
     /* 点击保存事件*/
     handleClickSave() {
+      console.log('handleClickSave')
       this.$emit('clickSave')
     },
-    handleClickSaveAs() {
-      this.$emit('clickSaveAs')
+    handleClickSaveAs(val) {
+      console.log('handleClickSaveAs', val)
+      this.$emit('clickSaveAs', val)
     },
     changeBodyType(value) {
       if (value === 'application/json') {

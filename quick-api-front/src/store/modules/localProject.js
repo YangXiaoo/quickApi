@@ -2,6 +2,7 @@
  * 本地测试项目
  */
 import { getLocalProjectData } from '@/api/localProject'
+import { updateMethodData } from '@/api/methodData'
 import {
   getProjectMethodGroupMap,
   getRoutesFromGroupMap,
@@ -77,20 +78,32 @@ const actions = {
   },
   /** 修改接口信息 */
   updateProjectMethodData({ commit, state }, data) {
-    for (const api of state.methodDataList) {
-      if (api.url === data.url) {
-        api.name = data.name
-        api.group = data.methodGroup
-        break
-      }
-    }
-    commit('SET_LOCAL_METHOD_DATA_LIST', state.methodDataList)
-    const groupMap = getProjectMethodGroupMap(state.methodDataList)
-    commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
+    return new Promise((resolve, reject) => {
+      updateMethodData(data).then(res => {
+        if (res.data.code !== '000') {
+          reject(res.message || '更新失败')
+        }
+        const methodDataList = state.methodDataList
+        for (const api of methodDataList) {
+          if (api.url === data.url) {
+            api.name = data.name
+            api.group = data.methodGroup
+            break
+          }
+        }
+        commit('SET_LOCAL_METHOD_DATA_LIST', methodDataList)
+        const groupMap = getProjectMethodGroupMap(methodDataList)
+        commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
 
-    // 左侧菜单监听localProjectRoutes并更新菜单
-    const localProjectRoutes = getRoutesFromGroupMap(groupMap)
-    commit('SET_LOCAL_PROJECT_ROUTES', localProjectRoutes)
+        // 左侧菜单监听localProjectRoutes并更新菜单
+        const localProjectRoutes = getRoutesFromGroupMap(groupMap)
+        commit('SET_LOCAL_PROJECT_ROUTES', localProjectRoutes)
+
+        resolve(state.localProjectRoutes)
+      }).catch(error => {
+        reject(error || '异常错误')
+      })
+    })
   }
 }
 

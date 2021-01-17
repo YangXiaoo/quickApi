@@ -1,7 +1,9 @@
 package com.quickapi.server.web.logic;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.quickapi.server.common.constant.CONSTANT_DEFINE;
 import com.quickapi.server.common.tools.DateTool;
 import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
@@ -115,6 +117,7 @@ public class MethodApiDataLogic {
         QueryWrapper<UserApi> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("USER_NAME", userName);
         queryWrapper.eq("METHOD_URL", url);
+        queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
         List<UserApi> apiDocList = userApiDao.selectList(queryWrapper);
         if (!CollectionUtils.isEmpty(apiDocList)) {
             if (apiDocList.size() > 1) {
@@ -130,6 +133,9 @@ public class MethodApiDataLogic {
 
     /**
      * 保存用户接口文档数据
+     * <p>
+     *     存在更新，不存在则新建
+     * </p>
      * @param userName 用户姓名
      * @param url 路由
      * @param apiData 页面接口文档数据
@@ -142,18 +148,48 @@ public class MethodApiDataLogic {
                 || StringUtils.isBlank(apiData)) {
             throw new BusinessException("saveUserMethodApiData()参数不完整");
         }
+        boolean insertFlag = true;
 
-        UserApi apiDoc = new UserApi();
-        apiDoc.setUserName(userName);
-        apiDoc.setMethodUrl(url);
-        apiDoc.setApiJsonData(apiData);
-        apiDoc.setCreateTime(DateTool.getCurrentDate());
-        apiDoc.setUserApiId(UUIDUtil.getUUID());
-        while (!CollectionUtils.isEmpty(selectUserApiById(apiDoc))) {
-            apiDoc.setUserApiId(UUIDUtil.getUUID());
+        QueryWrapper<UserApi> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("USER_NAME", userName);
+        queryWrapper.eq("METHOD_URL", url);
+        List<UserApi> apiDocList = userApiDao.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(apiDocList)) {
+            if (apiDocList.size() > 1) {                                    // 删除duo
+               for (UserApi tmp : apiDocList) {
+                   tmp.setDeleteFlag(CONSTANT_DEFINE.IS_DELETE);
+                   UpdateWrapper<UserApi> updateWrapper = new UpdateWrapper<>();
+                   updateWrapper.eq("METHOD_URL", url);
+                   updateWrapper.eq("USER_NAME", userName);
+                   userApiDao.update(tmp, updateWrapper);
+               }
+            } else {                                                        // 更新
+                UserApi apiDoc = apiDocList.get(0);
+                apiDoc.setApiJsonData(apiData);
+                apiDoc.setUpdateTime(DateTool.getCurrentDate());
+
+                UpdateWrapper<UserApi> updateWrapper = new UpdateWrapper<>();
+                updateWrapper.eq("METHOD_URL", url);
+                updateWrapper.eq("USER_NAME", userName);
+                userApiDao.update(apiDoc, updateWrapper);
+                insertFlag = false;
+            }
         }
 
-        userApiDao.insert(apiDoc);
+        if (insertFlag) {
+            UserApi apiDoc = new UserApi();
+            apiDoc.setApiJsonData(apiData);
+            apiDoc.setMethodUrl(url);
+            apiDoc.setUserName(userName);
+            apiDoc.setCreateTime(DateTool.getCurrentDate());
+            apiDoc.setUserApiId(UUIDUtil.getUUID());
+            apiDoc.setDeleteFlag(CONSTANT_DEFINE.NOT_DELETE);
+            while (!CollectionUtils.isEmpty(selectUserApiById(apiDoc))) {
+                apiDoc.setUserApiId(UUIDUtil.getUUID());
+            }
+
+            userApiDao.insert(apiDoc);
+        }
     }
 
     /**

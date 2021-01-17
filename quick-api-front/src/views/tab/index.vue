@@ -9,6 +9,7 @@
       :page-data="pageData"
       :url="url"
       :is-local-project="false"
+      :save-item="saveItem"
       @clickSave="handleClickSave"
       @clickSaveAs="handleClickSaveAs"
     />
@@ -68,6 +69,7 @@ export default {
         responseHeader: null,
         responseBody: null
       },
+
       // 弹框
       dialogObj: {
         dialogTitle: '',
@@ -75,7 +77,9 @@ export default {
         methodName: '',
         methodGroup: ''
       },
-
+      saveItem: [
+        { command: 'saveAsNewMethod', label: '另存为新的接口' }
+      ],
       url: '', // 页面接口的url，一旦创建不会改变
       methodName: '',
       methodGroup: '',
@@ -90,7 +94,7 @@ export default {
   },
   mounted() {
     this.initBaseData()
-    this.initMethodApiData()
+    this.initUserMethodApiData()
   },
   created() { },
   methods: { // 按照页面功能顺序定义方法
@@ -103,8 +107,8 @@ export default {
     /**
      * 从服务端请求初始化当前页面数据
      */
-    initMethodApiData() {
-      console.log('initMethodApiData', this.methodName)
+    initUserMethodApiData() {
+      console.log('initUserMethodApiData', this.methodName)
       if (this.methodName === 'undefined') {
         return
       }
@@ -177,8 +181,8 @@ export default {
     /**
      * 另存为页面
      */
-    handleClickSaveAs() {
-
+    handleClickSaveAs(val) {
+      console.log(val)
     },
     saveMethodData() {
       const data = {

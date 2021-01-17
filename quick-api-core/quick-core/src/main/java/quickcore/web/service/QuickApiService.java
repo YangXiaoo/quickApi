@@ -610,6 +610,46 @@ public class QuickApiService {
     }
 
     /**
+     * 保存用户项目页面数据
+     * @param map 保存参数
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/17 17:55
+     */
+    @PostMapping("saveUserProjectMethodPageData")
+    public JsonModel saveUserProjectMethodPageData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.SAVE_USER_PROJECT_PAGE_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 获得用户项目页面数据
+     * @param map 查询条件
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/17 17:56
+     */
+    @PostMapping("getUserProjectMethodPageData")
+    public JsonModel getUserProjectMethodPageData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_USER_PROJECT_PAGE_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
      * 保存用户接口文档数据
      * @param map 保存参数
      * @return quickcore.common.tools.JsonModel

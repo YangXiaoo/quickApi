@@ -23,3 +23,10 @@ export function parseParams(getTypeParam) {
 
   return getTypeParamValues
 }
+
+/** 根据router.path获得本地项目的URL */
+export function getLocalProjectPath(path) {
+  if (path) {
+    return path.substring(path.substring(1).indexOf('/') + 1)
+  }
+}
