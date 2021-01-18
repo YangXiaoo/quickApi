@@ -1,10 +1,12 @@
 <template>
   <div>
-    <el-card style="margin-top: 70px">
-      <div class="method-title">
-        {{ methodName }} <i class="el-icon-edit" @click="handleMethodChangeClick" />
+    <div class="method-navbar">
+      <div class="left-menu">
+        <div class="left-menu-item">
+          {{ methodName }} <i class="el-icon-edit" @click="handleMethodChangeClick" />
+        </div>
       </div>
-    </el-card>
+    </div>
     <request-template
       :page-data="pageData"
       :url="url"
@@ -228,13 +230,55 @@ export default {
   }
 }
 </script>
-<style scoped>
-.method-title {
-  /* background-color: #fff; */
-  height: 20px;
-  margin: 0px 10px 0px 10px;
+<style lang="scss" scoped>
+.method-navbar {
+  position: relative;
+  height: 40px;
+  background: #fff;
+  margin: 80px 10px 10px 10px;
   border-radius: 5px;
-  font-size: 13px;
-  color: #303133;
+
+  .left-menu {
+    float: left;
+    height: 100%;
+    padding-left: 10px;
+    line-height: 40px;
+
+    &:focus {
+      outline: none;
+    }
+
+    .left-menu-item {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      vertical-align: text-bottom;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .right-menu {
+    float: right;
+    height: 100%;
+    padding-left: 10px;
+    line-height: 40px;
+
+    &:focus {
+      outline: none;
+    }
+
+    .right-menu-item {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      vertical-align: text-bottom;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
 }
 </style>

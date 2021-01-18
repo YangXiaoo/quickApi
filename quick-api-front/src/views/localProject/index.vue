@@ -464,6 +464,7 @@ export default {
   height: 40px;
   background: #fff;
   margin: 80px 10px 10px 10px;
+  border-radius: 5px;
 
   .left-menu {
     float: left;
