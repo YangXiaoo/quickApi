@@ -1,10 +1,34 @@
 <template>
   <div>
-    <el-card style="margin-top: 70px">
-      <div class="method-title">
-        {{ methodName }} <i class="el-icon-edit" @click="handleMethodChangeClick" />
+    <div class="method-navbar">
+      <div class="left-menu">
+        <div class="left-menu-item">
+          {{ methodName }} <i class="el-icon-edit" @click="handleMethodChangeClick" />
+        </div>
       </div>
-    </el-card>
+      <div class="right-menu">
+        <div v-show="curMethodApiData && curMethodApiData.userId === author" class="right-menu-item" @click="handleDeleteMethodApiData">
+          <i class="el-icon-delete" />
+        </div>
+        <div class="right-menu-item">
+          当前文档 {{ methodApiData.docTitle }}
+        </div>
+        <!-- <div class="right-menu-item">
+          {{ curMethodApiData.userName }}
+        </div> -->
+        <div class="right-menu-item">
+          <el-dropdown @command="handleApiClick">
+            <span class="el-dropdown-link">
+              文档示例<i class="el-icon-arrow-down el-icon--right" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="apiData of methodApiDataList" v-show="methodApiDataList.length > 0" :key="apiData.apiDocId" :command="apiData.apiDocId"> {{ apiData.docTitle }} </el-dropdown-item>
+              <el-dropdown-item v-show="methodApiDataList.length === 0"> 暂无文档 </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+      </div>
+    </div>
     <request-template
       :page-data="pageData"
       :url="url"
@@ -15,12 +39,12 @@
     />
 
     <!-- 保存弹框 -->
-    <el-dialog title="完善文档" :visible.sync="dialogSaveMethodApiData.dialogTableVisible">
+    <el-dialog title="完善文档" :visible.sync="methodApiData.dialogTableVisible">
       <el-divider>文档名</el-divider>
-      <el-input v-model="dialogSaveMethodApiData.docTitle" />
+      <el-input v-model="methodApiData.docTitle" />
       <div v-show="pageData.headerJson">
         <el-divider>请求头说明</el-divider>
-        <el-table :data="dialogSaveMethodApiData.headerJsonValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.headerJsonValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -43,7 +67,7 @@
       </div>
       <div v-show="pageData.getTypeParam">
         <el-divider>get参数说明</el-divider>
-        <el-table :data="dialogSaveMethodApiData.getTypeParamValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.getTypeParamValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -66,7 +90,7 @@
       </div>
       <div v-show="pageData.bodyJsonData">
         <el-divider>POST参数说明</el-divider>
-        <el-table :data="dialogSaveMethodApiData.bodyJsonDataValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.bodyJsonDataValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -89,7 +113,7 @@
       </div>
       <div v-show="pageData.responseBody">
         <el-divider>响应值说明</el-divider>
-        <el-table :data="dialogSaveMethodApiData.responseBodyValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.responseBodyValues" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -112,14 +136,14 @@
       </div>
       <div v-show="pageData.responseHeader">
         <el-divider>响应头说明</el-divider>
-        <el-input v-model="dialogSaveMethodApiData.responseHeaderDesc" type="textarea" :rows="4" placeholder="请输入说明" />
+        <el-input v-model="methodApiData.responseHeaderDesc" type="textarea" :rows="4" placeholder="请输入说明" />
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogSaveMethodApiData.dialogTableVisible = false">取 消</el-button>
+        <el-button @click="methodApiData.dialogTableVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleSaveMethodApiData">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="修改方信息" :visible.sync="dialogObj.visible">
+    <el-dialog title="修改方信息" :visible.sync="dialogObj.visible" width="30%">
       <el-form>
         <el-form-item label="所属组">
           <el-select v-model="dialogObj.methodGroup" filterable allow-create default-first-option placeholder="请选择组别">
@@ -140,7 +164,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { saveMethodApiData } from '@/api/methodApiData'
+import { saveMethodApiData, getMethodApiData, deleteMethodApiData } from '@/api/methodApiData'
 import {
   getUserProjectMethodPageData,
   saveUserProjectMethodPageData
@@ -181,7 +205,7 @@ export default {
       },
 
       // 文档相关
-      dialogSaveMethodApiData: {
+      methodApiData: {
         dialogTableVisible: false, // 文档保存弹框
         docTitle: '',
         headerJsonValues: [], // 头参数说明
@@ -206,7 +230,9 @@ export default {
       url: '', // 页面接口的url，一旦创建不会改变
       methodName: '',
       methodGroup: '',
-      userName: ''
+      userName: '',
+      methodApiDataList: [],
+      curMethodApiData: ''
     }
   },
   computed: {
@@ -220,6 +246,7 @@ export default {
   mounted() {
     this.initBaseData()
     this.initLocalProjectMethodPageData()
+    this.initMethodApiData()
   },
   created() { },
   methods: {
@@ -248,15 +275,53 @@ export default {
         }
       })
     },
-    /* 保存文档数据 */
-    handleSaveMethodApiData() {
-      this.dialogSaveMethodApiData.dialogTableVisible = false // 关闭对话框
+    /** 获取接口文档 */
+    initMethodApiData() {
+      const data = {
+        projectName: this.localProjectName,
+        url: this.url
+      }
 
-      // 保存页面数据
+      /** 可能存在多个文档，默认初始化第一个文档 */
+      getMethodApiData(data).then(res => {
+        if (res.data.code === '000') {
+          this.methodApiDataList = res.data.data.map(item => {
+            this.$set(item, 'docTitle', JSON.parse(item.apiJsonData).methodApiData.docTitle)
+            return item
+          })
+          console.log('getMethodApiData', this.methodApiDataList)
+          if (this.methodApiDataList && this.methodApiDataList.length > 0) {
+            this.curMethodApiData = this.methodApiDataList[0]
+            console.log('getMethodApiData.curMethodApiData', this.curMethodApiData)
+          }
+        }
+      })
+    },
+    handleApiClick(apiDocId) {
+      console.log('handleApiClick', apiDocId)
+      for (const apiData of this.methodApiDataList) {
+        console.log('handleApiClick v-for', apiData)
+        if (apiData.apiDocId === apiDocId) {
+          console.log('handleApiClick-update', apiDocId)
+          this.curMethodApiData = apiData
+          this.setPageFromApiData()
+        }
+      }
+    },
+    setPageFromApiData() {
+      console.log('setPageFromApiData', this.curMethodApiData)
+      this.pageData = JSON.parse(this.curMethodApiData.apiJsonData).pageData
+      this.methodApiData = JSON.parse(this.curMethodApiData.apiJsonData).methodApiData
+      console.log('setPageFromApiData.pageData', this.pageData)
+      console.log('setPageFromApiData.methodApiData', this.methodApiData)
+    },
+    /* 保存文档数据, 需要保存页面数据和文档数据 */
+    handleSaveMethodApiData() {
+      this.methodApiData.dialogTableVisible = false // 关闭对话框
       const data = {
         projectName: this.localProjectName,
         url: this.url,
-        apiData: JSON.stringify(this.dialogSaveMethodApiData),
+        apiData: JSON.stringify(this.$data),
         author: this.author
       }
 
@@ -310,6 +375,38 @@ export default {
       })
       this.resetDialog()
     },
+    handleDeleteMethodApiData() {
+      if (this.curMethodApiData.userId === this.author) {
+        const data = {
+          apiDocId: this.curMethodApiData.apiDocId
+        }
+
+        deleteMethodApiData(data).then(res => {
+          if (res.data.code === '000') {
+            this.methodApiDataList = this.methodApiDataList.forEach(item => {
+              if (!this.curMethodApiData.apiDocId === item.apiDocId) {
+                return item
+              }
+            })
+            this.curMethodApiData = ''
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            })
+          } else {
+            this.$message({
+              message: res.data.message || '删除失败',
+              type: 'warning'
+            })
+          }
+        }).catch((error) => {
+          this.$message({
+            message: error || '删除失败',
+            type: 'warning'
+          })
+        })
+      }
+    },
     /** 保存页面数据 */
     handleClickSave() {
       // 保存页面数据
@@ -346,11 +443,11 @@ export default {
     },
     saveMethodApiData() {
       // 解析各参数为表单数据
-      this.dialogSaveMethodApiData.headerJsonValues = parseParams(this.pageData.headerJson)
-      this.dialogSaveMethodApiData.getTypeParamValues = parseParams(this.pageData.getTypeParam)
-      this.dialogSaveMethodApiData.bodyJsonDataValues = parseParams(this.pageData.bodyJsonData)
-      this.dialogSaveMethodApiData.responseBodyValues = parseParams(this.pageData.responseBody)
-      this.dialogSaveMethodApiData.dialogTableVisible = true // 关闭对话框
+      this.methodApiData.headerJsonValues = parseParams(this.pageData.headerJson)
+      this.methodApiData.getTypeParamValues = parseParams(this.pageData.getTypeParam)
+      this.methodApiData.bodyJsonDataValues = parseParams(this.pageData.bodyJsonData)
+      this.methodApiData.responseBodyValues = parseParams(this.pageData.responseBody)
+      this.methodApiData.dialogTableVisible = true // 关闭对话框
     },
     resetDialog() {
       this.dialogObj.dialogTitle = ''
@@ -361,13 +458,54 @@ export default {
   }
 }
 </script>
-<style scoped>
-.method-title {
-  /* background-color: #fff; */
-  height: 20px;
-  margin: 0px 10px 0px 10px;
-  border-radius: 5px;
-  font-size: 13px;
-  color: #303133;
+<style lang="scss" scoped>
+.method-navbar {
+  position: relative;
+  height: 40px;
+  background: #fff;
+  margin: 80px 10px 10px 10px;
+
+  .left-menu {
+    float: left;
+    height: 100%;
+    padding-left: 10px;
+    line-height: 40px;
+
+    &:focus {
+      outline: none;
+    }
+
+    .left-menu-item {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      vertical-align: text-bottom;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  .right-menu {
+    float: right;
+    height: 100%;
+    padding-left: 10px;
+    line-height: 40px;
+
+    &:focus {
+      outline: none;
+    }
+
+    .right-menu-item {
+      display: inline-block;
+      padding: 0 8px;
+      height: 100%;
+      vertical-align: text-bottom;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
 }
 </style>

@@ -1,75 +1,73 @@
 <template>
-  <div>
-    <el-card>
-      <div style="">
-        <el-row>
-          <el-col :span="3">
-            <el-select v-model="pageData.requestType" placeholder="请选择" @change="handlerequestTypeClick">
-              <el-option label="POST" value="POST" />
-              <el-option label="GET" value="GET" />
-              <el-option label="PUT" value="PUT" />
-              <el-option label="DELETE" value="DELETE" />
-            </el-select>
-          </el-col>
-          <el-col :span="16">
-            <el-input v-model="pageData.path" placeholder="请输入内容" class="input-with-select" />
-          </el-col>
-          <el-col :span="2">
-            <el-button type="primary" style="margin-left: 15px" @click="handleSendRequest">
-              发送
-            </el-button>
-          </el-col>
-          <el-col v-show="isShowSave" :span="3">
-            <!-- <el-button type="primary" @click="handleClickSave">保存<i class="el-icon-upload el-icon--right" /></el-button> -->
-            <el-dropdown type="primary" split-button @click="handleClickSave" @command="handleClickSaveAs">
-              保存
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item v-for="item of saveItem" :key="item" :command="item.command">{{ item.label }}</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
-          </el-col>
-        </el-row>
-      </div>
-      <div class="option-bar" style="margin-top: 15px">
-        <el-tabs v-model="pageData.requestActiveName" @tab-click="handleClickRequest">
-          <el-tab-pane label="Param" name="Param">
-            <vue-json-editor v-model="pageData.getTypeParam" :show-btns="false" :mode="'code'" lang="zh" @json-change="onParamChange" />
-          </el-tab-pane>
-          <el-tab-pane label="Header" name="Header">
-            <vue-json-editor v-model="pageData.headerJson" :show-btns="false" :mode="'code'" lang="zh" @json-change="onHeaderChange" />
-          </el-tab-pane>
-          <el-tab-pane label="Body" name="Body">
-            <el-radio-group v-model="pageData.contentType" style="margin-bottom: 10px" @change="changeBodyType">
-              <el-radio label="none">none</el-radio>
-              <el-radio label="application/json">application/json</el-radio>
-              <el-radio label="bodyFile">文件</el-radio>
-            </el-radio-group>
-            <vue-json-editor v-show="pageData.bodyNoneShow" v-model="pageData.bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
-            <vue-json-editor v-show="pageData.bodyJsonShow" v-model="pageData.bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
-            <el-card v-show="pageData.bodyFileShow" class="body-file-box">
-              <el-upload class="body-upload-file" action="" multiple :limit="1" :file-list="pageData.fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-                <div slot="tip" class="el-upload__tip">可上传任意格式文件</div>
-              </el-upload>
-            </el-card>
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-      <el-divider>Response</el-divider>
-      <div class="request-result" style="margin-top: 15px">
-        <el-tabs v-model="pageData.responseActiveName" @tab-click="handleClickResponse">
-          <el-tab-pane label="Body" name="Body">
-            <vue-json-editor v-model="pageData.responseBody" :show-btns="false" :mode="'code'" lang="zh" @json-change="onResponseBodyChange" />
-          </el-tab-pane>
-          <!-- <el-tab-pane label="Cookies" name="Cookies">
+  <div class="request-main">
+    <div>
+      <el-row>
+        <el-col :span="3">
+          <el-select v-model="pageData.requestType" placeholder="请选择" @change="handlerequestTypeClick">
+            <el-option label="POST" value="POST" />
+            <el-option label="GET" value="GET" />
+            <el-option label="PUT" value="PUT" />
+            <el-option label="DELETE" value="DELETE" />
+          </el-select>
+        </el-col>
+        <el-col :span="16">
+          <el-input v-model="pageData.path" placeholder="请输入内容" class="input-with-select" />
+        </el-col>
+        <el-col :span="2">
+          <el-button type="primary" style="margin-left: 15px" @click="handleSendRequest">
+            发送
+          </el-button>
+        </el-col>
+        <el-col v-show="isShowSave" :span="3">
+          <!-- <el-button type="primary" @click="handleClickSave">保存<i class="el-icon-upload el-icon--right" /></el-button> -->
+          <el-dropdown type="primary" split-button @click="handleClickSave" @command="handleClickSaveAs">
+            保存
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item v-for="item of saveItem" :key="item" :command="item.command">{{ item.label }}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="option-bar" style="margin-top: 15px">
+      <el-tabs v-model="pageData.requestActiveName" @tab-click="handleClickRequest">
+        <el-tab-pane label="Param" name="Param">
+          <vue-json-editor v-model="pageData.getTypeParam" :show-btns="false" :mode="'code'" lang="zh" @json-change="onParamChange" />
+        </el-tab-pane>
+        <el-tab-pane label="Header" name="Header">
+          <vue-json-editor v-model="pageData.headerJson" :show-btns="false" :mode="'code'" lang="zh" @json-change="onHeaderChange" />
+        </el-tab-pane>
+        <el-tab-pane label="Body" name="Body">
+          <el-radio-group v-model="pageData.contentType" style="margin-bottom: 10px" @change="changeBodyType">
+            <el-radio label="none">none</el-radio>
+            <el-radio label="application/json">application/json</el-radio>
+            <el-radio label="bodyFile">文件</el-radio>
+          </el-radio-group>
+          <vue-json-editor v-show="pageData.bodyNoneShow" v-model="pageData.bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
+          <vue-json-editor v-show="pageData.bodyJsonShow" v-model="pageData.bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
+          <el-card v-show="pageData.bodyFileShow" class="body-file-box">
+            <el-upload class="body-upload-file" action="" multiple :limit="1" :file-list="pageData.fileList">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">可上传任意格式文件</div>
+            </el-upload>
+          </el-card>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+    <el-divider>Response</el-divider>
+    <div class="request-result" style="margin-top: 15px">
+      <el-tabs v-model="pageData.responseActiveName" @tab-click="handleClickResponse">
+        <el-tab-pane label="Body" name="Body">
+          <vue-json-editor v-model="pageData.responseBody" :show-btns="false" :mode="'code'" lang="zh" @json-change="onResponseBodyChange" />
+        </el-tab-pane>
+        <!-- <el-tab-pane label="Cookies" name="Cookies">
             <el-card class="response-cookies-box"> 没有Cookies </el-card>
           </el-tab-pane> -->
-          <el-tab-pane label="Headers" name="Headers">
-            <vue-json-editor v-model="pageData.responseHeader" :show-btns="false" :mode="'code'" lang="zh" @json-change="onResponseHeaderChange" />
-          </el-tab-pane>
-        </el-tabs>
-      </div>
-    </el-card>
+        <el-tab-pane label="Headers" name="Headers">
+          <vue-json-editor v-model="pageData.responseHeader" :show-btns="false" :mode="'code'" lang="zh" @json-change="onResponseHeaderChange" />
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </div>
 </template>
 
@@ -237,7 +235,14 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
+.request-main {
+  background: #fff;
+  margin: 10px 10px 10px 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
 .el-tag {
   margin-left: 10px;
 }

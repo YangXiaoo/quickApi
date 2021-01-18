@@ -86,13 +86,16 @@ export function getProjectRoutesFromMethodDataList(apiInfo) {
         name: '',
         component: () => import('@/views/serverProject/index'),
         meta: {
-          title: ''
+          title: '',
+          group: '',
+          projectName: ''
         }
       }
       curChildRouter.path = api.url.substring(1)
       curChildRouter.name = api.methodName
       curChildRouter.meta.title = api.name
-      curChildRouter.meta.group = api.group
+      curChildRouter.meta.group = api.methodGroup
+      curChildRouter.meta.projectName = api.projectName
 
       curRouter.children.push(curChildRouter)
     }

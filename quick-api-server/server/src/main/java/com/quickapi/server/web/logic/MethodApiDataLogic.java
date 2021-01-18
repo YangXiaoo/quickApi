@@ -32,25 +32,16 @@ public class MethodApiDataLogic {
      * @userId yangxiao
      * @date 2021/1/4 21:59
      */
-    public ApiDoc findMethodApiData(String projectName, String url) {
+    public List<ApiDoc> findMethodApiData(String projectName, String url) {
         if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url)) {
             throw new BusinessException("findMethodApiData()参数不完整");
         }
-        ApiDoc apiDoc = null;
         QueryWrapper<ApiDoc> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("PROJECT_NAME", projectName);
         queryWrapper.eq("METHOD_URL", url);
-        List<ApiDoc> apiDocList = apiDocDao.selectList(queryWrapper);
-        if (!CollectionUtils.isEmpty(apiDocList)) {
-            if (apiDocList.size() > 1) {
-                throw new BusinessException("findMethodApiData(), projectName: " + projectName
-                        + "method url: " + url + ", 找到超过两条数据");
-            }
+        queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
 
-            apiDoc = apiDocList.get(0);
-        }
-
-        return apiDoc;
+        return apiDocDao.selectList(queryWrapper);
     }
 
     /**
@@ -75,6 +66,7 @@ public class MethodApiDataLogic {
         apiDoc.setApiJsonData(apiData);
         apiDoc.setUserId(userId);
         apiDoc.setCreateTime(DateTool.getCurrentDate());
+        apiDoc.setDeleteFlag(CONSTANT_DEFINE.NOT_DELETE);
         apiDoc.setApiDocId(UUIDUtil.getUUID());
         while (!CollectionUtils.isEmpty(selectApiById(apiDoc))) {
             apiDoc.setApiDocId(UUIDUtil.getUUID());
@@ -99,6 +91,23 @@ public class MethodApiDataLogic {
         }
 
         return ret;
+    }
+
+    /**
+     * 删除接口
+     * @param apiDocId 用户测试项目接口主键ID
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/18 19:46
+     */
+    public void deleteMethodApiData(String apiDocId) {
+        if (StringUtils.isNotBlank(apiDocId)) {
+            ApiDoc apiDoc = apiDocDao.selectById(apiDocId);
+            if (apiDoc != null) {
+                apiDoc.setDeleteFlag(CONSTANT_DEFINE.IS_DELETE);
+                apiDocDao.updateById(apiDoc);
+            }
+        }
     }
 
     /**

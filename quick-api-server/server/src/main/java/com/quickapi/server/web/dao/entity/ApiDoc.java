@@ -6,17 +6,18 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
 
 @TableName("api_doc")
-
 public class ApiDoc {
   @TableId
   private String apiDocId;
-  private String projectName;
+  private String projectId;
   private String methodUrl;
   private String apiJsonData;
   private String userName;
   private String userId;
   private Date createTime;
   private Date updateTime;
+  private String deleteFlag;
+  private String projectName;
 
 
   public String getApiDocId() {
@@ -28,12 +29,12 @@ public class ApiDoc {
   }
 
 
-  public String getProjectName() {
-    return projectName;
+  public String getProjectId() {
+    return projectId;
   }
 
-  public void setProjectName(String projectName) {
-    this.projectName = projectName;
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
   }
 
 
@@ -88,6 +89,24 @@ public class ApiDoc {
 
   public void setUpdateTime(Date updateTime) {
     this.updateTime = updateTime;
+  }
+
+
+  public String getDeleteFlag() {
+    return deleteFlag;
+  }
+
+  public void setDeleteFlag(String deleteFlag) {
+    this.deleteFlag = deleteFlag;
+  }
+
+
+  public String getProjectName() {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
   }
 
 }

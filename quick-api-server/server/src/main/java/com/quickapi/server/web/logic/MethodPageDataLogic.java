@@ -47,23 +47,13 @@ public class MethodPageDataLogic {
             if (pageDataList.size() > 1) {                                    // 删除
                 for (UserProjectPageData tmp : pageDataList) {
                     tmp.setDeleteFlag(CONSTANT_DEFINE.IS_DELETE);
-                    UpdateWrapper<UserProjectPageData> updateWrapper = new UpdateWrapper<>();
-                    queryWrapper.eq("PROJECT_NAME", projectName);
-                    queryWrapper.eq("METHOD_URL", url);
-                    queryWrapper.eq("USER_NAME", userName);
-                    methodPageDataDao.update(tmp, updateWrapper);
+                    methodPageDataDao.updateById(tmp);
                 }
             } else {                                                        // 更新
                 UserProjectPageData pageData = pageDataList.get(0);
                 pageData.setApiJsonData(pageJsonData);
                 pageData.setUpdateTime(DateTool.getCurrentDate());
-
-                UpdateWrapper<UserProjectPageData> updateWrapper = new UpdateWrapper<>();
-                queryWrapper.eq("PROJECT_NAME", projectName);
-                queryWrapper.eq("METHOD_URL", url);
-                queryWrapper.eq("USER_NAME", userName);
-                queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
-                methodPageDataDao.update(pageData, updateWrapper);
+                methodPageDataDao.updateById(pageData);
                 insertFlag = false;
             }
         }

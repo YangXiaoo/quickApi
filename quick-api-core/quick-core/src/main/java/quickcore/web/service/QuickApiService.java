@@ -460,6 +460,19 @@ public class QuickApiService {
         return jsonModel;
     }
 
+    @PostMapping(value = "deleteMethodApiData")
+    public JsonModel deleteMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.DELETE_METHOD_API_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
     /**
      * 获得项目信息
      * @param map 查询条件

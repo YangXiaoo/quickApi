@@ -83,6 +83,29 @@ public class MethodApiDataServiceImpl {
     }
 
     /**
+     * 删除接口
+     * @param map 主键ID
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/18 19:49
+     */
+    @PostMapping("deleteMethodApiData")
+    public JsonModel deleteMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String apiDocId = (String) map.get("apiDocId");
+            apiDataLogic.deleteMethodApiData(apiDocId);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "删除成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
      * 根据URL查询用户接口文档数据
      * @param map 查询条件
      * @return com.quickapi.server.common.utils.JsonModel

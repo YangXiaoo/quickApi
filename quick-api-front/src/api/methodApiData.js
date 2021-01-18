@@ -35,3 +35,11 @@ export function getMethodApiData(data) {
     data
   })
 }
+
+export function deleteMethodApiData(data) {
+  return request({
+    url: '/api/quickApi/deleteMethodApiData',
+    method: 'post',
+    data
+  })
+}
