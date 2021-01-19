@@ -7,12 +7,9 @@
         </div>
       </div>
       <div class="right-menu">
-        <div class="right-menu-item">
-          当前文档 {{ methodApiData.docTitle }}
+        <div v-show="curMethodApiData" class="right-menu-item">
+          <span class="doc-title-dot">{{ methodApiData.docTitle }} </span>
         </div>
-        <!-- <div class="right-menu-item">
-          {{ curMethodApiData.userName }}
-        </div> -->
         <div class="right-menu-item">
           <el-dropdown @command="handleApiClick">
             <span class="el-dropdown-link">
@@ -26,129 +23,151 @@
         </div>
       </div>
     </div>
-    <el-card>
-      <div>
-        <el-tabs :tab-position="'left'">
-          <el-tab-pane label="文档">
-            <div>
-              <el-button type="success" style="width: 10%">{{ pageData.requestType }}</el-button>
-              <el-tag type="success" style="width: 80%">
-                {{ pageData.path }}
-              </el-tag>
-            </div>
-            <el-divider />
-            <div>
-              <el-button type="success" style="width: 10%">请求类型</el-button>
-              <el-tag style="width: 80%">{{ pageData.contentType }} </el-tag>
-            </div>
-            <div v-show="pageData.headerJson">
-              <el-divider>请求头参数</el-divider>
-              <el-table :data="methodApiData.headerJsonValues" border fit highlight-current-row>
-                <!-- 参数名 -->
-                <el-table-column label="参数名">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.name }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数值 -->
-                <el-table-column label="参数值">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.value }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数说明 -->
-                <el-table-column label="参数说明">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.description }} </span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <div v-show="pageData.paramData">
-              <el-divider>get参数</el-divider>
-              <el-table :data="methodApiData.paramValues" border fit highlight-current-row>
-                <!-- 参数名 -->
-                <el-table-column label="参数名">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.name }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数值 -->
-                <el-table-column label="参数值">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.value }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数说明 -->
-                <el-table-column label="参数说明">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.description }} </span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <div v-show="pageData.bodyJsonData">
-              <el-divider>POST参数</el-divider>
-              <el-table :data="methodApiData.bodyJsonDataValues" border fit highlight-current-row>
-                <!-- 参数名 -->
-                <el-table-column label="参数名">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.name }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数值 -->
-                <el-table-column label="参数值">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.value }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数说明 -->
-                <el-table-column label="参数说明">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.description }} </span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <div v-show="pageData.responseBody">
-              <el-divider>响应值</el-divider>
-              <el-table :data="methodApiData.responseBodyValues" border fit highlight-current-row>
-                <!-- 参数名 -->
-                <el-table-column label="参数名">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.name }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数值 -->
-                <el-table-column label="参数值">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.value }} </span>
-                  </template>
-                </el-table-column>
-                <!-- 参数说明 -->
-                <el-table-column label="参数说明">
-                  <template slot-scope="{ row }">
-                    <span> {{ row.description }} </span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-            <div v-show="methodApiData.responseHeaderDesc">
-              <el-divider>响应头</el-divider>
-              <el-input v-model="methodApiData.responseHeaderDesc" type="textarea" :rows="4" />
-            </div>
-          </el-tab-pane>
-          <el-tab-pane label="调试">
-            <request-template
-              :page-data="pageData"
-              :url="url"
-              :is-local-project="false"
-              :is-show-save="false"
-            />
-          </el-tab-pane>
-        </el-tabs>
+    <div v-show="methodApiDataList && methodApiDataList.length > 0" class="request-main">
+      <el-tabs :tab-position="'left'">
+        <el-tab-pane label="文档">
+          <div>
+            <el-button type="success" size="small" style="width: 10%">{{ pageData.requestType }}</el-button>
+            <el-tag type="success" style="width: 60%; margin-left:10px;">
+              {{ pageData.path }}
+            </el-tag>
+          </div>
+          <el-divider />
+          <div>
+            <el-button type="success" size="small" style="width: 10%">请求类型</el-button>
+            <el-tag style="width: 60%; margin-left: 10px;">{{ pageData.contentType }} </el-tag>
+          </div>
+          <div v-show="pageData.headerJson">
+            <el-divider>请求头说明</el-divider>
+            <el-table :data="methodApiData.headerJsonValues" size="small" border fit highlight-current-row>
+              <!-- 参数名 -->
+              <el-table-column label="参数名">
+                <template slot-scope="{ row }">
+                  <span> {{ row.name }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数值 -->
+              <el-table-column label="必选">
+                <template slot-scope="{ row }">
+                  <span> {{ row.required }} </span>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型">
+                <template slot-scope="{ row }">
+                  <span> {{ row.type }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数说明 -->
+              <el-table-column label="参数说明">
+                <template slot-scope="{ row }">
+                  <span> {{ row.description }} </span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div v-show="pageData.requestType === 'GET'">
+            <el-divider>get参数说明</el-divider>
+            <el-table :data="methodApiData.getTypeParamValues" size="small" border fit highlight-current-row>
+              <!-- 参数名 -->
+              <el-table-column label="参数名">
+                <template slot-scope="{ row }">
+                  <span> {{ row.name }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数值 -->
+              <el-table-column label="必选">
+                <template slot-scope="{ row }">
+                  <span> {{ row.required }} </span>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型">
+                <template slot-scope="{ row }">
+                  <span> {{ row.type }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数说明 -->
+              <el-table-column label="参数说明">
+                <template slot-scope="{ row }">
+                  <span> {{ row.description }} </span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div v-show="pageData.requestType === 'POST' && pageData.contentType !== 'none'">
+            <el-divider>POST参数说明</el-divider>
+            <el-table :data="methodApiData.bodyJsonDataValues" size="small" border fit highlight-current-row>
+              <!-- 参数名 -->
+              <el-table-column label="参数名">
+                <template slot-scope="{ row }">
+                  <span> {{ row.name }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数值 -->
+              <el-table-column label="必选">
+                <template slot-scope="{ row }">
+                  <span> {{ row.required }} </span>
+                </template>
+              </el-table-column>
+              <el-table-column label="类型">
+                <template slot-scope="{ row }">
+                  <span> {{ row.type }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数说明 -->
+              <el-table-column label="参数说明">
+                <template slot-scope="{ row }">
+                  <span> {{ row.description }} </span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div v-show="pageData.responseBody">
+            <el-divider>响应值说明</el-divider>
+            <el-table :data="methodApiData.responseBodyValues" size="small" border fit highlight-current-row>
+              <!-- 参数名 -->
+              <el-table-column label="参数名">
+                <template slot-scope="{ row }">
+                  <span> {{ row.name }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数值 -->
+              <el-table-column label="参数值">
+                <template slot-scope="{ row }">
+                  <span> {{ row.value }} </span>
+                </template>
+              </el-table-column>
+              <!-- 参数说明 -->
+              <el-table-column label="参数说明">
+                <template slot-scope="{ row }">
+                  <span> {{ row.description }} </span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <div v-show="pageData.responseHeader">
+            <el-divider>响应头说明</el-divider>
+            <el-input v-model="methodApiData.responseHeaderDesc" type="textarea" :rows="4" placeholder="请输入说明" />
+          </div>
+          <div>
+            <el-divider>备注(可选)</el-divider>
+            <el-input v-model="methodApiData.remark" type="textarea" :rows="4" placeholder="文档备注" />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="调试">
+          <request-template
+            :page-data="pageData"
+            :url="url"
+            :is-local-project="false"
+            :is-show-save="false"
+          />
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+    <div v-show="!methodApiDataList || methodApiDataList.length === 0" class="request-main">
+      <div class="no-content" style="width: 300px;margin: 40px auto;">
+        没有文档
       </div>
-    </el-card>
+    </div>
   </div>
 </template>
 
@@ -237,7 +256,7 @@ export default {
 
       /** 可能存在多个文档，默认初始化第一个文档 */
       getMethodApiData(data).then(res => {
-        if (res.data.code === '000') {
+        if (res.data.code === '000' && res.data.data && res.data.data.length > 0) {
           this.methodApiDataList = res.data.data.map(item => {
             this.$set(item, 'docTitle', JSON.parse(item.apiJsonData).methodApiData.docTitle)
             return item
@@ -273,6 +292,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.request-main {
+  background: #fff;
+  margin: 10px 10px 10px 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
 .method-navbar {
   position: relative;
   height: 40px;
@@ -348,5 +374,16 @@ export default {
 }
 .jsoneditor-menu a {
   display: none !important;
+}
+.doc-title-dot::before {
+  content: '';
+  position: relative;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: rgb(51, 255, 0);
+  left: -10px;
+  top: 0px;
 }
 </style>

@@ -5,6 +5,9 @@
         <div class="left-menu-item">
           {{ methodName }} <i class="el-icon-edit" @click="handleMethodChangeClick" />
         </div>
+        <div class="left-menu-item">
+          <i class="el-icon-refresh" @click="handleRefreshUserPageData" />
+        </div>
       </div>
     </div>
     <request-template
@@ -17,7 +20,7 @@
     />
 
     <!-- 保存弹框 -->
-    <el-dialog :title="dialogObj.dialogTitle" :visible.sync="dialogObj.visible">
+    <el-dialog :title="dialogObj.dialogTitle" :visible.sync="dialogObj.visible" width="30%">
       <el-form>
         <el-form-item label="所属组">
           <el-select v-model="dialogObj.methodGroup" filterable allow-create default-first-option placeholder="请选择组别">
@@ -226,6 +229,9 @@ export default {
       this.dialogObj.visible = false
       this.dialogObj.methodName = ''
       this.dialogObj.methodGroup = ''
+    },
+    handleRefreshUserPageData() {
+      this.initUserMethodApiData()
     }
   }
 }

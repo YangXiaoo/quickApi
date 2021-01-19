@@ -6,8 +6,6 @@
           <el-select v-model="pageData.requestType" placeholder="请选择" @change="handlerequestTypeClick">
             <el-option label="POST" value="POST" />
             <el-option label="GET" value="GET" />
-            <el-option label="PUT" value="PUT" />
-            <el-option label="DELETE" value="DELETE" />
           </el-select>
         </el-col>
         <el-col :span="16">
@@ -23,7 +21,7 @@
           <el-dropdown type="primary" split-button @click="handleClickSave" @command="handleClickSaveAs">
             保存
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="item of saveItem" :key="item" :command="item.command">{{ item.label }}</el-dropdown-item>
+              <el-dropdown-item v-for="item of saveItem" :key="item.command" :command="item.command">{{ item.label }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-col>
@@ -119,6 +117,17 @@ export default {
     ...mapGetters([
     ])
   },
+  // watch: {
+  //   pageData: {
+  //     handler(newValue, oldValue) {
+  //       if (newValue.requestType === 'GET') {
+  //         this.pageData.requestActiveName = 'Param'
+  //       } else {
+  //         this.pageData.requestActiveName = 'Body'
+  //       }
+  //     }, deep: true
+  //   }
+  // },
   mounted() {
   },
   created() { },
@@ -186,20 +195,21 @@ export default {
       this.$emit('clickSaveAs', val)
     },
     changeBodyType(value) {
+      console.log('changeBodyType.value', value)
       if (value === 'application/json') {
-        this.bodyNoneShow = false
-        this.bodyJsonShow = true
-        this.bodyFileShow = false
-        this.contentType = 'application/json'
+        this.pageData.bodyNoneShow = false
+        this.pageData.bodyJsonShow = true
+        this.pageData.bodyFileShow = false
+        this.pageData.contentType = 'application/json'
       } else if (value === 'bodyFile') {
-        this.bodyNoneShow = false
-        this.bodyJsonShow = false
-        this.bodyFileShow = true
+        this.pageData.bodyNoneShow = false
+        this.pageData.bodyJsonShow = false
+        this.pageData.bodyFileShow = true
       } else if (value === 'none') {
-        this.bodyNoneShow = true
-        this.bodyJsonShow = false
-        this.bodyFileShow = false
-        this.contentType = 'none'
+        this.pageData.bodyNoneShow = true
+        this.pageData.bodyJsonShow = false
+        this.pageData.bodyFileShow = false
+        this.pageData.contentType = 'none'
       }
     },
     onResponseBodyChange(value) {
@@ -210,10 +220,10 @@ export default {
     },
     handlerequestTypeClick(value) {
       if (value === 'POST') {
-        this.requestActiveName = 'Body'
+        this.pageData.requestActiveName = 'Body'
       } else {
-        this.requestActiveName = 'Param'
-        this.contentType = 'none'
+        this.pageData.requestActiveName = 'Param'
+        this.pageData.contentType = 'none'
       }
     },
     // json输入框事件处理, 无用

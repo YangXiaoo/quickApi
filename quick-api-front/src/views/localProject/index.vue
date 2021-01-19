@@ -5,13 +5,16 @@
         <div class="left-menu-item">
           {{ methodName }} <i class="el-icon-edit" @click="handleMethodChangeClick" />
         </div>
+        <div class="left-menu-item">
+          <i class="el-icon-refresh" @click="handleRefreshUserPageData" />
+        </div>
       </div>
       <div class="right-menu">
-        <div v-show="curMethodApiData && curMethodApiData.userId === author" class="right-menu-item" @click="handleDeleteMethodApiData">
-          <i class="el-icon-delete" />
+        <div v-show="curMethodApiData" class="right-menu-item">
+          <span class="doc-title-dot">{{ curMethodApiData.docTitle }} </span>
         </div>
-        <div class="right-menu-item">
-          当前文档 {{ methodApiData.docTitle }}
+        <div v-show="curMethodApiData && curMethodApiData.userId === author" class="right-menu-item" style="color:red;" @click="handleDeleteMethodApiData">
+          <i class="el-icon-delete" />
         </div>
         <!-- <div class="right-menu-item">
           {{ curMethodApiData.userName }}
@@ -44,7 +47,7 @@
       <el-input v-model="methodApiData.docTitle" />
       <div v-show="pageData.headerJson">
         <el-divider>请求头说明</el-divider>
-        <el-table :data="methodApiData.headerJsonValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.headerJsonValues" size="small" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -52,9 +55,17 @@
             </template>
           </el-table-column>
           <!-- 参数值 -->
-          <el-table-column label="参数值">
+          <el-table-column label="必选">
             <template slot-scope="{ row }">
-              <span> {{ row.value }} </span>
+              <el-select v-model="row.required" placeholder="请选择">
+                <el-option label="true" value="true" />
+                <el-option label="false" value="false" />
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="类型">
+            <template slot-scope="{ row }">
+              <span> {{ row.type }} </span>
             </template>
           </el-table-column>
           <!-- 参数说明 -->
@@ -65,9 +76,9 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-show="pageData.getTypeParam">
+      <div v-show="pageData.requestType === 'GET'">
         <el-divider>get参数说明</el-divider>
-        <el-table :data="methodApiData.getTypeParamValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.getTypeParamValues" size="small" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -75,9 +86,17 @@
             </template>
           </el-table-column>
           <!-- 参数值 -->
-          <el-table-column label="参数值">
+          <el-table-column label="必选">
             <template slot-scope="{ row }">
-              <span> {{ row.value }} </span>
+              <el-select v-model="row.required" placeholder="请选择">
+                <el-option label="true" value="true" />
+                <el-option label="false" value="false" />
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="类型">
+            <template slot-scope="{ row }">
+              <span> {{ row.type }} </span>
             </template>
           </el-table-column>
           <!-- 参数说明 -->
@@ -88,9 +107,9 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-show="pageData.bodyJsonData">
+      <div v-show="pageData.requestType === 'POST' && pageData.contentType !== 'none'">
         <el-divider>POST参数说明</el-divider>
-        <el-table :data="methodApiData.bodyJsonDataValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.bodyJsonDataValues" size="small" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -98,9 +117,17 @@
             </template>
           </el-table-column>
           <!-- 参数值 -->
-          <el-table-column label="参数值">
+          <el-table-column label="必选">
             <template slot-scope="{ row }">
-              <span> {{ row.value }} </span>
+              <el-select v-model="row.required" placeholder="请选择">
+                <el-option label="true" value="true" />
+                <el-option label="false" value="false" />
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="类型">
+            <template slot-scope="{ row }">
+              <span> {{ row.type }} </span>
             </template>
           </el-table-column>
           <!-- 参数说明 -->
@@ -113,7 +140,7 @@
       </div>
       <div v-show="pageData.responseBody">
         <el-divider>响应值说明</el-divider>
-        <el-table :data="methodApiData.responseBodyValues" border fit highlight-current-row>
+        <el-table :data="methodApiData.responseBodyValues" size="small" border fit highlight-current-row>
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -137,6 +164,10 @@
       <div v-show="pageData.responseHeader">
         <el-divider>响应头说明</el-divider>
         <el-input v-model="methodApiData.responseHeaderDesc" type="textarea" :rows="4" placeholder="请输入说明" />
+      </div>
+      <div>
+        <el-divider>备注(可选)</el-divider>
+        <el-input v-model="methodApiData.remark" type="textarea" :rows="4" placeholder="文档备注" />
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="methodApiData.dialogTableVisible = false">取 消</el-button>
@@ -169,7 +200,7 @@ import {
   getUserProjectMethodPageData,
   saveUserProjectMethodPageData
 } from '@/api/pageData'
-import { getLocalProjectPath, parseParams } from '@/utils/commonHelper'
+import { getLocalProjectPath, parseParams, parseRequestData } from '@/utils/commonHelper'
 
 import RequestTemplate from '../component/requestTemplate.vue'
 
@@ -213,7 +244,8 @@ export default {
         bodyJsonDataValues: [], // post请求参数说明
         bodyStringDataValues: [], // String类请求
         responseBodyValues: [],
-        responseHeaderDesc: []
+        responseHeaderDesc: '',
+        remark: '' // 备注
       },
 
       // 弹框
@@ -289,11 +321,6 @@ export default {
             this.$set(item, 'docTitle', JSON.parse(item.apiJsonData).methodApiData.docTitle)
             return item
           })
-          console.log('getMethodApiData', this.methodApiDataList)
-          if (this.methodApiDataList && this.methodApiDataList.length > 0) {
-            this.curMethodApiData = this.methodApiDataList[0]
-            console.log('getMethodApiData.curMethodApiData', this.curMethodApiData)
-          }
         }
       })
     },
@@ -328,6 +355,8 @@ export default {
       saveMethodApiData(data)
         .then((res) => {
           if (res.data.code === '000') {
+            this.initMethodApiData()
+            // this.methodApiDataList.push(this.$data) // 将当前保存的数据插入文档缓存中
             this.$message({
               message: '保存成功',
               type: 'success'
@@ -351,6 +380,14 @@ export default {
       this.dialogObj.methodName = this.methodName
       this.dialogObj.methodGroup = this.methodGroup
       this.dialogObj.visible = true
+    },
+    /**
+     * 不使用文档数据
+     * 重新请求获得页面数据
+     */
+    handleRefreshUserPageData() {
+      this.curMethodApiData = ''
+      this.initLocalProjectMethodPageData()
     },
     // 修改方法名
     handleSaveMethodName() {
@@ -383,11 +420,12 @@ export default {
 
         deleteMethodApiData(data).then(res => {
           if (res.data.code === '000') {
-            this.methodApiDataList = this.methodApiDataList.forEach(item => {
-              if (!this.curMethodApiData.apiDocId === item.apiDocId) {
-                return item
-              }
-            })
+            // this.methodApiDataList = this.methodApiDataList.forEach(item => {
+            //   if (!this.curMethodApiData.apiDocId === item.apiDocId) {
+            //     return item
+            //   }
+            // })
+            this.initMethodApiData()
             this.curMethodApiData = ''
             this.$message({
               type: 'success',
@@ -442,10 +480,12 @@ export default {
       }
     },
     saveMethodApiData() {
+      console.log('saveMethodApiData.bodyJsonData', this.pageData.bodyJsonData)
       // 解析各参数为表单数据
-      this.methodApiData.headerJsonValues = parseParams(this.pageData.headerJson)
-      this.methodApiData.getTypeParamValues = parseParams(this.pageData.getTypeParam)
-      this.methodApiData.bodyJsonDataValues = parseParams(this.pageData.bodyJsonData)
+      this.methodApiData.docTitle = ''
+      this.methodApiData.headerJsonValues = parseRequestData(this.pageData.headerJson)
+      this.methodApiData.getTypeParamValues = parseRequestData(this.pageData.getTypeParam)
+      this.methodApiData.bodyJsonDataValues = parseRequestData(this.pageData.bodyJsonData)
       this.methodApiData.responseBodyValues = parseParams(this.pageData.responseBody)
       this.methodApiData.dialogTableVisible = true // 关闭对话框
     },
@@ -508,5 +548,17 @@ export default {
       }
     }
   }
+}
+
+.doc-title-dot::before {
+  content: '';
+  position: relative;
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  background: rgb(51, 255, 0);
+  left: -10px;
+  top: 0px;
 }
 </style>

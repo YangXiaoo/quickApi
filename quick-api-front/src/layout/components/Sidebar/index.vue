@@ -111,6 +111,7 @@ export default {
     localProjectRoutes(newVal) {
       this.localProjectMethodMenu = newVal
     },
+    // deep: true
     projectRoutes(newVal) {
       this.projectMethodMenu = newVal
     },
