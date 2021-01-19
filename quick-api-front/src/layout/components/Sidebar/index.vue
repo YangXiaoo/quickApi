@@ -11,6 +11,23 @@
           >
             <sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
           </el-menu>
+
+          <!-- <el-collapse-item v-for="(subMenu, peojectName) in projectMethodMenu" :key="peojectName" :name="peojectName">
+            <template slot="title">
+              <div class="collapse-title">
+                {{ peojectName }}
+              </div>
+            </template>
+            <el-menu
+              :default-active="activeMenu"
+              :collapse="isCollapse"
+              :unique-opened="false"
+              :collapse-transition="false"
+              mode="vertical"
+            >
+              <sidebar-item v-for="route in subMenu" :key="route.path" :item="route" :base-path="route.path" />
+            </el-menu>
+          </el-collapse-item> -->
         </el-tab-pane>
         <el-tab-pane label="接口文档" name="team">
           <div style="margin:10px">
