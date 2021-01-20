@@ -158,4 +158,28 @@ public class MethodApiDataServiceImpl {
 
         return jsonModel;
     }
+
+    /**
+     * 删除个人接口
+     * @param map 用户名，url
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/20 21:19
+     */
+    @PostMapping("deleteUserMethodApiData")
+    public JsonModel deleteUserMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String userName = (String) map.get("userName");
+            String url = (String) map.get("url");
+            apiDataLogic.deleteUserMethodApiData(userName, url);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "删除成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
 }

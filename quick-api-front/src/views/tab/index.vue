@@ -9,6 +9,11 @@
           <i class="el-icon-refresh" @click="handleRefreshUserPageData" />
         </div>
       </div>
+      <div class="right-menu">
+        <div class="right-menu-item" style="color:red;" @click="handleDeleteUserMethodApiData">
+          <i class="el-icon-delete" />
+        </div>
+      </div>
     </div>
     <request-template
       :page-data="pageData"
@@ -41,7 +46,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getUserMethodApiData, saveUserMethodApiData } from '@/api/methodApiData'
+import { getUserMethodApiData, saveUserMethodApiData, deleteUserMethodApiData } from '@/api/methodApiData'
 
 import RequestTemplate from '../component/requestTemplate.vue'
 export default {
@@ -232,6 +237,22 @@ export default {
     },
     handleRefreshUserPageData() {
       this.initUserMethodApiData()
+    },
+    handleDeleteUserMethodApiData() {
+      const data = {
+        userName: this.userName,
+        url: this.url
+      }
+
+      deleteUserMethodApiData(data).then(res => {
+        if (res.data.code === '000') {
+          // 后续处理, 更新页面，更新左侧菜单栏
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        }
+      })
     }
   }
 }

@@ -218,4 +218,23 @@ public class MethodApiDataLogic {
 
         return ret;
     }
+
+    /**
+     * 删除个人接口
+     * @param userName 用户名
+     * @param url 接口路由
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/20 21:17
+     */
+    public void deleteUserMethodApiData(String userName, String url) {
+        if (StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(url)) {
+            UserApi userApi = this.findUserMethodApiData(userName, url);
+            if (userApi != null) {
+                userApi.setDeleteFlag(CONSTANT_DEFINE.IS_DELETE);
+                userApiDao.updateById(userApi);
+            }
+
+        }
+    }
 }

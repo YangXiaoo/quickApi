@@ -460,8 +460,35 @@ public class QuickApiService {
         return jsonModel;
     }
 
+    /**
+     * 删除文档
+     * @param map
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/20 21:21
+     */
     @PostMapping(value = "deleteMethodApiData")
     public JsonModel deleteMethodApiData(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.DELETE_METHOD_API_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 删除个人接口
+     * @param map
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/20 21:21
+     */
+    @PostMapping(value = "deleteUserMethodApiData")
+    public JsonModel deleteUserMethodApiData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.DELETE_METHOD_API_DATA;
