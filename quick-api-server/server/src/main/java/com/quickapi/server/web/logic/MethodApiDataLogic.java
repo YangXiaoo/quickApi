@@ -232,7 +232,9 @@ public class MethodApiDataLogic {
             UserApi userApi = this.findUserMethodApiData(userName, url);
             if (userApi != null) {
                 userApi.setDeleteFlag(CONSTANT_DEFINE.IS_DELETE);
-                userApiDao.updateById(userApi);
+                UpdateWrapper<UserApi> updateWrapper = new UpdateWrapper<>();
+                updateWrapper.eq("USER_API_ID", userApi.getUserApiId());
+                userApiDao.update(userApi, updateWrapper);
             }
 
         }

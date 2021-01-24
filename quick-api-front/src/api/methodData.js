@@ -18,6 +18,15 @@ export function saveUserMethodData(data) {
   })
 }
 
+export function deleteUserMethodData(data) {
+  return request({
+    url: '/api/quickApi/deleteUserMethodData',
+    method: 'post',
+    data
+  })
+}
+
+
 /** 修改用户方法信息 */
 export function updateUserMethodData(data) {
   return request({
@@ -43,6 +52,14 @@ export function getMethodDataByProjectName(projectName) {
 export function updateMethodData(data) {
   return request({
     url: '/api/quickApi/updateMethodData',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteUserMethodApiData(data) {
+  return request({
+    url: '/api/quickApi/deleteUserMethodApiData',
     method: 'post',
     data
   })

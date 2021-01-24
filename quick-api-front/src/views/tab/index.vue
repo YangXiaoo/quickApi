@@ -243,15 +243,11 @@ export default {
         userName: this.userName,
         url: this.url
       }
-
-      deleteUserMethodApiData(data).then(res => {
-        if (res.data.code === '000') {
-          // 后续处理, 更新页面，更新左侧菜单栏
-          this.$message({
-            message: '删除成功',
-            type: 'success'
-          })
-        }
+      this.$store.dispatch('userMethodData/deleteUserMethodData', data).then(res => {
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        })
       })
     }
   }

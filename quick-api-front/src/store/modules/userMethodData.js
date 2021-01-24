@@ -7,7 +7,8 @@ import {
 import {
   getUserMethodDataList,
   updateUserMethodData,
-  saveUserMethodData
+  saveUserMethodData,
+  deleteUserMethodData
 } from '@/api/methodData'
 
 const state = {
@@ -107,6 +108,28 @@ const actions = {
         resolve(state.userRoutes)
       }).catch(error => {
         reject(error || '异常错误')
+      })
+    })
+  },
+  /** 删除用户保存的接口 */
+  deleteUserMethodData({ state, dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      deleteUserMethodData(data).then(res => {
+        if (res.data.code !== '000') {
+          reject(res.message || '更新失败')
+        }
+        console.log('deleteUserMethodData.url', data.url)
+        const methodDataList = []
+        state.userMethodDataList.forEach(item => {
+          if (item.url !== data.url) {
+            methodDataList.push(item)
+          }
+        })
+
+        console.log('deleteUserMethodData.methodDataList', methodDataList)
+        dispatch('setRoutes', methodDataList)
+        console.log('deleteUserMethodData.userRoutes', state.userRoutes)
+        resolve(state.userRoutes)
       })
     })
   },

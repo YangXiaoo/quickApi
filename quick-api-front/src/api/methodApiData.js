@@ -28,14 +28,6 @@ export function saveMethodApiData(data) {
   })
 }
 
-export function deleteUserMethodApiData(data) {
-  return request({
-    url: '/api/quickApi/deleteUserMethodApiData',
-    method: 'post',
-    data
-  })
-}
-
 export function getMethodApiData(data) {
   return request({
     url: '/api/quickApi/getMethodApiData',

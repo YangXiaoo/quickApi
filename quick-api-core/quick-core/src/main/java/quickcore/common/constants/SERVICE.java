@@ -23,7 +23,7 @@ public interface SERVICE {
     // 删除方法
     String DELETE_METHOD_DATA_LIST = "/api/methodData/deleteMethodDataList";                            // 删除接口方法信息
     String DELETE_USER_METHOD_DATA = "/api/methodData/deleteUserMethodData";                            // 删除接口方法信息
-    String DELETE_METHOD_API_DATA = "/api/methodApiData/deleteMethodApiData";                           // 删除接口文档
+    String DELETE_METHOD_API_DATA = "/api/methodApiData/deleteUserMethodApiData";                       // 删除接口文档
 
     // 更新
     String UPDATE_METHOD_DATA = "/api/methodData/updateMethodData";                                     // 更新接口方法信息
