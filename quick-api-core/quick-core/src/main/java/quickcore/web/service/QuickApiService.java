@@ -788,4 +788,43 @@ public class QuickApiService {
 
         return jsonModel;
     }
+
+    @PostMapping("getProjectFinishedMethodDataCount")
+    public JsonModel getProjectFinishedMethodDataCount(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_PROJECT_FINISHED_METHOD_DATA_COUNT;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    @PostMapping("getProjectFinishedMethodDataMap")
+    public JsonModel getProjectFinishedMethodDataMap(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_PROJECT_FINISHED_METHOD_DATA_MAP;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    @PostMapping("getProjectDevelopers")
+    public JsonModel getProjectDevelopers(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_PROJECT_DEVELOPERS;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
 }

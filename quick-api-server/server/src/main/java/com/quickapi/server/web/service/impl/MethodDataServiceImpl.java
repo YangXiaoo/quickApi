@@ -238,4 +238,50 @@ public class MethodDataServiceImpl {
 
         return jsonModel;
     }
+
+    /**
+     * 项目已完成接口文档数量
+     * @param map
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/25 20:08
+     */
+    @PostMapping("getProjectFinishedMethodDataCount")
+    public JsonModel getProjectFinishedMethodDataCount(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String projectName = (String) map.get("projectName");
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS,
+                    methodDataLogic.getProjectFinishedMethodDataCount(projectName));
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 项目已完成接口详细信息
+     * @param map
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/25 20:08
+     */
+    @PostMapping("getProjectFinishedMethodDataMap")
+    public JsonModel getProjectFinishedMethodDataMap(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String projectName = (String) map.get("projectName");
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS,
+                    methodDataLogic.getProjectFinishedMethodDataMap(projectName));
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
 }

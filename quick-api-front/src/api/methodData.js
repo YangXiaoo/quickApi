@@ -64,3 +64,20 @@ export function deleteUserMethodApiData(data) {
     data
   })
 }
+
+export function getProjectFinishedMethodDataCount(data) {
+  return request({
+    url: '/api/quickApi/getProjectFinishedMethodDataCount',
+    method: 'post',
+    data
+  })
+}
+
+export function getProjectFinishedMethodDataMap(data) {
+  return request({
+    url: '/api/quickApi/getProjectFinishedMethodDataMap',
+    method: 'post',
+    data
+  })
+}
+

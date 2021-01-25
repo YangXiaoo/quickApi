@@ -2,22 +2,27 @@ package com.quickapi.server.web.logic;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.quickapi.server.common.tools.DateTool;
 import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.ProjectInfoDao;
+import com.quickapi.server.web.dao.UserProjectInfoDao;
 import com.quickapi.server.web.dao.entity.ProjectInfo;
+import com.quickapi.server.web.dao.entity.UserProjectInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ProjectInfoLogic {
     @Autowired
     private ProjectInfoDao projectInfoDao;
+    @Autowired
+    private UserProjectInfoDao userProjectInfoDao;
 
     /**
      * 保存项目信息
@@ -71,5 +76,57 @@ public class ProjectInfoLogic {
         }
 
         return ret;
+    }
+
+    /**
+     * 查询项目信息
+     * @param projectName 项目名
+     * @return com.quickapi.server.web.dao.entity.ProjectInfo
+     * @author yangxiao
+     * @date 2021/1/25 19:51
+     */
+    public ProjectInfo getProjectInfo(String projectName) {
+        if (StringUtils.isBlank(projectName)) {
+            throw new BusinessException("getProjectInfo()参数不完整");
+        }
+        ProjectInfo projectInfo = null;
+
+        QueryWrapper<ProjectInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("PROJECT_MAME", projectName);
+        List<ProjectInfo> projectInfoList = projectInfoDao.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(projectInfoList)) {
+            if (projectInfoList.size() > 1) {
+                throw new BusinessException("找到超过两个项目信息");
+            } else {
+                projectInfo = projectInfoList.get(0);
+            }
+        }
+
+        return projectInfo;
+    }
+
+    /**
+     * 获得项目开发者信息
+     * @param projectName 项目名称
+     * @return java.util.List<java.lang.String>
+     * @author yangxiao
+     * @date 2021/1/25 19:55
+     */
+    public List<String> getProjectDevelopers(String projectName) {
+        if (StringUtils.isBlank(projectName)) {
+            throw new BusinessException("getProjectDevelopers()参数不完整");
+        }
+
+        List<String> developers = new ArrayList<>();
+        QueryWrapper<UserProjectInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("PROJECT_NAME", projectName);
+        List<UserProjectInfo> projectInfoList = userProjectInfoDao.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(projectInfoList)) {
+            for (UserProjectInfo projectInfo : projectInfoList) {
+                developers.add(projectInfo.getUserName());
+            }
+        }
+
+        return developers;
     }
 }

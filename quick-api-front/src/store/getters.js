@@ -14,6 +14,7 @@ const getters = {
   localServiceName: state => state.localProject.localServiceName,
   localProjectName: state => state.localProject.localProjectName,
   author: state => state.localProject.author, // 使用者
+  description: state => state.localProject.description,
 
   // 服务端搜索出的项目
   projectMethodDataList: state => state.projectMethodData.projectMethodDataList,

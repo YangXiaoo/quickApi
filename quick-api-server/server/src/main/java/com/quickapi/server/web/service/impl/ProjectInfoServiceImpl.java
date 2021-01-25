@@ -1,5 +1,6 @@
 package com.quickapi.server.web.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quickapi.server.common.constant.JSON_MODEL_CODE;
 import com.quickapi.server.common.utils.JsonModel;
@@ -10,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -53,6 +51,58 @@ public class ProjectInfoServiceImpl {
             }
             projectInfoLogic.saveProjectInfo(projectInfo);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 获得项目信息
+     * @param map
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/25 19:51
+     */
+    @PostMapping(value = "getProjectInfo")
+    public JsonModel getProjectInfo(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String projectName = (String) map.get("projectName");
+            if (StringUtils.isBlank(projectName)) {
+                throw new BusinessException("项目名称为空");
+            }
+
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, projectInfoLogic.getProjectInfo(projectName));
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 获得项目参与人员信息
+     * @param map
+     * @return com.quickapi.server.common.utils.JsonModel
+     * @author yangxiao
+     * @date 2021/1/25 19:51
+     */
+    @PostMapping(value = "getProjectDevelopers")
+    public JsonModel getProjectDevelopers(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String projectName = (String) map.get("projectName");
+            if (StringUtils.isBlank(projectName)) {
+                throw new BusinessException("项目名称为空");
+            }
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS,
+                    projectInfoLogic.getProjectDevelopers(projectName));
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {

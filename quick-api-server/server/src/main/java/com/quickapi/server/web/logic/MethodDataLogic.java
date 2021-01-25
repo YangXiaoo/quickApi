@@ -7,20 +7,27 @@ import com.quickapi.server.common.constant.CONSTANT_DEFINE;
 import com.quickapi.server.common.tools.DateTool;
 import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
+import com.quickapi.server.web.dao.ApiDocDao;
 import com.quickapi.server.web.dao.MethodModelDao;
 import com.quickapi.server.web.dao.UserMethodDao;
+import com.quickapi.server.web.dao.entity.ApiDoc;
 import com.quickapi.server.web.dao.entity.MethodModel;
 import com.quickapi.server.web.dao.entity.UserMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MethodDataLogic {
     @Autowired(required = false)
     private MethodModelDao methodModelDao;
+    @Autowired
+    private ApiDocDao apiDocDao;
     @Autowired
     private UserMethodDao userMethodDao;
 
@@ -355,5 +362,51 @@ public class MethodDataLogic {
         updateWrapper.eq("USER_METHOD_ID", methodModel.getUserMethodId());
         userMethodDao.update(methodModel, updateWrapper);
         // TODO 删除对应的接口文档
+    }
+
+    /**
+     * 获得项目已完成接口的详细信息
+     * @param projectName 项目名
+     * @return java.util.Map<java.lang.String,java.util.List<com.quickapi.server.web.dao.entity.ApiDoc>>
+     * @author yangxiao
+     * @date 2021/1/25 20:07
+     */
+    public Map<String, List<ApiDoc>> getProjectFinishedMethodDataMap(String projectName) {
+        if (StringUtils.isBlank(projectName)) {
+            throw new BusinessException("getProjectFinishedMethodDataMap()参数不完整");
+        }
+        Map<String, List<ApiDoc>> apiDocMap = new HashMap<>();
+        QueryWrapper<ApiDoc> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("PROJECT_NAME", projectName);
+        queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
+        List<ApiDoc> apiDocList = apiDocDao.selectList(queryWrapper);
+        if (!CollectionUtils.isEmpty(apiDocList))  {
+            for (ApiDoc apiDoc : apiDocList) {
+                if (apiDocMap.containsKey(apiDoc.getMethodUrl())) {
+                    apiDocMap.get(apiDoc.getMethodUrl()).add(apiDoc);
+                } else {
+                    List<ApiDoc> tmp = new ArrayList<>();
+                    tmp.add(apiDoc);
+                    apiDocMap.put(apiDoc.getMethodUrl(), new ArrayList<>(tmp));
+                }
+            }
+        }
+
+        return apiDocMap;
+    }
+
+    /**
+     * 获得项目已完成接口数量
+     * @param projectName 项目名
+     * @return double
+     * @author yangxiao
+     * @date 2021/1/25 20:07
+     */
+    public double getProjectFinishedMethodDataCount(String projectName) {
+        if (StringUtils.isBlank(projectName)) {
+            throw new BusinessException("getProjectFinishedMethodDataCount()参数不完整");
+        }
+
+        return getProjectFinishedMethodDataMap(projectName).size();
     }
 }

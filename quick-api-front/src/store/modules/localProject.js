@@ -63,6 +63,7 @@ const actions = {
         }
 
         commit('SET_LOCAL_PROJECT_INFO', res.data.data)
+        console.log('setLocalProjectRoutes.data', res.data.data)
         const groupMap = getProjectMethodGroupMap(res.data.data.methodDataList)
         commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
 

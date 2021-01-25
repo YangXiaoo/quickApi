@@ -8,3 +8,11 @@ export function getProjectInfoList(data) {
     data
   })
 }
+
+export function getProjectDevelopers(data) {
+  return request({
+    url: '/api/quickApi/getProjectDevelopers',
+    method: 'post',
+    data
+  })
+}
