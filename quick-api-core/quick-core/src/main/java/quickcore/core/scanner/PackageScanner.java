@@ -74,16 +74,14 @@ public class PackageScanner {
             List<String> names;
             if (isJarFile(filePath)) {
                 names = readFromJarFile(filePath, splashPath);
-                if (names != null) {
-                    for (String name : names) {
-                        if (isClassFile(name)) {
-                            String s1 = name.substring(0, name.lastIndexOf(".class"));
-                            if (!nameList.contains(s1)) {
-                                nameList.add(s1);
-                            }
-                        } else {
-                            doScan(name, nameList);
+                for (String name : names) {
+                    if (isClassFile(name)) {
+                        String s1 = name.substring(0, name.lastIndexOf(".class"));
+                        if (!nameList.contains(s1)) {
+                            nameList.add(s1);
                         }
+                    } else {
+                        doScan(name, nameList);
                     }
                 }
             } else {

@@ -43,3 +43,11 @@ export function deleteMethodApiData(data) {
     data
   })
 }
+
+export function getProjectMethodApiDataHistory(data) {
+  return request({
+    url: '/api/quickApi/getProjectMethodApiDataHistory',
+    method: 'post',
+    data
+  })
+}

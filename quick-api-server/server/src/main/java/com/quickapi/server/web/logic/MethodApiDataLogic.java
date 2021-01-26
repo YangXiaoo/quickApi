@@ -45,6 +45,32 @@ public class MethodApiDataLogic {
     }
 
     /**
+     * 查找用户提交记录
+     * <p>
+     *     用户姓名参数不传时，查看整个项目的提交记录
+     * </p>
+     * @param projectName 项目名
+     * @param userName 用户名
+     * @return java.util.List<com.quickapi.server.web.dao.entity.ApiDoc>
+     * @author yangxiao
+     * @date 2021/1/26 21:00
+     */
+    public List<ApiDoc> getProjectMethodApiDataHistory(String projectName, String userName) {
+        if (StringUtils.isBlank(projectName)) {
+            throw new BusinessException("getProjectMethodApiDataHistory()参数不完整");
+        }
+        QueryWrapper<ApiDoc> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("CREATE_TIME");
+        queryWrapper.eq("PROJECT_NAME", projectName);
+        if (!StringUtils.isBlank(userName)) {
+            queryWrapper.eq("USER_NAME", userName);
+        }
+        queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
+
+        return apiDocDao.selectList(queryWrapper);
+    }
+
+    /**
      * 保存项目接口
      * @param projectName 项目名
      * @param url 接口路由

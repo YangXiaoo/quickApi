@@ -3,6 +3,7 @@ package com.quickapi.server.web.logic;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.quickapi.server.common.constant.CONSTANT_DEFINE;
 import com.quickapi.server.common.tools.DateTool;
 import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
@@ -128,5 +129,40 @@ public class ProjectInfoLogic {
         }
 
         return developers;
+    }
+
+    /**
+     * 保存
+     * <p>
+     *     存在不更新，不存在则插入
+     * </p>
+     * @param userName 用户名
+     * @param projectName 项目名
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/26 20:31
+     */
+    public void saveUserProjectInfo(String userName, String projectName) {
+        if (StringUtils.isBlank(userName) || StringUtils.isBlank(projectName)) {
+            throw new BusinessException("saveUserProjectInfo()参数不完整");
+        }
+
+        QueryWrapper<UserProjectInfo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("PROJECT_NAME", projectName);
+        queryWrapper.eq("USER_NAME", userName);
+        queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
+        List<UserProjectInfo> userProjectInfoList = userProjectInfoDao.selectList(queryWrapper);
+        if (CollectionUtils.isEmpty(userProjectInfoList)) {
+            UserProjectInfo userProjectInfo = new UserProjectInfo();
+            userProjectInfo.setProjectName(projectName);
+            userProjectInfo.setUserName(userName);
+            userProjectInfo.setDeleteFlag(CONSTANT_DEFINE.NOT_DELETE);
+            userProjectInfo.setCreateTime(DateTool.getCurrentDate());
+            userProjectInfo.setUserProjectInfoId(UUIDUtil.getUUID());
+            while (userProjectInfoDao.selectById(userProjectInfo.getUserProjectInfoId()) != null) {
+                userProjectInfo.setUserProjectInfoId(UUIDUtil.getUUID());
+            }
+            userProjectInfoDao.insert(userProjectInfo);
+        }
     }
 }

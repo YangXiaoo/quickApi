@@ -14,6 +14,7 @@ public interface SERVICE {
     String GET_PROJECT_DEVELOPERS = "/api/project/getProjectDevelopers";
     String GET_PROJECT_FINISHED_METHOD_DATA_COUNT = "/api/methodData/getProjectFinishedMethodDataCount";
     String GET_PROJECT_FINISHED_METHOD_DATA_MAP = "/api/methodData/getProjectFinishedMethodDataMap";
+    String GET_PROJECT_METHOD_API_DATA_HISTORY = "/api/methodApiData/getProjectMethodApiDataHistory";
 
     // 保存方法
     String SAVE_METHOD_DATA = "/api/methodData/saveMethodData";                                         // 保存接口方法信息
@@ -22,6 +23,7 @@ public interface SERVICE {
     String SAVE_USER_METHOD_API_DATA = "/api/methodApiData/saveUserMethodApiData";                      // 保存接口文档
     String SAVE_PROJECT_INFO = "/api/project/saveProjectInfo";                                          // 保存项目信息
     String SAVE_USER_PROJECT_PAGE_DATA = "/api/pageData/saveUserProjectMethodPageData";
+    String SAVE_USER_PROJECT_INFO = "/api/project/saveUserProjectInfo";
 
     // 删除方法
     String DELETE_METHOD_DATA_LIST = "/api/methodData/deleteMethodDataList";                            // 删除接口方法信息

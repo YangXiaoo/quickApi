@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * 接口处理
  * <p>
- *     求放入一个类中
+ *     放入一个类中
  * </p>
  * @author yangxiao
  */
@@ -153,6 +153,7 @@ public class QuickApiService {
             List<MethodModel> preMethodModelList;
 
             if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
+                this.saveUserProjectInfo((String)apiMapInfo.get("author"), projectName);
                 this.saveLocalProjectInfo(apiMapInfo);
                 // 比较本地与服务器的接口信息看是否需要更新接口信息
                 JsonModel serviceApiData = this.pullServiceData(projectName);
@@ -437,6 +438,26 @@ public class QuickApiService {
         return jsonModel;
     }
 
+    /**
+     * 保存
+     * <p>
+     *     存在不更新，不存在则插入
+     * </p>
+     * @param userName 用户名
+     * @param projectName 项目名
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/26 20:31
+     */
+    public void saveUserProjectInfo(String userName, String projectName) {
+        String url = hostServiceName + SERVICE.SAVE_USER_PROJECT_INFO;
+        Map<String, Object> map = new HashMap<>();
+        map.put("userName", userName);
+        map.put("projectName", projectName);
+        RequestUtil.callService(url, map);
+    }
+
+
     /******************************************************转发请求*****************************************************/
     /**
      * 获得方法接口信息
@@ -641,6 +662,25 @@ public class QuickApiService {
         JsonModel jsonModel = new JsonModel();
         try {
             String url = hostServiceName + SERVICE.GET_USER_METHOD_API_DATA;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 查找用户提交记录
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/1/26 21:02
+     */
+    @PostMapping("getProjectMethodApiDataHistory")
+    public JsonModel getProjectMethodApiDataHistory(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_PROJECT_METHOD_API_DATA_HISTORY;
             jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
             jsonModel.error(e.getLocalizedMessage());

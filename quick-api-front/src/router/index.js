@@ -22,6 +22,21 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/commit',
+    component: MainLayout,
+    children: [
+      {
+        path: 'history',
+        name: 'History',
+        component: () => import('@/views/commit/history'),
+        meta: {
+          title: '提交记录',
+          affix: false
+        }
+      }
+    ]
+  },
+  {
     path: '*',
     redirect: '/home'
   }

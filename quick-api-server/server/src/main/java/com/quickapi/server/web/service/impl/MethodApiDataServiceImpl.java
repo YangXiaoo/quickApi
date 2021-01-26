@@ -35,15 +35,34 @@ public class MethodApiDataServiceImpl {
      * @date 2021/1/4 21:59
      */
     @PostMapping("getMethodApiData")
-    public JsonModel getMethodApiData(@RequestBody Map<String, Object> map) {
+    public JsonModel getProjectMethodApiData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
             String projectName = (String) map.get("projectName");
             String url = (String) map.get("url");
-            if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url)) {
-                throw new BusinessException("getMethodApiData()参数不完整");
-            }
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, apiDataLogic.findMethodApiData(projectName, url));
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 查找用户提交记录
+     * @return java.util.List<com.quickapi.server.web.dao.entity.ApiDoc>
+     * @author yangxiao
+     * @date 2021/1/26 21:00
+     */
+    @PostMapping("getProjectMethodApiDataHistory")
+    public JsonModel getProjectMethodApiDataHistory(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String projectName = (String) map.get("projectName");
+            String userName = (String) map.get("userName");
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, apiDataLogic.getProjectMethodApiDataHistory(projectName, userName));
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
@@ -61,7 +80,7 @@ public class MethodApiDataServiceImpl {
      * @date 2021/1/4 21:59
      */
     @PostMapping("saveMethodApiData")
-    public JsonModel saveMethodApiData(@RequestBody Map<String, Object> map) {
+    public JsonModel saveProjectMethodApiData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
             String projectName = (String) map.get("projectName");
@@ -90,7 +109,7 @@ public class MethodApiDataServiceImpl {
      * @date 2021/1/18 19:49
      */
     @PostMapping("deleteMethodApiData")
-    public JsonModel deleteMethodApiData(@RequestBody Map<String, Object> map) {
+    public JsonModel deleteProjectMethodApiData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
             String apiDocId = (String) map.get("apiDocId");

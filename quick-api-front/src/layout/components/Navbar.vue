@@ -70,10 +70,11 @@ export default {
       })
     },
     handleRecordClick() {
-      this.$message({
-        type: 'info',
-        message: '提交记录功能，暂未开发'
-      })
+      // this.$message({
+      //   type: 'info',
+      //   message: '提交记录功能，暂未开发'
+      // })
+      this.$router.push({ name: 'History' })
     },
     handleLoginClick() {
       this.$message({
