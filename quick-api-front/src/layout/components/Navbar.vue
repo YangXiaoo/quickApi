@@ -18,9 +18,20 @@
           <i class="el-icon-caret-bottom" />
         </div>
       </el-dropdown> -->
-      <div class="right-menu-item" @click="handleSettingClick">
+      <el-dropdown class="right-menu-item hover-effect" trigger="click">
         <i class="el-icon-setting" />
-      </div>
+        <el-dropdown-menu slot="dropdown">
+          <router-link to="/settings/localProjectSetting">
+            <el-dropdown-item>本地项目设置</el-dropdown-item>
+          </router-link>
+          <router-link to="/settings/serviceProjectSetting">
+            <el-dropdown-item>远端接口调用设置</el-dropdown-item>
+          </router-link>
+          <!-- <el-dropdown-item divided @click.native="logout">
+            <span style="display:block;">退出</span>
+          </el-dropdown-item> -->
+        </el-dropdown-menu>
+      </el-dropdown>
       <div class="right-menu-item" @click="handleRecordClick">
         <i class="el-icon-time" />
       </div>

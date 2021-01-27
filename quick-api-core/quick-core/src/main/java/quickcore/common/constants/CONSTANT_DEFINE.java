@@ -18,4 +18,7 @@ public interface CONSTANT_DEFINE {
     String KEY_CLASS_URL = "classURL";
     String KEY_METHOD_URL = "methodURL";
     String KEY_REQUEST_TYPE = "requestType";
+
+    // 向服务端发送请求间隔 毫秒
+    long REPORT_GAP = 30 * 1000;
 }

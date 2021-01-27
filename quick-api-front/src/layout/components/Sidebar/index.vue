@@ -165,7 +165,11 @@ export default {
     /** 搜索项目，初始化路由，并设置左侧菜单 */
     handleProjectSearch() {
       console.log(this.projectNameSearchParam)
-      this.$store.dispatch('projectMethodData/setProjectMethodDataRoutes', this.projectNameSearchParam).then(res => {
+      const data = {
+        projectName: this.projectNameSearchParam
+      }
+
+      this.$store.dispatch('projectMethodData/setProjectMethodDataRoutes', data).then(res => {
         // 由于可以搜索多个项目
         // 因此此处为增量添加项目菜单信息
         // 使用this.$set强制刷新

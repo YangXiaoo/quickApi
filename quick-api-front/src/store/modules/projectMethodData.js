@@ -17,6 +17,9 @@ const state = {
 const mutations = {
   SET_PROJECT_METHOD_LIST: (state, { projectName, methodDataList }) => {
     state.projectMethodDataList[projectName] = methodDataList
+  },
+  SET_PROJECT_ROUTE: (state, { projetcName, routes }) => {
+    state.projectRoutes[projetcName] = routes
   }
 }
 
@@ -40,7 +43,11 @@ const actions = {
 
         const routes = getProjectRoutesFromMethodDataList(state.projectMethodDataList[data.projectName])
         addProjectMethodDataRoutes(routes)
-
+        const routeData = {
+          projectName: data.projectName,
+          routes: routes
+        }
+        commit('SET_PROJECT_ROUTE', routeData)
         resolve(routes)
       }).catch(error => {
         reject(error || '异常错误')

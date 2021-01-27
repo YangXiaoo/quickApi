@@ -20,6 +20,8 @@ const getters = {
   projectMethodDataList: state => state.projectMethodData.projectMethodDataList,
   projectRoutes: state => state.projectMethodData.projectRoutes,
 
+  serviceProjectAddress: state => state.serviceProject.serviceProjectAddress,
+
   // 用户接口相关数据
   userGroupList: state => state.userMethodData.userGroupList,
   userMethodDataList: state => state.userMethodData.userMethodDataList,

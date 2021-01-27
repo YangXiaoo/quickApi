@@ -37,14 +37,11 @@ export function updateUserMethodData(data) {
 }
 
 /** 测试项目 - 根据项目名获得所有方法数据 */
-export function getMethodDataByProjectName(projectName) {
-  console.log('getProjectData')
+export function getMethodDataByProjectName(data) {
   return request({
     url: '/api/quickApi/getMethodDataByProjectName',
     method: 'post',
-    data: {
-      projectName: projectName
-    }
+    data
   })
 }
 

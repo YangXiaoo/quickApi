@@ -10,15 +10,16 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import quickcore.annotations.QuickApi;
+import quickcore.common.constants.CONSTANT_DEFINE;
 import quickcore.common.constants.JSON_MODEL_CODE;
 import quickcore.common.constants.SERVICE;
+import quickcore.common.tools.IPTool;
 import quickcore.common.tools.JsonModel;
 import quickcore.common.utils.ModelUtil;
 import quickcore.core.scanner.ApiScanner;
 import quickcore.core.utils.StringUtils;
 import quickcore.exception.BusinessException;
 import quickcore.models.MethodModel;
-import quickcore.models.MethodModelEntity;
 import quickcore.web.dao.entity.ProjectInfo;
 import quickcore.common.utils.RequestUtil;
 
@@ -60,6 +61,10 @@ public class QuickApiService {
     @Value("${quickApi.author:}")
     private String author;
 
+    @Value("${server.port:8080}")
+    private String port;
+
+    private static boolean SEND_FLAG = false;
     /**
      * 前端请求本地接口
      * @param path 请求路径
@@ -153,6 +158,10 @@ public class QuickApiService {
             List<MethodModel> preMethodModelList;
 
             if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
+                if (!SEND_FLAG) {
+                    SEND_FLAG = true;
+                    new Thread(reportStatus()).start();
+                }
                 this.saveUserProjectInfo((String)apiMapInfo.get("author"), projectName);
                 this.saveLocalProjectInfo(apiMapInfo);
                 // 比较本地与服务器的接口信息看是否需要更新接口信息
@@ -190,6 +199,35 @@ public class QuickApiService {
         }
 
         return jsonModel;
+    }
+
+    /**
+     * 报告测试端服务状态
+     * @param
+     * @return java.lang.Runnable
+     * @author yangxiao
+     * @date 2021/1/27 20:40
+     */
+    public Runnable reportStatus() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        logger.info("send localhost status");
+                        String url = hostServiceName + SERVICE.SEND_LOCALHOST_STATUS;
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("ip", IPTool.getLocalIp());
+                        map.put("port", port);
+                        map.put("projectName", projectName);
+                        RequestUtil.callService(url, map);
+                        Thread.sleep(CONSTANT_DEFINE.REPORT_GAP);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
     }
 
     /**
@@ -630,6 +668,19 @@ public class QuickApiService {
         return jsonModel;
     }
 
+    @PostMapping("/getRunningService")
+    public JsonModel getRunningService(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String url = hostServiceName + SERVICE.GET_RUNNING_SERVICE;
+            jsonModel = RequestUtil.callService(url, map);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
     /**
      * 检查服务器是否连接
      * @param map 无参数（构造）
@@ -644,7 +695,7 @@ public class QuickApiService {
             String url = hostServiceName + SERVICE.SAVE_PROJECT_INFO;
             jsonModel = RequestUtil.callService(url, map);
         } catch (Exception e) {
-            jsonModel.error("服务器连接失败");
+            jsonModel.error(e.getLocalizedMessage());
         }
 
         return jsonModel;

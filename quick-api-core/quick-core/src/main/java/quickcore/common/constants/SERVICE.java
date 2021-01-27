@@ -15,6 +15,7 @@ public interface SERVICE {
     String GET_PROJECT_FINISHED_METHOD_DATA_COUNT = "/api/methodData/getProjectFinishedMethodDataCount";
     String GET_PROJECT_FINISHED_METHOD_DATA_MAP = "/api/methodData/getProjectFinishedMethodDataMap";
     String GET_PROJECT_METHOD_API_DATA_HISTORY = "/api/methodApiData/getProjectMethodApiDataHistory";
+    String GET_RUNNING_SERVICE = "/api/register/getRunningService";
 
     // 保存方法
     String SAVE_METHOD_DATA = "/api/methodData/saveMethodData";                                         // 保存接口方法信息
@@ -34,6 +35,7 @@ public interface SERVICE {
     String UPDATE_METHOD_DATA = "/api/methodData/updateMethodData";                                     // 更新接口方法信息
     String UPDATE_USER_METHOD_DATA = "/api/methodData/updateUserMethodData";                            // 更新接口方法信息
 
-    // 检查服务器连接
+    // 服务器连接
     String CHECK_SERVER_STATUS = "/api/check/checkServerStatus";
+    String SEND_LOCALHOST_STATUS = "/api/register/reportStatus";
 }

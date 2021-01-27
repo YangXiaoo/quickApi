@@ -37,6 +37,30 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/settings',
+    component: MainLayout,
+    children: [
+      {
+        path: 'localProjectSetting',
+        name: 'LocalProjectSetting',
+        component: () => import('@/views/settings/localProjectSetting'),
+        meta: {
+          title: '本地测试项目设置',
+          affix: false
+        }
+      },
+      {
+        path: 'serviceProjectSetting',
+        name: 'ServiceProjectSetting',
+        component: () => import('@/views/settings/serviceProjectSetting'),
+        meta: {
+          title: '搜索项目文档设置',
+          affix: false
+        }
+      }
+    ]
+  },
+  {
     path: '*',
     redirect: '/home'
   }

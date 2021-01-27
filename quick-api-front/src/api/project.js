@@ -16,3 +16,11 @@ export function getProjectDevelopers(data) {
     data
   })
 }
+
+export function getRunningService(data) {
+  return request({
+    url: '/api/quickApi/getRunningService',
+    method: 'post',
+    data
+  })
+}
