@@ -54,7 +54,7 @@ export const constantRoutes = [
         name: 'ServiceProjectSetting',
         component: () => import('@/views/settings/serviceProjectSetting'),
         meta: {
-          title: '搜索项目文档设置',
+          title: '项目文档设置',
           affix: false
         }
       }

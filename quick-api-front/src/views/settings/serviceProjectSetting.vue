@@ -3,7 +3,7 @@
     <el-card>
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="请求地址设置" name="addressSetting">
-          <el-form ref="ruleForm" :model="addressForm" label-width="200px">
+          <el-form ref="addressRule" :model="addressForm" label-width="200px">
             <el-form-item label="项目" prop="projectName">
               <el-select v-model="addressForm.projectName" placeholder="请选择项目">
                 <el-option
@@ -30,7 +30,32 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="请求拦截" name="second">开发中</el-tab-pane>
+        <el-tab-pane label="Token设置" name="TokenSetting">
+          <el-form ref="tokenRule" :model="tokenForm" label-width="200px">
+            <el-form-item label="项目" prop="projectName">
+              <el-select v-model="tokenForm.projectName" placeholder="请选择项目">
+                <el-option
+                  v-for="projectName of projectNameList"
+                  :key="projectName"
+                  :label="projectName"
+                  :value="projectName"
+                />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="请求地址" prop="tokenUrlName">
+              <el-select v-model="tokenForm.tokenUrlName" allow-create placeholder="请选择项目服务地址">
+                <el-option v-for="url of methodUrlList" :key="url" :value="url" />
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+            <el-form-item label="token关键字" prop="tokenKey">
+              <el-input v-model="tokenForm.tokenKey" />
+            </el-form-item>
+              <el-button type="primary" @click="handleTokenClick">确定</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
     </el-card>
   </div>
@@ -51,7 +76,13 @@ export default {
         addressChoose: true,
         serviceProjectAddress: ''
       },
-      addressList: []
+      addressList: [],
+      tokenForm: {
+        projectName: '',
+        tokenUrlName: '',
+        tokenKey: ''
+      },
+      methodUrlList: []
     }
   },
   computed: {
@@ -68,6 +99,14 @@ export default {
       handler(val) {
         if (!val) {
           this.getAddressList()
+        }
+      },
+      deep: true
+    },
+    'tokenForm.projectName': {
+      handler(val) {
+        if (val) {
+          this.getMethodUrlList()
         }
       },
       deep: true
@@ -92,6 +131,11 @@ export default {
         }
       })
     },
+    getMethodUrlList() {
+      this.methodUrlList = this.projectMethodDataList[this.tokenForm.projectName].map(item => {
+        return item.name
+      })
+    },
     handleAddressClick() {
       const data = {
         projectName: this.addressForm.projectName,
@@ -102,6 +146,9 @@ export default {
     },
     handleAddressDefaultClick() {
       //
+    },
+    handleTokenClick() {
+      this.$store.dispatch('serviceProject/setServiceProjectToken', this.tokenForm)
     }
   }
 }

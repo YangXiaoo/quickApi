@@ -26,7 +26,6 @@ export function deleteUserMethodData(data) {
   })
 }
 
-
 /** 修改用户方法信息 */
 export function updateUserMethodData(data) {
   return request({
