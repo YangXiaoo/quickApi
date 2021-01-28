@@ -12,24 +12,15 @@
       </div>
     </div>
     <div class="right-menu">
-      <!-- <el-dropdown class="avatar-container" trigger="click">
-        <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
-        </div>
-      </el-dropdown> -->
       <el-dropdown class="right-menu-item hover-effect" trigger="click">
         <i class="el-icon-setting" />
         <el-dropdown-menu slot="dropdown">
           <router-link to="/settings/localProjectSetting">
             <el-dropdown-item>本地项目设置</el-dropdown-item>
           </router-link>
-          <router-link to="/settings/serviceProjectSetting">
+          <router-link v-show="serviceProjectFlag" to="/settings/serviceProjectSetting">
             <el-dropdown-item>远端接口调用设置</el-dropdown-item>
           </router-link>
-          <!-- <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出</span>
-          </el-dropdown-item> -->
         </el-dropdown-menu>
       </el-dropdown>
       <div class="right-menu-item" @click="handleRecordClick">
@@ -52,7 +43,11 @@ export default {
   },
   computed: {
     ...mapGetters([
-    ])
+      'projectMethodDataList'
+    ]),
+    serviceProjectFlag() {
+      return Object.keys(this.projectMethodDataList).length !== 0
+    }
   },
   methods: {
     /**
