@@ -3,7 +3,7 @@ const state = {
 }
 
 const mutations = {
-  SET_SERVICE_PROJECT_ADDRESS: (state, {projectName, address}) => {
+  SET_SERVICE_PROJECT_ADDRESS: (state, { projectName, address }) => {
     state.serviceProjectAddress[projectName] = address
   }
 }
@@ -11,6 +11,9 @@ const mutations = {
 const actions = {
   setServiceProjectAddress({ commit, state }, data) {
     commit('SET_SERVICE_PROJECT_ADDRESS', data)
+  },
+  setServiceProjectToken({ commit, state }, data) {
+    // 待开发
   }
 }
 

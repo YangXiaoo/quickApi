@@ -39,14 +39,18 @@ import { generateNewTabPage } from '@/utils/routerTool'
 export default {
   data() {
     return {
+      serviceProjectFlag: true
     }
   },
   computed: {
     ...mapGetters([
       'projectMethodDataList'
-    ]),
-    serviceProjectFlag() {
-      return Object.keys(this.projectMethodDataList).length !== 0
+    ])
+  },
+  watch: {
+    projectMethodDataList(newValue) {
+      console.log('projectMethodDataList.watch', newValue)
+      this.serviceProjectFlag = Object.keys(newValue).length !== 0
     }
   },
   methods: {

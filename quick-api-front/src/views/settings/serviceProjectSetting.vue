@@ -31,7 +31,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="Token设置" name="TokenSetting">
-          <el-form ref="tokenRule" :model="tokenForm" label-width="200px">
+          <!-- <el-form ref="tokenRule" :model="tokenForm" label-width="200px">
             <el-form-item label="项目" prop="projectName">
               <el-select v-model="tokenForm.projectName" placeholder="请选择项目">
                 <el-option
@@ -42,19 +42,19 @@
                 />
               </el-select>
             </el-form-item>
-
             <el-form-item label="请求地址" prop="tokenUrlName">
               <el-select v-model="tokenForm.tokenUrlName" allow-create placeholder="请选择项目服务地址">
                 <el-option v-for="url of methodUrlList" :key="url" :value="url" />
               </el-select>
             </el-form-item>
             <el-form-item>
-            <el-form-item label="token关键字" prop="tokenKey">
-              <el-input v-model="tokenForm.tokenKey" />
+              <el-form-item label="token关键字" prop="tokenKey">
+                <el-input v-model="tokenForm.tokenKey" />
+              </el-form-item>
             </el-form-item>
-              <el-button type="primary" @click="handleTokenClick">确定</el-button>
-            </el-form-item>
-          </el-form>
+            <el-button type="primary" @click="handleTokenClick">确定</el-button>
+          </el-form> -->
+          开发中...
         </el-tab-pane>
       </el-tabs>
     </el-card>
@@ -139,7 +139,7 @@ export default {
     handleAddressClick() {
       const data = {
         projectName: this.addressForm.projectName,
-        serviceProjectAddress: this.addressForm.serviceProjectAddress
+        address: this.addressForm.serviceProjectAddress
       }
 
       this.$store.dispatch('serviceProject/setServiceProjectAddress', data)
