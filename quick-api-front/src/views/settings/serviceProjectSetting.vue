@@ -30,8 +30,8 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="Token设置" name="TokenSetting">
-          <!-- <el-form ref="tokenRule" :model="tokenForm" label-width="200px">
+        <!-- <el-tab-pane label="Token设置" name="TokenSetting">
+          <el-form ref="tokenRule" :model="tokenForm" label-width="200px">
             <el-form-item label="项目" prop="projectName">
               <el-select v-model="tokenForm.projectName" placeholder="请选择项目">
                 <el-option
@@ -42,20 +42,25 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="请求地址" prop="tokenUrlName">
-              <el-select v-model="tokenForm.tokenUrlName" allow-create placeholder="请选择项目服务地址">
-                <el-option v-for="url of methodUrlList" :key="url" :value="url" />
+            <el-form-item label="请求地址" prop="tokenMethodName">
+              <el-select v-model="tokenForm.tokenMethodName" allow-create placeholder="请选择项目服务地址">
+                <el-option v-for="name of methodNameList" :key="name" :value="name" />
               </el-select>
             </el-form-item>
-            <el-form-item>
-              <el-form-item label="token关键字" prop="tokenKey">
-                <el-input v-model="tokenForm.tokenKey" />
-              </el-form-item>
+            <el-form-item label="请求参数" prop="param">
+              <el-input v-model="tokenForm.param" />
             </el-form-item>
-            <el-button type="primary" @click="handleTokenClick">确定</el-button>
-          </el-form> -->
-          开发中...
-        </el-tab-pane>
+            <el-form-item label="返回参数token关键字" prop="tokenKey">
+              <el-input v-model="tokenForm.tokenKey" />
+            </el-form-item>
+            <el-form-item label="请求头token关键字" prop="headerTokenKey">
+              <el-input v-model="tokenForm.headerTokenKey" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="handleTokenClick">确定</el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane> -->
       </el-tabs>
     </el-card>
   </div>
@@ -79,10 +84,12 @@ export default {
       addressList: [],
       tokenForm: {
         projectName: '',
-        tokenUrlName: '',
-        tokenKey: ''
+        tokenMethodName: '',
+        param: '', // 请求参数
+        tokenKey: '',
+        headerTokenKey: ''
       },
-      methodUrlList: []
+      methodNameList: []
     }
   },
   computed: {
@@ -132,8 +139,8 @@ export default {
       })
     },
     getMethodUrlList() {
-      this.methodUrlList = this.projectMethodDataList[this.tokenForm.projectName].map(item => {
-        return item.name
+      this.methodNameList = this.projectMethodDataList[this.tokenForm.projectName].map(item => {
+        return item.methodName
       })
     },
     handleAddressClick() {

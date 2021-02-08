@@ -21,6 +21,7 @@ const getters = {
   projectRoutes: state => state.projectMethodData.projectRoutes,
 
   serviceProjectAddress: state => state.serviceProject.serviceProjectAddress,
+  serviceProjectTokenSetting: state => state.serviceProject.serviceProjectTokenSetting,
 
   // 用户接口相关数据
   userGroupList: state => state.userMethodData.userGroupList,

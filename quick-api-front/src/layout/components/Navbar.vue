@@ -13,7 +13,7 @@
     </div>
     <div class="right-menu">
       <el-dropdown class="right-menu-item hover-effect" trigger="click">
-        <i class="el-icon-setting" />
+        <i class="el-icon-setting" @click="handleProjectSetting" />
         <el-dropdown-menu slot="dropdown">
           <router-link to="/settings/localProjectSetting">
             <el-dropdown-item>本地项目设置</el-dropdown-item>
@@ -39,7 +39,7 @@ import { generateNewTabPage } from '@/utils/routerTool'
 export default {
   data() {
     return {
-      serviceProjectFlag: true
+      serviceProjectFlag: false
     }
   },
   computed: {
@@ -48,7 +48,7 @@ export default {
     ])
   },
   watch: {
-    projectMethodDataList(newValue) {
+    projectRoutes(newValue) {
       console.log('projectMethodDataList.watch', newValue)
       this.serviceProjectFlag = Object.keys(newValue).length !== 0
     }
@@ -64,8 +64,8 @@ export default {
      * 新建页面
      */
     handleNewTabClick() {
-      const pageUrl = generateNewTabPage()
-      this.$router.replace({ name: pageUrl })
+      const pageName = generateNewTabPage()
+      this.$router.replace({ name: pageName })
     },
     handleImportClick() {
       this.$message({
@@ -91,6 +91,10 @@ export default {
         type: 'info',
         message: '用户登录功能，暂未开发'
       })
+    },
+    handleProjectSetting() {
+      console.log('handleProjectSetting', this.projectMethodDataList)
+      this.serviceProjectFlag = Object.keys(this.projectMethodDataList).length !== 0
     }
   }
 }

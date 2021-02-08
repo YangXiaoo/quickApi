@@ -1,6 +1,12 @@
 <template>
   <div class="container">
-    开发中...
+    开发中...<br>
+    <ol>
+      <li>
+        测试时自动保存页面请求数据
+      </li>
+      <li>token自动填写</li>
+    </ol>
 
   </div>
 </template>
@@ -30,7 +36,7 @@ export default {
   mounted() {
   },
   created() {
-    this.getCommitHistoryTableData()
+    // this.getCommitHistoryTableData()
   },
   methods: {
   }
