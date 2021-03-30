@@ -1,48 +1,44 @@
 <template>
-  <div class="navbar">
-    <div class="left-menu">
-      <div class="left-menu-item" @click="handleHomeClick">
-        <i class="el-icon-s-home" />
+  <div>
+    <div class="navbar">
+      <div class="left-menu">
+        <div class="left-menu-item" @click="handleHomeClick">
+          <i class="el-icon-s-home" />
+        </div>
+        <div class="left-menu-item" @click="handleImportClick">
+          <i class="el-icon-bottom" />
+        </div>
+        <div class="left-menu-item" @click="handleNewTabClick">
+          <i class="el-icon-plus" />
+        </div>
       </div>
-      <div class="left-menu-item" @click="handleImportClick">
-        <i class="el-icon-bottom" />
-      </div>
-      <div class="left-menu-item" @click="handleNewTabClick">
-        <i class="el-icon-plus" />
-      </div>
-    </div>
-    <div class="right-menu">
-      <el-dropdown class="right-menu-item hover-effect" trigger="click">
-        <i class="el-icon-setting" @click="handleProjectSetting" />
-        <el-dropdown-menu slot="dropdown">
-          <router-link to="/settings/localProjectSetting">
-            <el-dropdown-item>本地项目设置</el-dropdown-item>
-          </router-link>
-          <router-link v-show="serviceProjectFlag" to="/settings/serviceProjectSetting">
-            <el-dropdown-item>远端接口调用设置</el-dropdown-item>
-          </router-link>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <div class="right-menu-item" @click="handleRecordClick">
-        <i class="el-icon-time" />
-      </div>
-      <div class="right-menu-item" @click="handleLoginClick">
-        <i class="el-icon-user" />
+      <div class="right-menu">
+        <el-dropdown class="right-menu-item hover-effect" trigger="click">
+          <i class="el-icon-setting" @click="handleProjectSetting" />
+          <el-dropdown-menu slot="dropdown">
+            <router-link to="/settings/localProjectSetting">
+              <el-dropdown-item>本地项目设置</el-dropdown-item>
+            </router-link>
+            <router-link v-show="serviceProjectFlag" to="/settings/serviceProjectSetting">
+              <el-dropdown-item>远端接口调用设置</el-dropdown-item>
+            </router-link>
+          </el-dropdown-menu>
+        </el-dropdown>
+        <div class="right-menu-item" @click="handleRecordClick">
+          <i class="el-icon-time" />
+        </div>
+        <div class="right-menu-item" @click="handleLoginClick">
+          <i class="el-icon-user" />
+        </div>
       </div>
     </div>
     <el-dialog title="登录" :visible.sync="dialogLoginVisible">
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
-        <div class="title-container">
-          <h3 class="title">Login Form</h3>
-        </div>
-
+      <el-form ref="loginForm" :model="loginForm" auto-complete="on" label-position="left">
         <el-form-item prop="username">
           <span class="svg-container">
             <svg-icon icon-class="user" />
           </span>
           <el-input
-            ref="username"
             v-model="loginForm.username"
             placeholder="Username"
             name="username"
@@ -57,8 +53,6 @@
             <svg-icon icon-class="password" />
           </span>
           <el-input
-            :key="passwordType"
-            ref="password"
             v-model="loginForm.password"
             :type="passwordType"
             placeholder="Password"
@@ -72,7 +66,7 @@
           </span>
         </el-form-item>
 
-        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+        <el-button :loading="loading" type="primary" @click.native.prevent="handleLogin">Login</el-button>
 
         <div class="tips">
           <span style="margin-right:20px;">username: admin</span>
@@ -87,23 +81,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { generateNewTabPage } from '@/utils/routerTool'
-import { validUsername } from '@/utils/validate'
 export default {
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
     return {
       serviceProjectFlag: false,
       dialogLoginVisible: false,
@@ -112,8 +91,6 @@ export default {
         password: '111111'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
       passwordType: 'password',
@@ -181,19 +158,12 @@ export default {
       })
     },
     handleLogin() {
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            // 初始化页面数据
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
-          })
-        } else {
-          console.log('error submit!!')
-          return false
-        }
+      this.loading = true
+      this.$store.dispatch('user/login', this.loginForm).then(() => {
+        this.$router.push({ path: this.redirect || '/' })
+        this.loading = false
+      }).catch(() => {
+        this.loading = false
       })
     }
   }

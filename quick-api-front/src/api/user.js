@@ -1,8 +1,9 @@
 import request from '@/utils/request'
+const BASE_URL = '' // process.env.VUE_APP_BASE_API
 
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: BASE_URL + '/api/quickApi/login/loginCheck',
     method: 'post',
     data
   })
@@ -10,7 +11,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: BASE_URL + '/api/quickApi/login/getInfo',
     method: 'get',
     params: { token }
   })
@@ -18,7 +19,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
+    url: BASE_URL + '/api/quickApi/login/logout',
     method: 'post'
   })
 }

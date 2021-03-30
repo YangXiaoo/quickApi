@@ -4,7 +4,7 @@ const getters = {
   // 用户相关
   token: state => state.user.token,
   avatar: state => state.user.avatar,
-  name: state => state.user.name,
+  username: state => state.user.username,
 
   // 本地项目
   localProjectRoutes: state => state.localProject.localProjectRoutes,

@@ -105,7 +105,8 @@ export default {
       'author', // 测试项目开发者, 即启动本地项目用户名
       'localProjectRoutes',
       'projectRoutes',
-      'userRoutes'
+      'userRoutes',
+      'username'
     ]),
     activeMenu() {
       const route = this.$route
@@ -153,7 +154,7 @@ export default {
     /** 初始化个人接口路由，并设置左侧菜单 */
     setUserMethodDataRoutes() {
       const data = {
-        userName: 'wejh3ncx43ihc34cshg4v' // this.author
+        userName: this.username // this.author
       }
       this.$store.dispatch('userMethodData/setUserMethodDataRoutes', data).then(res => {
         console.log('sideBar.setUserMethodDataRoutes', res)
