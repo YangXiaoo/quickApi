@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="navbar">
+    <div class="header">
       <div class="left-menu">
         <div class="left-menu-item" @click="handleHomeClick">
           <i class="el-icon-s-home" />
@@ -172,11 +172,11 @@ export default {
 
 <style lang="scss" scoped>
   @import "~@/styles/variables.scss";
-.navbar {
+.header {
   height: 40px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: #009983;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .left-menu {

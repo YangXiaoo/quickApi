@@ -55,12 +55,14 @@ const mutations = {
 
 const actions = {
   /** 获得本地项目数据，并将方法路由挂载到Router中 */
-  setLocalProjectRoutes({ commit }, data) {
+  setLocalProjectRoutes({ commit, dispatch }, data) {
     return new Promise((resolve, reject) => {
       getLocalProjectData(data).then(res => {
         if (res.data.code !== '000') {
           reject(res.message || '获取测试项目数据失败')
         }
+        // // 是本地项目
+        // dispatch('app/setLocalProjectFlag', true, { root: true })
 
         commit('SET_LOCAL_PROJECT_INFO', res.data.data)
         console.log('setLocalProjectRoutes.data', res.data.data)

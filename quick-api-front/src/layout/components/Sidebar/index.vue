@@ -1,18 +1,51 @@
 <template>
-  <div>
-    <!-- <logo v-if="showLogo" :collapse="isCollapse" /> -->
-    <el-scrollbar wrap-class="scrollbar-wrapper">
-      <el-tabs v-model="workType" type="card" class="side-tabs" @tab-click="handleWorkClick">
-        <el-tab-pane label="测试项目" name="local">
-          <el-menu
-            :default-active="activeMenu"
-            :unique-opened="false"
-            :collapse-transition="false"
-          >
-            <sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
-          </el-menu>
+  <div class="side-container">
+    <div class="side-bar-container">
+      <div v-if="isLocalProject" name="localApi" class="side-bar-item" @click="openUrl('LocalApiHome')">
+        本地
+      </div>
+      <div name="userApi" class="side-bar-item" @click="openUrl('UserApiHome')">
+        个人
+      </div>
+      <div name="projectApi" class="side-bar-item" @click="openUrl('ProjectApiHome')">
+        项目
+      </div>
 
-          <!-- <el-collapse-item v-for="(subMenu, peojectName) in projectMethodMenu" :key="peojectName" :name="peojectName">
+    </div>
+    <div class="side-content-container">
+      <div v-if="isLocalProject" name="localApi" class="side-content-item">
+        <el-menu
+          :default-active="activeMenu"
+          :unique-opened="false"
+          :collapse-transition="false"
+        >
+          <sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
+        </el-menu>
+      </div>
+      <div name="userApi" class="side-content-item">
+        <el-menu
+          v-show="userMethodMenu.length > 0"
+          :default-active="activeMenu"
+          :collapse="isCollapse"
+          :unique-opened="false"
+          :collapse-transition="false"
+          mode="vertical"
+        >
+          <sidebar-item v-for="route in userMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
+        </el-menu>
+        <div v-show="!userMethodMenu.length" style="padding-left: 50px;">
+          暂无接口
+        </div>
+      </div>
+      <div name="projectApi" class="side-content-item">
+        <div style="margin:10px">
+          <el-input v-model="projectNameSearchParam" placeholder="搜索项目" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="handleProjectSearch" />
+          </el-input>
+        </div>
+        <el-collapse v-model="collapseActiveNames" style="margin-left:10px;" @change="handleCollapseChange">
+          <!-- 搜索项目 -->
+          <el-collapse-item v-for="(subMenu, peojectName) in projectMethodMenu" :key="peojectName" :name="peojectName">
             <template slot="title">
               <div class="collapse-title">
                 {{ peojectName }}
@@ -27,59 +60,10 @@
             >
               <sidebar-item v-for="route in subMenu" :key="route.path" :item="route" :base-path="route.path" />
             </el-menu>
-          </el-collapse-item> -->
-        </el-tab-pane>
-        <el-tab-pane label="接口文档" name="team">
-          <div style="margin:10px">
-            <el-input v-model="projectNameSearchParam" placeholder="搜索项目" class="input-with-select">
-              <el-button slot="append" icon="el-icon-search" @click="handleProjectSearch" />
-            </el-input>
-          </div>
-          <!-- 个人接口 -->
-          <el-collapse v-model="collapseActiveNames" @change="handleCollapseChange">
-            <el-collapse-item name="userMethodData">
-              <template slot="title">
-                <div class="collapse-title">
-                  <i class="el-icon-user" />用户接口
-                </div>
-              </template>
-              <el-menu
-                v-show="userMethodMenu.length > 0"
-                :default-active="activeMenu"
-                :collapse="isCollapse"
-                :unique-opened="false"
-                :collapse-transition="false"
-                mode="vertical"
-              >
-                <sidebar-item v-for="route in userMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
-              </el-menu>
-              <div v-show="!userMethodMenu.length" style="padding-left: 50px;">
-                暂无接口
-              </div>
-            </el-collapse-item>
-
-            <!-- 搜索项目 -->
-            <el-collapse-item v-for="(subMenu, peojectName) in projectMethodMenu" :key="peojectName" :name="peojectName">
-              <template slot="title">
-                <div class="collapse-title">
-                  {{ peojectName }}
-                </div>
-              </template>
-              <el-menu
-                :default-active="activeMenu"
-                :collapse="isCollapse"
-                :unique-opened="false"
-                :collapse-transition="false"
-                mode="vertical"
-              >
-                <sidebar-item v-for="route in subMenu" :key="route.path" :item="route" :base-path="route.path" />
-              </el-menu>
-            </el-collapse-item>
-          </el-collapse>
-        </el-tab-pane>
-      </el-tabs>
-
-    </el-scrollbar>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -89,6 +73,7 @@ import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
 
 export default {
+  name: 'SidebarIndex',
   components: { SidebarItem },
   data() {
     return {
@@ -106,7 +91,8 @@ export default {
       'localProjectRoutes',
       'projectRoutes',
       'userRoutes',
-      'username'
+      'username',
+      'isLocalProject'
     ]),
     activeMenu() {
       const route = this.$route
@@ -141,11 +127,22 @@ export default {
     this.setLocalProjectRoutes()
     this.setUserMethodDataRoutes()
   },
+  mounted() {
+    window.onload = () => {
+      this.tabMouseOn()
+    }
+  },
   methods: {
+    openUrl(path) {
+      console.log('openUrl', path)
+      this.$router.push({ name: path })
+    },
     /** 初始化测试项目的路由，设置左侧菜单 */
     setLocalProjectRoutes() {
+      if (!this.isLocalProject) {
+        return
+      }
       this.$store.dispatch('localProject/setLocalProjectRoutes', '').then(res => {
-        console.log('sideBar.setLocalProjectRoutes', res)
         this.localProjectMethodMenu = res
       }).catch(error => {
         this.$message(error || '加载测试项目api接口失败')
@@ -184,17 +181,107 @@ export default {
     },
     handleWorkClick(tab, event) {
       // todo
+    },
+    tabMouseOn() {
+      const sideBarList = document.getElementsByClassName('side-bar-item')
+      const sideContentList = document.getElementsByClassName('side-content-item')
+      var contentMap = {}
+      for (let i = 0; i < sideContentList.length; i++) {
+        contentMap[sideContentList[i].getAttribute('name')] = sideContentList[i]
+      }
+
+      console.log('tabMouseOn.variables', variables)
+      for (let i = 0; i < sideBarList.length; i++) {
+        console.log('sideBarList[i].hasAttribute', sideBarList[i].hasAttribute('no-content'))
+
+        sideBarList[i].onmousedown = function() {
+          for (let k = 0; k < sideContentList.length; k++) {
+            sideContentList[k].setAttribute('class', 'hidden')
+          }
+          for (let j = 0; j < sideBarList.length; j++) {
+            sideBarList[j].setAttribute('class', 'side-bar-item')
+          }
+
+          // document.getElementsByClassName('side-content-container')[0].style.width = variables.sideContentWidth
+          // document.getElementsByClassName('qa-main-content-container')[0].style.width = 'calc(100% - ' + variables.sideBarWidth + '-' + variables.sideContentWidth + ')'
+
+          this.setAttribute('class', 'current side-bar-item')
+          if (this.getAttribute('name') in contentMap) {
+            contentMap[this.getAttribute('name')].setAttribute('class', 'side-content-item')
+          }
+
+          // // 没有左侧菜单内容，不绑定点击属性
+          // if (sideBarList[i].hasAttribute('no-content')) {
+          //   document.getElementsByClassName('side-content-container')[0].style.width = '0px'
+          //   // document.getElementsByClassName('qa-main-content-container')[0].style.width = 'calc(100% - ' + variables.sideBarWidth + ')'
+          // }
+        }
+      }
+
+      var settingFlag = false
+      for (let i = 0; i < sideBarList.length; i++) {
+        console.log('sideBarList[i].getAttribute(name)', sideBarList[i].getAttribute('name'))
+        if (!settingFlag) {
+          sideBarList[i].setAttribute('class', 'current side-bar-item')
+          if (sideBarList[i].getAttribute('name') in contentMap) {
+            contentMap[sideBarList[i].getAttribute('name')].setAttribute('class', 'side-content-item')
+          }
+          settingFlag = true
+        } else {
+          sideBarList[i].setAttribute('class', 'side-bar-item')
+          if (sideBarList[i].getAttribute('name') in contentMap) {
+            contentMap[sideBarList[i].getAttribute('name')].setAttribute('class', 'hidden')
+          }
+        }
+      }
     }
   }
 }
 </script>
-<style scoped>
-.el-collapse-item__header {
-  background-color: #f1f4f7;
-  /* border-bottom: 1px solid #5ed0ec; */
-}
-.collapse-title {
-  margin-left: 10px !important;
-  font-size: 14px;
-}
+<style lang="scss" scoped>
+  @import "~@/styles/variables.scss";
+  .side-container {
+    display: flex;
+    background: orange;
+    flex-flow: row nowrap;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .show {
+    display: inherit;
+  }
+
+  .side-bar-container {
+    width: $sideBarWidth;
+    background: #42b983;
+    box-sizing: border-box;
+
+    .side-bar-item {
+      height: 40px;
+      padding: 5px 2px 0px 2px;
+      vertical-align: middle;
+      cursor: pointer;
+
+      &:hover {
+        background: #b4b4b4;
+      }
+    }
+  }
+
+  .side-content-container {
+    width: $sideContentWidth;
+    background: #fff;
+
+    .side-content-item {
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .current {
+      background: #b4b4b4;
+    }
+  }
 </style>

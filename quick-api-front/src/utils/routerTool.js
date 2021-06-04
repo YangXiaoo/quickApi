@@ -36,7 +36,7 @@ export function getRoutesFromGroupMap(groupMap) {
       const curChildRouter = {
         path: '',
         name: '',
-        component: () => import('@/views/localProject/index'),
+        component: () => import('@/views/localApi/index'),
         meta: {
           title: '',
           group: ''
@@ -84,7 +84,7 @@ export function getProjectRoutesFromMethodDataList(apiInfo) {
       const curChildRouter = {
         path: '',
         name: '',
-        component: () => import('@/views/serverProject/index'),
+        component: () => import('@/views/projectApi/index'),
         meta: {
           title: '',
           group: '',

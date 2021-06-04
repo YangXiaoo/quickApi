@@ -194,9 +194,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .home-container {
-  position: relative;
+  // position: relative;
   // background: #fff;
-  margin: 90px 10px 10px 10px;
+  margin: 5px 20px 10px 20px;
   border-radius: 5px;
 
   .card-panel {

@@ -503,7 +503,7 @@ export default {
   position: relative;
   height: 40px;
   background: #fff;
-  margin: 80px 10px 10px 10px;
+  margin: 10px 10px 10px 10px;
   border-radius: 5px;
 
   .left-menu {

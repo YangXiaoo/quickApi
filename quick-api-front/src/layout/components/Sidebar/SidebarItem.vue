@@ -8,9 +8,12 @@
       </app-link>
     </template>
 
-    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
+    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body @contextmenu.prevent.native="openMenu(tag,$event)">
       <template slot="title">
-        <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
+        <!-- <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" /> -->
+        <div>
+          <span>{{ item.meta.title }}</span>
+        </div>
       </template>
       <sidebar-item
         v-for="child in item.children"
@@ -21,6 +24,12 @@
         class="nest-menu"
       />
     </el-submenu>
+    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+      <li @click="closeMenu()">取消</li>
+      <li>新建</li>
+      <li>编辑</li>
+      <li>删除</li>
+    </ul>
   </div>
 </template>
 
@@ -55,13 +64,55 @@ export default {
     // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
     // TODO: refactor with render function
     this.onlyOneChild = null
-    return {}
+    return {
+      visible: false,
+      top: 0,
+      left: 0
+    }
   },
   computed: {
     ...mapGetters([
     ])
   },
+  watch: {
+    visible(value) {
+      if (value) {
+        document.body.addEventListener('click', this.closeMenu)
+      } else {
+        document.body.removeEventListener('click', this.closeMenu)
+      }
+    }
+  },
   methods: {
+    openMenu(tag, event) {
+      this.closeMenu()
+      console.log('tag', tag)
+      console.log('event', event)
+      const menuMinWidth = 40
+      console.log('openMenu()>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+      const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
+      console.log('offsetLeft', offsetLeft)
+      const offsetWidth = this.$el.offsetWidth // container width
+      console.log('offsetWidth', offsetWidth)
+      const maxLeft = offsetWidth - menuMinWidth // left boundary
+      const left = event.clientX - 20 // 20: margin right
+      console.log('event.clientX ', event.clientX)
+
+      if (left > maxLeft) {
+        this.left = maxLeft
+      } else {
+        this.left = left
+      }
+
+      this.top = event.clientY - 40
+      this.visible = true
+    },
+    closeMenu() {
+      this.visible = false
+    },
+    handleScroll() {
+      this.closeMenu()
+    },
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {
@@ -98,3 +149,28 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  @import "~@/styles/variables.scss";
+  .contextmenu {
+    margin: 0;
+    background: #fff;
+    z-index: 3000;
+    position: absolute;
+    list-style-type: none;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+    li {
+      margin: 0;
+      padding: 7px 16px;
+      cursor: pointer;
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+</style>

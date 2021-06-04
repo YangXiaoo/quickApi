@@ -25,3 +25,11 @@ export function getLocalProjectData(params) {
     params
   })
 }
+
+export function getConnection(data) {
+  return request({
+    url: '/api/quickApi/getConnection',
+    method: 'post',
+    data
+  })
+}

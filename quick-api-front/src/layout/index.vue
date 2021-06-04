@@ -1,21 +1,19 @@
 <template>
   <div class="app-wrapper">
-    <div class="main-container">
-      <div class="fixed-header">
-        <navbar />
+    <navbar />
+    <div class="qa-main-container">
+      <sidebar />
+      <div class="qa-main-content-container">
         <tags-view />
+        <app-main />
       </div>
-      <div>
-        <sidebar class="sidebar-container" />
-      </div>
-      <app-main />
     </div>
   </div>
 </template>
 
 <script>
 import { Navbar, Sidebar, AppMain, TagsView } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
+// import ResizeMixin from './mixin/ResizeHandler'
 
 export default {
   name: 'MainLayout',
@@ -25,7 +23,7 @@ export default {
     AppMain,
     TagsView
   },
-  mixins: [ResizeMixin],
+  // mixins: [ResizeMixin],
   data() {
     return {
       dynamicTags: ['标签一', '标签二', '标签三']
@@ -49,23 +47,23 @@ export default {
   @import "~@/styles/variables.scss";
 
   .app-wrapper {
-    @include clearfix;
-    position: relative;
-    height: 100%;
     width: 100%;
-    &.mobile.openSidebar{
-      position: fixed;
-      top: 0;
-    }
+    height: 100%;
+    background-color: #ffff;
+    display: flex;
+    flex-flow: column nowrap;
   }
 
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 9;
-    // width: calc(100% - #{$sideBarWidth});
-    width: 100%;
-    transition: width 0.28s;
+  .qa-main-container {
+    display: flex;
+    flex-flow: row nowrap;
+    height: calc(100% - #{$navbarHeight});
+  }
+  .qa-main-content-container {
+    display: flex;
+    flex-flow: column nowrap;
+    width: calc(100% - #{$sideBarWidth} - #{$sideContentWidth});
+
+    box-sizing: border-box;
   }
 </style>

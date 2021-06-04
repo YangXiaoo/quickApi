@@ -179,7 +179,7 @@ import { getLocalProjectPath } from '@/utils/commonHelper'
 import RequestTemplate from '../component/requestTemplate.vue'
 
 export default {
-  name: 'ServerProject',
+  name: 'ProjectApi',
   components: {
     RequestTemplate
   },
@@ -231,10 +231,10 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'author',
       'localProjectName',
       'localProjectGroupList',
-      'serviceProjectAddress'
+      'serviceProjectAddress',
+      'username'
     ])
   },
   created() {
@@ -243,7 +243,7 @@ export default {
   },
   methods: {
     initBaseData() {
-      this.userName = this.author || 'dummyUser' // 测试使用
+      this.userName = this.username // 测试使用
       this.methodName = this.$route.meta.title
       this.methodGroup = this.$route.meta.group
       this.projectName = this.$route.meta.projectName // 项目名
@@ -315,7 +315,7 @@ export default {
   position: relative;
   height: 40px;
   background: #fff;
-  margin: 80px 10px 10px 10px;
+  margin: 10px 10px 10px 10px;
   border-radius: 5px;
 
   .left-menu {

@@ -1,12 +1,12 @@
 <template>
-  <section class="app-main">
+  <div class="qa-main-app">
     <transition name="fade-transform" mode="out-in">
       <!-- <keep-alive :include="cachedViews"> -->
       <keep-alive :exclude="['_none__']">
         <router-view :key="key" />
       </keep-alive>
     </transition>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -24,35 +24,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.app-main {
-  min-height: calc(100vh - 40px);
-  width: 100%;
-  position: relative;
-  overflow: hidden;
+  @import "~@/styles/variables.scss";
+.qa-main-app {
+  min-height: calc(100% - #{$navbarHeight});
+  // width: 100%;
+  overflow: auto;
   background-color: #f7f7f7;
-}
-
-.fixed-header+.app-main {
-  padding-top: 40px;
-}
-
-.hasTagsView {
-  .app-main {
-    /* 84 = navbar + tags-view = 50 + 34 */
-    min-height: calc(100vh - 84px);
-  }
-
-  .fixed-header+.app-main {
-    padding-top: 84px;
-  }
-}
-</style>
-
-<style lang="scss">
-// fix css style bug in open el-dialog
-.el-popup-parent--hidden {
-  .fixed-header {
-    padding-right: 15px;
-  }
 }
 </style>

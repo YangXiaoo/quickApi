@@ -918,4 +918,23 @@ public class QuickApiService {
 
         return jsonModel;
     }
+
+    /**
+     * 是否开启本地项目
+     * @param map
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/6/4 20:49
+     */
+    @PostMapping("/getConnection")
+    public JsonModel getConnection(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            jsonModel.success("get connected!", true);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
 }

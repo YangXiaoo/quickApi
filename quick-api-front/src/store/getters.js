@@ -1,5 +1,7 @@
 const getters = {
   constantRoutes: state => state.app.constantRoutes,
+  isLocalProject: state => state.app.isLocalProject,
+  isSettingLocalFlag: state => state.app.isSettingLocalFlag,
 
   // 用户相关
   token: state => state.user.token,

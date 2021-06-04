@@ -1,15 +1,12 @@
 import router from './router'
 import store from './store'
-import { Message } from 'element-ui'
-import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css' // progress bar style
-import { getToken } from '@/utils/auth' // get token from cookie
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 import getPageTitle from '@/utils/get-page-title'
-import { setRoutes } from '@/utils/routerTool'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login'] // no redirect whitelist
+// const whiteList = ['/login']
 
 router.beforeEach(async(to, from, next) => {
   // start progress bar
@@ -17,16 +14,14 @@ router.beforeEach(async(to, from, next) => {
 
   // set page title
   document.title = getPageTitle(to.meta.title)
-  const routes = store.getters.routes 
-  if (!routes || routes.length === 0) {
-    store.dispatch('api/getApiRoutes', '').then(res => {
-      store.dispatch('api/setRouterSettingFlag', true)
-      setRoutes(res)
+  const isSettingLocalFlag = store.getters.isSettingLocalFlag
+  if (!isSettingLocalFlag) {
+    store.dispatch('app/setLocalProjectFlag').then(res => {
       next()
       NProgress.done()
     }).catch(error => {
-      Message.error(error || '加载api接口失败')
-      next({ path: '/' })
+      console.debug('setLocalProjectFlag', error)
+      next({ path: '/userApi/home' })
     })
   }
 

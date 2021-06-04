@@ -6,16 +6,48 @@ Vue.use(Router)
 
 export const constantRoutes = [
   {
-    path: '/',
-    redirect: '/home',
+    path: '/localApi',
+    redirect: '/localApi/home',
     component: MainLayout,
     children: [
       {
         path: 'home',
-        name: 'Home',
-        component: () => import('@/views/home/index'),
+        name: 'LocalApiHome',
+        component: () => import('@/views/localApi/localApiHome'),
         meta: {
-          title: '首页',
+          title: '本地',
+          affix: true // 不关闭
+        }
+      }
+    ]
+  },
+  {
+    path: '/userApi',
+    redirect: '/userApi/home',
+    component: MainLayout,
+    children: [
+      {
+        path: 'home',
+        name: 'UserApiHome',
+        component: () => import('@/views/userApi/userApiHome'),
+        meta: {
+          title: '个人',
+          affix: true // 不关闭
+        }
+      }
+    ]
+  },
+  {
+    path: '/projectApi',
+    redirect: '/projectApi/home',
+    component: MainLayout,
+    children: [
+      {
+        path: 'home',
+        name: 'ProjectApiHome',
+        component: () => import('@/views/projectApi/projectApiHome'),
+        meta: {
+          title: '项目',
           affix: true // 不关闭
         }
       }

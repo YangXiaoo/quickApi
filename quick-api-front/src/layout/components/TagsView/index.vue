@@ -174,11 +174,14 @@ export default {
       }
     },
     openMenu(tag, e) {
-      const menuMinWidth = 200
+      const menuMinWidth = 240
       const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
+      console.log('offsetLeft', offsetLeft)
       const offsetWidth = this.$el.offsetWidth // container width
+      console.log('offsetWidth', offsetWidth)
       const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = e.clientX - offsetLeft + 15 // 15: margin right
+      const left = e.clientX + 5 // 15: margin right
+      console.log('e.clientX ', e.clientX)
 
       if (left > maxLeft) {
         this.left = maxLeft
@@ -201,8 +204,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "~@/styles/variables.scss";
 .tags-view-container {
-  height: 34px;
+  height: $tagsViewHeight;
   width: 100%;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
@@ -222,7 +226,7 @@ export default {
       margin-left: 5px;
       margin-top: 4px;
       &:first-of-type {
-        margin-left: 15px;
+        margin-left: 2px;
       }
       &:last-of-type {
         margin-right: 15px;
