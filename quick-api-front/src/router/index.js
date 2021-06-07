@@ -93,8 +93,24 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/',
+    redirect: '/quickApi',
+    component: MainLayout,
+    children: [
+      {
+        path: 'quickApi',
+        name: 'QuickApi',
+        component: () => import('@/views/quickApi'),
+        meta: {
+          title: '本地',
+          affix: true // 不关闭
+        }
+      }
+    ]
+  },
+  {
     path: '*',
-    redirect: '/home'
+    redirect: '/quickApi'
   }
 ]
 

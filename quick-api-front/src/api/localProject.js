@@ -11,7 +11,7 @@ export function callApi(path, contentType, headerJson, queryData, type) {
   }
 
   return request({
-    url: '/api/quickApi/callApi',
+    url: '/callApi',
     method: 'get',
     params
   })
@@ -20,7 +20,7 @@ export function callApi(path, contentType, headerJson, queryData, type) {
 /** 测试项目 - 本地 - 获得接口信息 */
 export function getLocalProjectData(params) {
   return request({
-    url: '/api/quickApi/api',
+    url: '/api',
     method: 'get',
     params
   })
@@ -28,7 +28,7 @@ export function getLocalProjectData(params) {
 
 export function getConnection(data) {
   return request({
-    url: '/api/quickApi/getConnection',
+    url: '/getConnection',
     method: 'post',
     data
   })

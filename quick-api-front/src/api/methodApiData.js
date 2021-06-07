@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function getUserMethodApiData(data) {
   return request({
-    url: '/api/quickApi/getUserMethodApiData',
+    url: '/getUserMethodApiData',
     method: 'post',
     data
   })
@@ -14,7 +14,7 @@ export function getUserMethodApiData(data) {
 /** 保存用户的页面数据 */
 export function saveUserMethodApiData(data) {
   return request({
-    url: '/api/quickApi/saveUserMethodApiData',
+    url: '/saveUserMethodApiData',
     method: 'post',
     data
   })
@@ -22,7 +22,7 @@ export function saveUserMethodApiData(data) {
 
 export function saveMethodApiData(data) {
   return request({
-    url: '/api/quickApi/saveMethodApiData',
+    url: '/saveMethodApiData',
     method: 'post',
     data
   })
@@ -30,7 +30,7 @@ export function saveMethodApiData(data) {
 
 export function getMethodApiData(data) {
   return request({
-    url: '/api/quickApi/getMethodApiData',
+    url: '/getMethodApiData',
     method: 'post',
     data
   })
@@ -38,7 +38,7 @@ export function getMethodApiData(data) {
 
 export function deleteMethodApiData(data) {
   return request({
-    url: '/api/quickApi/deleteMethodApiData',
+    url: '/deleteMethodApiData',
     method: 'post',
     data
   })
@@ -46,7 +46,7 @@ export function deleteMethodApiData(data) {
 
 export function getProjectMethodApiDataHistory(data) {
   return request({
-    url: '/api/quickApi/getProjectMethodApiDataHistory',
+    url: '/getProjectMethodApiDataHistory',
     method: 'post',
     data
   })

@@ -3,7 +3,7 @@ const BASE_URL = '' // process.env.VUE_APP_BASE_API
 
 export function login(data) {
   return request({
-    url: BASE_URL + '/api/quickApi/login/loginCheck',
+    url: BASE_URL + '/login/loginCheck',
     method: 'post',
     data
   })
@@ -11,7 +11,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: BASE_URL + '/api/quickApi/login/getInfo',
+    url: BASE_URL + '/login/getInfo',
     method: 'get',
     params: { token }
   })
@@ -19,7 +19,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: BASE_URL + '/api/quickApi/login/logout',
+    url: BASE_URL + '/login/logout',
     method: 'post'
   })
 }

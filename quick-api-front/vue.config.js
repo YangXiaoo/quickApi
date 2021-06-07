@@ -37,15 +37,15 @@ module.exports = {
       errors: true
     },
     proxy: {
-      '/api': {
+      '/quickApi': {
         target: 'http://localhost:8899',
         changeOrigin: true,
-        ws: true,
-        pathRewrite: {
-          '^/api': ''
-        }
+        ws: true
+        // pathRewrite: {
+        //   '^/quickApi': ''
+        // }
       }
-    },
+    }
     // before: require('./mock/mock-server.js')
   },
   configureWebpack: {

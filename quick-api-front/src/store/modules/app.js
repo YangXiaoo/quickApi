@@ -2,7 +2,7 @@ import { constantRoutes } from '@/router'
 import { getConnection } from '@/api/localProject'
 const state = {
   constantRoutes: constantRoutes,
-  isLocalProject: true, // 默认不是本地项目启动
+  isLocalProject: false, // 默认不是本地项目启动
   isSettingLocalFlag: false // 是否设置本地接口标识
 }
 
