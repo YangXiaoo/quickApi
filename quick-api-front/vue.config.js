@@ -38,12 +38,17 @@ module.exports = {
     },
     proxy: {
       '/quickApi': {
-        target: 'http://localhost:8899',
+        target: process.env.VUE_APP_LOCAL_API,
         changeOrigin: true,
         ws: true
         // pathRewrite: {
-        //   '^/quickApi': ''
+        //   '^/quickApi': '/quickApi'
         // }
+      },
+      '/api': {
+        target: process.env.VUE_APP_SERVER_API,
+        changeOrigin: true,
+        ws: true
       }
     }
     // before: require('./mock/mock-server.js')

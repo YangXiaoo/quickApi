@@ -28,7 +28,7 @@ export function getLocalProjectData(params) {
 
 export function getConnection(data) {
   return request({
-    url: '/getConnection',
+    url: '/getLocalConnection',
     method: 'post',
     data
   })

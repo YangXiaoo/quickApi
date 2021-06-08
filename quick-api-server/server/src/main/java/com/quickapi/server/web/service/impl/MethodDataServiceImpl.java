@@ -22,7 +22,7 @@ import java.util.Map;
  * @author yangxiao
  */
 @RestController
-@RequestMapping("/api/methodData")
+@RequestMapping("/api")
 public class MethodDataServiceImpl {
     private static final Logger logger = LoggerFactory.getLogger(MethodDataServiceImpl.class);
 

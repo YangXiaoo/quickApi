@@ -19,7 +19,7 @@ import java.util.Map;
  * @author yangxiao
  */
 @RestController
-@RequestMapping("/api/project")
+@RequestMapping("/api")
 public class ProjectInfoServiceImpl {
     private static final Logger log = LoggerFactory.getLogger(ProjectInfoServiceImpl.class);
     @Autowired

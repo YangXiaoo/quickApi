@@ -5,7 +5,7 @@ import request from '@/utils/request'
  */
 export function getUserProjectMethodPageData(data) {
   return request({
-    url: '/api/quickApi/getUserProjectMethodPageData',
+    url: '/getUserProjectMethodPageData',
     method: 'post',
     data
   })
@@ -16,7 +16,7 @@ export function getUserProjectMethodPageData(data) {
  */
 export function saveUserProjectMethodPageData(data) {
   return request({
-    url: '/api/quickApi/saveUserProjectMethodPageData',
+    url: '/saveUserProjectMethodPageData',
     method: 'post',
     data
   })

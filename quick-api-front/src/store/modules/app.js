@@ -16,7 +16,9 @@ const actions = {
 
     return new Promise((resolve, reject) => {
       getConnection(data).then(res => {
-        state.isLocalProject = true
+        if (res.data.data) {
+          state.isLocalProject = true
+        }
         resolve(res)
       }).catch(error => {
         console.log('非本地项目!', error)

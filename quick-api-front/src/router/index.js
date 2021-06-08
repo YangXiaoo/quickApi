@@ -16,7 +16,7 @@ export const constantRoutes = [
         component: () => import('@/views/localApi/localApiHome'),
         meta: {
           title: '本地',
-          affix: true // 不关闭
+          affix: process.env.VUE_APP_IS_LOCAL === 'true' // 不关闭
         }
       }
     ]

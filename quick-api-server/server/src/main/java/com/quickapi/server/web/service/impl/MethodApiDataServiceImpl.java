@@ -20,7 +20,7 @@ import java.util.Map;
  * @author yangxiao
  */
 @RestController
-@RequestMapping("/api/methodApiData")
+@RequestMapping("/api")
 public class MethodApiDataServiceImpl {
     private static final Logger logger = LoggerFactory.getLogger(MethodDataServiceImpl.class);
 

@@ -926,7 +926,7 @@ public class QuickApiService {
      * @author yangxiao
      * @date 2021/6/4 20:49
      */
-    @PostMapping("/getConnection")
+    @PostMapping("/getLocalConnection")
     public JsonModel getConnection(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {

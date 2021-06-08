@@ -23,6 +23,9 @@ router.beforeEach(async(to, from, next) => {
       console.debug('setLocalProjectFlag', error)
       next({ path: '/userApi/home' })
     })
+  } else {
+    next()
+    NProgress.done()
   }
 
   // // determine whether the user has logged in
