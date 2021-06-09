@@ -92,14 +92,13 @@ export default {
       ],
       url: '', // 页面接口的url，一旦创建不会改变
       methodName: '',
-      methodGroup: '',
-      userName: ''
+      methodGroup: ''
     }
   },
   computed: {
     ...mapGetters([
       'userGroupList',
-      'author'
+      'username'
     ])
   },
   mounted() {
@@ -110,7 +109,6 @@ export default {
   methods: { // 按照页面功能顺序定义方法
     initBaseData() {
       this.url = this.$route.path // 页面URL在新建时已确定
-      this.userName = this.author || 'dummyUser' // 测试使用
       this.methodName = this.$route.meta.title
       this.methodGroup = this.$route.meta.group
     },
@@ -124,7 +122,7 @@ export default {
       }
 
       const data = {
-        userName: this.userName,
+        userName: this.username,
         url: this.url
       }
 
@@ -164,7 +162,7 @@ export default {
       const data = {
         url: this.url,
         apiData: pageData,
-        userName: this.userName
+        userName: this.username
       }
 
       saveUserMethodApiData(data)
@@ -174,6 +172,7 @@ export default {
               message: '保存成功',
               type: 'success'
             })
+            this.updateVisitedView(data.methodName, data.methodGroup)
           } else {
             this.$message({
               message: '保存失败',
@@ -196,7 +195,7 @@ export default {
     },
     saveMethodData() {
       const data = {
-        userName: this.userName, // 推荐使用邮箱
+        userName: this.username, // 推荐使用邮箱
         url: this.url, // 路由
         methodName: this.dialogObj.methodName, // 方法名
         methodGroup: this.dialogObj.methodGroup
@@ -207,14 +206,17 @@ export default {
     },
     updateUserMethodData() {
       const data = {
-        userName: this.userName, // 推荐使用邮箱
+        userName: this.username, // 推荐使用邮箱
         url: this.url, // 路由
         methodName: this.dialogObj.methodName, // 方法名
         methodGroup: this.dialogObj.methodGroup
       }
+      console.log('updateUserMethodData.username', this.username)
       this.$store.dispatch('userMethodData/updateUserMethodData', data).then(res => {
         this.methodName = data.methodName
         this.methodGroup = data.methodGroup
+
+        this.updateVisitedView(data.methodName, data.methodGroup)
       }).catch((error) => {
         this.$message({
           message: error || '更新失败',
@@ -240,7 +242,7 @@ export default {
     },
     handleDeleteUserMethodApiData() {
       const data = {
-        userName: this.userName,
+        userName: this.username,
         url: this.url
       }
       this.$store.dispatch('userMethodData/deleteUserMethodData', data).then(res => {
@@ -249,6 +251,18 @@ export default {
           type: 'success'
         })
       })
+    },
+    updateVisitedView(title, group) {
+      const { name } = this.$route
+      if (name) {
+        const tmpRoutes = { ...this.$route }
+        tmpRoutes.meta = {
+          title: title,
+          group: group
+        }
+        console.log('tab.index.updateVisitedView.tmpRoutes', tmpRoutes)
+        this.$store.dispatch('tagsView/updateVisitedView', tmpRoutes)
+      }
     }
   }
 }

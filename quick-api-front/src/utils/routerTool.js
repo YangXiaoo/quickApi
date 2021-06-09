@@ -114,11 +114,20 @@ export function getProjectRoutesFromMethodDataList(apiInfo) {
 export function getProjectMethodGroupMap(apiInfo) {
   const data = {}
   for (const api of apiInfo) {
-    if (api.group in data) {
-      data[api.group].push(api)
+    if (!api.methodGroup) { // 解决本地项目和服务端项目分组问题
+      if (api.group in data) {
+        data[api.group].push(api)
+      } else {
+        data[api.group] = [api]
+      }
     } else {
-      data[api.group] = [api]
+      if (api.methodGroup in data) {
+        data[api.methodGroup].push(api)
+      } else {
+        data[api.methodGroup] = [api]
+      }
     }
+
   }
 
   return data

@@ -24,7 +24,7 @@
             </router-link>
           </el-dropdown-menu>
         </el-dropdown>
-        <div class="right-menu-item" @click="handleRecordClick">
+        <div v-if="isLocalProject" class="right-menu-item" @click="handleRecordClick">
           <i class="el-icon-time" />
         </div>
         <div class="right-menu-item" @click="handleLoginClick">
@@ -99,7 +99,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'projectMethodDataList'
+      'projectMethodDataList',
+      'isLocalProject'
     ])
   },
   watch: {
@@ -112,7 +113,7 @@ export default {
      * 返回首页
      */
     handleHomeClick() {
-      this.$router.push({ name: 'Home' })
+      this.$router.push({ name: 'QuickApi' })
     },
     /**
      * 新建页面

@@ -78,7 +78,7 @@ export default {
     filterAffixTags(routes, basePath = '/') {
       let tags = []
       routes.forEach(route => {
-        if (route.meta && route.meta.affix) {
+        if (route.meta && !route.meta.hidden && route.meta.affix) {
           const tagPath = path.resolve(basePath, route.path)
           tags.push({
             fullPath: tagPath,
@@ -111,6 +111,12 @@ export default {
         this.$store.dispatch('tagsView/addView', this.$route)
       }
       return false
+    },
+    updateVisitedView() {
+      const { name } = this.$route
+      if (name) {
+        this.$store.dispatch('tagsView/updateVisitedView', this.$route)
+      }
     },
     moveToCurrentTag() {
       const tags = this.$refs.tag
@@ -169,19 +175,16 @@ export default {
           // to reload home page
           this.$router.replace({ path: view.fullPath })
         } else {
-          this.$router.push('/')
+          this.$router.push({ name: 'QuickApi' })
         }
       }
     },
     openMenu(tag, e) {
       const menuMinWidth = 240
       const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
-      console.log('offsetLeft', offsetLeft)
       const offsetWidth = this.$el.offsetWidth // container width
-      console.log('offsetWidth', offsetWidth)
       const maxLeft = offsetWidth - menuMinWidth // left boundary
       const left = e.clientX + 5 // 15: margin right
-      console.log('e.clientX ', e.clientX)
 
       if (left > maxLeft) {
         this.left = maxLeft

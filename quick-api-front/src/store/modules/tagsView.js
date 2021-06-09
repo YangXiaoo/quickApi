@@ -59,7 +59,10 @@ const mutations = {
   UPDATE_VISITED_VIEW: (state, view) => {
     for (let v of state.visitedViews) {
       if (v.path === view.path) {
-        v = Object.assign(v, view)
+        console.log('tagsViw.UPDATE_VISITED_VIEW.view', view)
+        v = Object.assign(v, view, {
+          title: view.meta.title || 'no-name'
+        })
         break
       }
     }

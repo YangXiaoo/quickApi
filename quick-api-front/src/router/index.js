@@ -16,7 +16,8 @@ export const constantRoutes = [
         component: () => import('@/views/localApi/localApiHome'),
         meta: {
           title: '本地',
-          affix: process.env.VUE_APP_IS_LOCAL === 'true' // 不关闭
+          affix: true, // 不关闭
+          hidden: process.env.VUE_APP_IS_LOCAL !== 'true'
         }
       }
     ]
@@ -102,7 +103,7 @@ export const constantRoutes = [
         name: 'QuickApi',
         component: () => import('@/views/quickApi'),
         meta: {
-          title: '本地',
+          title: '主页',
           affix: true // 不关闭
         }
       }

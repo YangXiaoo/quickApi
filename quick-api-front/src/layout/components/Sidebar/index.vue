@@ -183,6 +183,7 @@ export default {
       // todo
     },
     tabMouseOn() {
+      console.log('tabMouseOn()', '>>>>>>>>>>>>>>>>>>>>')
       const sideBarList = document.getElementsByClassName('side-bar-item')
       const sideContentList = document.getElementsByClassName('side-content-item')
       var contentMap = {}
@@ -202,19 +203,10 @@ export default {
             sideBarList[j].setAttribute('class', 'side-bar-item')
           }
 
-          // document.getElementsByClassName('side-content-container')[0].style.width = variables.sideContentWidth
-          // document.getElementsByClassName('qa-main-content-container')[0].style.width = 'calc(100% - ' + variables.sideBarWidth + '-' + variables.sideContentWidth + ')'
-
           this.setAttribute('class', 'current side-bar-item')
           if (this.getAttribute('name') in contentMap) {
             contentMap[this.getAttribute('name')].setAttribute('class', 'side-content-item')
           }
-
-          // // 没有左侧菜单内容，不绑定点击属性
-          // if (sideBarList[i].hasAttribute('no-content')) {
-          //   document.getElementsByClassName('side-content-container')[0].style.width = '0px'
-          //   // document.getElementsByClassName('qa-main-content-container')[0].style.width = 'calc(100% - ' + variables.sideBarWidth + ')'
-          // }
         }
       }
 
