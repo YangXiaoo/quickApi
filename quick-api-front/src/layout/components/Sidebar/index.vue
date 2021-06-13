@@ -254,6 +254,7 @@ export default {
             this.loginVisible = true
           }
         } else {
+          this.$message('请登录')
           this.loginVisible = true
         }
 

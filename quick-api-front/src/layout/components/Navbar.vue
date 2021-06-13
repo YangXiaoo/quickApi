@@ -106,6 +106,7 @@ export default {
     handleLogout() {
       this.$store.dispatch('user/logout').then(() => {
         console.log('handleLogout.loginout', '>>>>>>>>>>>>>>>>')
+        location.reload()
       })
     },
     handleProjectSetting() {

@@ -53,6 +53,10 @@ const actions = {
         reject(error || '异常错误')
       })
     })
+  },
+  resetProjectApi({ state }) {
+    state.projectMethodDataList = {}
+    state.projectRoutes = {}
   }
 }
 

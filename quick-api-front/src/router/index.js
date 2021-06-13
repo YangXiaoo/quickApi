@@ -33,7 +33,7 @@ export const constantRoutes = [
         component: () => import('@/views/userApi/userApiHome'),
         meta: {
           title: '个人',
-          affix: true // 不关闭
+          affix: false // 不关闭
         }
       }
     ]
@@ -49,7 +49,7 @@ export const constantRoutes = [
         component: () => import('@/views/projectApi/projectApiHome'),
         meta: {
           title: '项目',
-          affix: true // 不关闭
+          affix: false // 不关闭
         }
       }
     ]

@@ -77,6 +77,7 @@ const actions = {
       logout(state.token).then(() => {
         removeToken() // must remove  token  first
         dispatch('userMethodData/resetUserRoutes', [], { root: true })
+        dispatch('projectMethodData/resetProjectApi', [], { root: true })
         state.isLogin = false
         state.loginName = ''
         resolve()
