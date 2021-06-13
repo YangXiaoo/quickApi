@@ -64,7 +64,7 @@
         </el-collapse>
       </div>
     </div>
-    <Login :visible="loginVisible" />
+    <Login :trigger="loginVisible" />
   </div>
 </template>
 

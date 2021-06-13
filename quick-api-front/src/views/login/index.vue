@@ -21,7 +21,7 @@ export default {
   name: 'Login',
   props: {
     // 页面数据
-    visible: {
+    trigger: {
       type: Boolean,
       default: false
     }
@@ -33,7 +33,7 @@ export default {
         password: '111111'
       },
       loading: false,
-      dialogLoginVisible: this.visible
+      dialogLoginVisible: this.trigger
     }
   },
   computed: {
@@ -50,7 +50,7 @@ export default {
       immediate: true
     },
     visible(newValue) {
-      this.dialogLoginVisible = newValue
+      this.dialogLoginVisible = true
     }
   },
   methods: {

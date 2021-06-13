@@ -49,3 +49,10 @@ export function parseRequestData(data) {
 
   return dataList
 }
+
+/**
+ * 解析Postman文件获得路由
+ * @param {Object} data
+ */
+export function getRoutersPostmanApiJsonData(data) {
+}

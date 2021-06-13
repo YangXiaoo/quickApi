@@ -38,7 +38,8 @@
         </div>
       </div>
     </div>
-    <Login :visible="loginVisible" />
+    <Login :trigger="loginVisible" />
+    <ImportPostmanApi :trigger="importTrigger" />
   </div>
 </template>
 
@@ -47,14 +48,16 @@ import { mapGetters } from 'vuex'
 import { generateNewTabPage } from '@/utils/routerTool'
 
 import Login from '@/views/login'
+import ImportPostmanApi from '@/views/component/importPostmanApi.vue'
 
 export default {
-  components: { Login },
+  components: { Login, ImportPostmanApi },
   data() {
     return {
       serviceProjectFlag: false,
       loading: false,
-      loginVisible: false
+      loginVisible: false,
+      importTrigger: false
     }
   },
   computed: {
@@ -85,10 +88,16 @@ export default {
       this.$router.replace({ name: pageName })
     },
     handleImportClick() {
-      this.$message({
-        type: 'info',
-        message: '导入功能，暂未开发'
-      })
+      console.log('Navbar.handleImportClick()', '>>>>>>>>>>>>>>>')
+      if (!this.isLogin) {
+        this.$message({
+          type: 'info',
+          message: '请登录'
+        })
+
+        return
+      }
+      this.importTrigger = !this.importTrigger
     },
     handleSettingClick() {
       this.$message({
@@ -101,7 +110,7 @@ export default {
     },
     handleLoginClick() {
       console.log('handleLoginClick()', '>>>>>>>>>>>>>>>>>>')
-      this.loginVisible = true
+      this.loginVisible = !this.loginVisible
     },
     handleLogout() {
       this.$store.dispatch('user/logout').then(() => {
