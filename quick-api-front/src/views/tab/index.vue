@@ -46,7 +46,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getUserMethodApiData, saveUserMethodApiData, deleteUserMethodApiData } from '@/api/methodApiData'
+import { getUserMethodApiData, saveUserMethodApiData } from '@/api/methodApiData'
 
 import RequestTemplate from '../component/requestTemplate.vue'
 export default {
@@ -98,7 +98,7 @@ export default {
   computed: {
     ...mapGetters([
       'userGroupList',
-      'username'
+      'loginName'
     ])
   },
   mounted() {
@@ -122,7 +122,7 @@ export default {
       }
 
       const data = {
-        userName: this.username,
+        userName: this.loginName,
         url: this.url
       }
 
@@ -162,7 +162,7 @@ export default {
       const data = {
         url: this.url,
         apiData: pageData,
-        userName: this.username
+        userName: this.loginName
       }
 
       saveUserMethodApiData(data)
@@ -195,7 +195,7 @@ export default {
     },
     saveMethodData() {
       const data = {
-        userName: this.username, // 推荐使用邮箱
+        userName: this.loginName, // 推荐使用邮箱
         url: this.url, // 路由
         methodName: this.dialogObj.methodName, // 方法名
         methodGroup: this.dialogObj.methodGroup
@@ -206,12 +206,12 @@ export default {
     },
     updateUserMethodData() {
       const data = {
-        userName: this.username, // 推荐使用邮箱
+        userName: this.loginName, // 推荐使用邮箱
         url: this.url, // 路由
         methodName: this.dialogObj.methodName, // 方法名
         methodGroup: this.dialogObj.methodGroup
       }
-      console.log('updateUserMethodData.username', this.username)
+      console.log('updateUserMethodData.loginName', this.loginName)
       this.$store.dispatch('userMethodData/updateUserMethodData', data).then(res => {
         this.methodName = data.methodName
         this.methodGroup = data.methodGroup
@@ -242,7 +242,7 @@ export default {
     },
     handleDeleteUserMethodApiData() {
       const data = {
-        userName: this.username,
+        userName: this.loginName,
         url: this.url
       }
       this.$store.dispatch('userMethodData/deleteUserMethodData', data).then(res => {

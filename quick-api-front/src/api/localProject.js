@@ -1,5 +1,9 @@
 import request from '@/utils/request'
 
+const baseUrl = process.env.VUE_APP_LOCAL_PATH
+const SERVER_PATH = process.env.VUE_APP_SERVER_PATH
+const isLocalProject = process.env.VUW_APP_IS_LOCAL
+
 /** 测试项目 - 本地 - 转发本地项目接口 */
 export function callApi(path, contentType, headerJson, queryData, type) {
   const params = {
@@ -11,7 +15,7 @@ export function callApi(path, contentType, headerJson, queryData, type) {
   }
 
   return request({
-    url: '/callApi',
+    url: (isLocalProject ? baseUrl : SERVER_PATH) + '/callApi',
     method: 'get',
     params
   })
@@ -20,7 +24,7 @@ export function callApi(path, contentType, headerJson, queryData, type) {
 /** 测试项目 - 本地 - 获得接口信息 */
 export function getLocalProjectData(params) {
   return request({
-    url: '/api',
+    url: baseUrl + '/api',
     method: 'get',
     params
   })
@@ -28,7 +32,7 @@ export function getLocalProjectData(params) {
 
 export function getConnection(data) {
   return request({
-    url: '/getLocalConnection',
+    url: (isLocalProject ? baseUrl : SERVER_PATH) + '/getLocalConnection',
     method: 'post',
     data
   })

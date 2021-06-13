@@ -111,7 +111,8 @@ export default {
       projectFinishedMethodDataCount: 0,
       projectDeveloperCount: 0,
       projectFinishedMethodDataMap: '',
-      projectUnfinishedMethodDataList: []
+      projectUnfinishedMethodDataList: [],
+      projectMethodDataCount: 0
     }
   },
   computed: {

@@ -1,12 +1,14 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
-    username: 'yangxiao',
-    avatar: ''
+    username: '',
+    avatar: '',
+
+    loginName: '', // 页面登录的用户名
+    isLogin: false
   }
 }
 
@@ -26,19 +28,22 @@ const mutations = {
     state.avatar = avatar
   },
   SET_USER_INFO: (state, userInfo) => {
-    state.username = userInfo.username
+    state.loginName = userInfo.loginName
   }
 }
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
+  login({ commit, state }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
+        console.log('login.data', data)
         commit('SET_TOKEN', data.token)
-        commit('SET_USER_INFO', userInfo)
+        const { username } = data.data
+        state.loginName = username
+        state.isLogin = true
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -57,10 +62,8 @@ const actions = {
           return reject('Verification failed, please Login again.')
         }
 
-        const { username, avatar } = data
-
-        commit('SET_NAME', username)
-        commit('SET_AVATAR', avatar)
+        const { username } = data
+        state.loginName = username
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -69,12 +72,13 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout(state.token).then(() => {
         removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
+        dispatch('userMethodData/resetUserRoutes', [], { root: true })
+        state.isLogin = false
+        state.loginName = ''
         resolve()
       }).catch(error => {
         reject(error)

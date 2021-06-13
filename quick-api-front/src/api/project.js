@@ -1,9 +1,11 @@
 import request from '@/utils/request'
 
+const baseUrl = process.env.VUE_APP_SERVER_PATH
+
 /** 测试项目 - 获得个人参与的测试项目 */
 export function getProjectInfoList(data) {
   return request({
-    url: '/getProjectInfoList',
+    url: baseUrl + '/getProjectInfoList',
     method: 'post',
     data
   })
@@ -11,7 +13,7 @@ export function getProjectInfoList(data) {
 
 export function getProjectDevelopers(data) {
   return request({
-    url: '/getProjectDevelopers',
+    url: baseUrl + '/getProjectDevelopers',
     method: 'post',
     data
   })
@@ -19,7 +21,7 @@ export function getProjectDevelopers(data) {
 
 export function getRunningService(data) {
   return request({
-    url: '/getRunningService',
+    url: baseUrl + '/getRunningService',
     method: 'post',
     data
   })

@@ -33,7 +33,7 @@
         >
           <sidebar-item v-for="route in userMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
         </el-menu>
-        <div v-show="!userMethodMenu.length" style="padding-left: 50px;">
+        <div v-show="!userMethodMenu.length" style="align-item:center;">
           暂无接口
         </div>
       </div>
@@ -64,17 +64,19 @@
         </el-collapse>
       </div>
     </div>
+    <Login :visible="loginVisible" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
+import Login from '@/views/login'
 import variables from '@/styles/variables.scss'
 
 export default {
   name: 'SidebarIndex',
-  components: { SidebarItem },
+  components: { SidebarItem, Login },
   data() {
     return {
       localProjectMethodMenu: [],
@@ -82,7 +84,9 @@ export default {
       projectMethodMenu: {}, // 多个项目
       userMethodMenu: [],
       projectNameSearchParam: '',
-      collapseActiveNames: []
+      collapseActiveNames: [],
+      loginVisible: false,
+      showDialog: false
     }
   },
   computed: {
@@ -92,7 +96,9 @@ export default {
       'projectRoutes',
       'userRoutes',
       'username',
-      'isLocalProject'
+      'isLocalProject',
+      'isLogin',
+      'loginName'
     ]),
     activeMenu() {
       const route = this.$route
@@ -121,19 +127,32 @@ export default {
     },
     userRoutes(newVal) {
       this.userMethodMenu = newVal
+    },
+    isLogin(newValue) {
+      if (newValue) {
+        this.setUserMethodDataRoutes()
+      }
     }
   },
   created() {
+    if (this.checkLogin()) {
+      this.setUserMethodDataRoutes()
+    }
     this.setLocalProjectRoutes()
-    this.setUserMethodDataRoutes()
   },
   mounted() {
-    window.onload = () => {
-      this.tabMouseOn()
-    }
+    this.tabMouseOn()
   },
   methods: {
     openUrl(path) {
+      if (path !== 'LocalApiHome') {
+        if (this.isLocalProject) {
+          if (!this.showDialog) {
+            this.showDialog = true
+            this.checkLogin()
+          }
+        }
+      }
       console.log('openUrl', path)
       this.$router.push({ name: path })
     },
@@ -151,7 +170,7 @@ export default {
     /** 初始化个人接口路由，并设置左侧菜单 */
     setUserMethodDataRoutes() {
       const data = {
-        userName: this.username // this.author
+        userName: this.loginName // this.author
       }
       this.$store.dispatch('userMethodData/setUserMethodDataRoutes', data).then(res => {
         console.log('sideBar.setUserMethodDataRoutes', res)
@@ -162,6 +181,9 @@ export default {
     },
     /** 搜索项目，初始化路由，并设置左侧菜单 */
     handleProjectSearch() {
+      if (!this.checkLogin()) {
+        return
+      }
       console.log(this.projectNameSearchParam)
       const data = {
         projectName: this.projectNameSearchParam
@@ -191,10 +213,7 @@ export default {
         contentMap[sideContentList[i].getAttribute('name')] = sideContentList[i]
       }
 
-      console.log('tabMouseOn.variables', variables)
       for (let i = 0; i < sideBarList.length; i++) {
-        console.log('sideBarList[i].hasAttribute', sideBarList[i].hasAttribute('no-content'))
-
         sideBarList[i].onmousedown = function() {
           for (let k = 0; k < sideContentList.length; k++) {
             sideContentList[k].setAttribute('class', 'hidden')
@@ -226,6 +245,22 @@ export default {
           }
         }
       }
+    },
+    checkLogin() {
+      if (!this.isLogin) {
+        if (this.isLocalProject) {
+          if (this.showDialog) {
+            // this.$message('请登录')
+            this.loginVisible = true
+          }
+        } else {
+          this.loginVisible = true
+        }
+
+        return false
+      }
+
+      return true
     }
   }
 }
@@ -253,7 +288,7 @@ export default {
 
     .side-bar-item {
       height: 40px;
-      padding: 5px 2px 0px 2px;
+      padding: 10px 2px 0px 2px;
       vertical-align: middle;
       cursor: pointer;
 
@@ -263,6 +298,9 @@ export default {
     }
   }
 
+  .current {
+    background: #b4b4b4;
+  }
   .side-content-container {
     width: $sideContentWidth;
     background: #fff;
@@ -270,10 +308,6 @@ export default {
     .side-content-item {
       height: 100%;
       overflow-y: auto;
-    }
-
-    .current {
-      background: #b4b4b4;
     }
   }
 </style>

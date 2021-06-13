@@ -6,8 +6,7 @@ import { getToken } from '@/utils/auth'
 console.log('process.env', process.env, process.env.VUE_APP_IS_LOCAL === 'true')
 // create an axios instance
 const service = axios.create({
-  // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  baseURL: process.env.VUE_APP_IS_LOCAL === 'true' ? process.env.VUE_APP_LOCAL_PATH : process.env.VUE_APP_SERVER_PATH,
+  // baseURL: process.env.VUE_APP_IS_LOCAL === 'true' ? process.env.VUE_APP_LOCAL_PATH : process.env.VUE_APP_SERVER_PATH,
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })

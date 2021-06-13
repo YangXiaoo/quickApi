@@ -141,6 +141,9 @@ const actions = {
     commit('SET_USER_ROUTES', routes)
 
     return routes
+  },
+  resetUserRoutes({ commit }) {
+    commit('SET_USER_ROUTES', [])
   }
 }
 

@@ -1,11 +1,13 @@
 import request from '@/utils/request'
 
+const baseUrl = process.env.VUE_APP_SERVER_PATH
+
 /**
  * 获取用户页面数据
  */
 export function getUserProjectMethodPageData(data) {
   return request({
-    url: '/getUserProjectMethodPageData',
+    url: baseUrl + '/getUserProjectMethodPageData',
     method: 'post',
     data
   })
@@ -16,7 +18,7 @@ export function getUserProjectMethodPageData(data) {
  */
 export function saveUserProjectMethodPageData(data) {
   return request({
-    url: '/saveUserProjectMethodPageData',
+    url: baseUrl + '/saveUserProjectMethodPageData',
     method: 'post',
     data
   })

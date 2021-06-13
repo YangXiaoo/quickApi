@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login")
 public class LoginService {
     private static final Logger logger = LoggerFactory.getLogger(CheckServiceImpl.class);
 
@@ -29,8 +29,9 @@ public class LoginService {
         logger.info("loginCheck");
         JsonModel jsonModel = new JsonModel();
         try {
-            // TODO 待完成
-            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "登录成功");
+            String username = (String) map.get("username");
+            String password = (String) map.get("password");
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, map);
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
         } catch (Exception e) {
@@ -39,4 +40,21 @@ public class LoginService {
 
         return jsonModel;
     }
+    @PostMapping("/logout")
+    public JsonModel logout(@RequestBody Map<String, Object> map) {
+        logger.info("logout");
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String username = (String) map.get("username");
+            String password = (String) map.get("password");
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, true);
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
 }

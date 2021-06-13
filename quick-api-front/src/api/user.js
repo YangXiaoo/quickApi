@@ -1,9 +1,9 @@
 import request from '@/utils/request'
-const BASE_URL = '' // process.env.VUE_APP_BASE_API
+const baseUrl = process.env.VUE_APP_SERVER_PATH
 
 export function login(data) {
   return request({
-    url: BASE_URL + '/login/loginCheck',
+    url: baseUrl + '/login/loginCheck',
     method: 'post',
     data
   })
@@ -11,7 +11,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: BASE_URL + '/login/getInfo',
+    url: baseUrl + '/login/getInfo',
     method: 'get',
     params: { token }
   })
@@ -19,7 +19,8 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: BASE_URL + '/login/logout',
-    method: 'post'
+    url: baseUrl + '/login/logout',
+    method: 'post',
+    data: {}
   })
 }

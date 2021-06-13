@@ -7,6 +7,8 @@ const getters = {
   token: state => state.user.token,
   avatar: state => state.user.avatar,
   username: state => state.user.username,
+  isLogin: state => state.user.isLogin,
+  loginName: state => state.user.loginName,
 
   // 本地项目
   localProjectRoutes: state => state.localProject.localProjectRoutes,

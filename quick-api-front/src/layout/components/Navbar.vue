@@ -27,80 +27,42 @@
         <div v-if="isLocalProject" class="right-menu-item" @click="handleRecordClick">
           <i class="el-icon-time" />
         </div>
-        <div class="right-menu-item" @click="handleLoginClick">
+        <div v-if="!isLogin" class="right-menu-item" @click="handleLoginClick">
           <i class="el-icon-user" />
+        </div>
+        <div v-if="isLogin" class="right-menu-item">
+          您好, {{ loginName }}
+        </div>
+        <div v-if="isLogin" class="right-menu-item" @click="handleLogout">
+          <i class="el-icon-switch-button" />
         </div>
       </div>
     </div>
-    <el-dialog title="登录" :visible.sync="dialogLoginVisible">
-      <el-form ref="loginForm" :model="loginForm" auto-complete="on" label-position="left">
-        <el-form-item prop="username">
-          <span class="svg-container">
-            <svg-icon icon-class="user" />
-          </span>
-          <el-input
-            v-model="loginForm.username"
-            placeholder="Username"
-            name="username"
-            type="text"
-            tabindex="1"
-            auto-complete="on"
-          />
-        </el-form-item>
-
-        <el-form-item prop="password">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
-          </span>
-          <el-input
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="Password"
-            name="password"
-            tabindex="2"
-            auto-complete="on"
-            @keyup.enter.native="handleLogin"
-          />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
-        </el-form-item>
-
-        <el-button :loading="loading" type="primary" @click.native.prevent="handleLogin">Login</el-button>
-
-        <div class="tips">
-          <span style="margin-right:20px;">username: admin</span>
-          <span> password: any</span>
-        </div>
-
-      </el-form>
-    </el-dialog>
+    <Login :visible="loginVisible" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import { generateNewTabPage } from '@/utils/routerTool'
+
+import Login from '@/views/login'
+
 export default {
+  components: { Login },
   data() {
     return {
       serviceProjectFlag: false,
-      dialogLoginVisible: false,
-      loginForm: {
-        username: 'admin',
-        password: '111111'
-      },
-      loginRules: {
-      },
       loading: false,
-      passwordType: 'password',
-      redirect: undefined
+      loginVisible: false
     }
   },
   computed: {
     ...mapGetters([
       'projectMethodDataList',
-      'isLocalProject'
+      'isLocalProject',
+      'isLogin',
+      'loginName'
     ])
   },
   watch: {
@@ -135,37 +97,20 @@ export default {
       })
     },
     handleRecordClick() {
-      // this.$message({
-      //   type: 'info',
-      //   message: '提交记录功能，暂未开发'
-      // })
       this.$router.push({ name: 'History' })
     },
     handleLoginClick() {
-      this.dialogLoginVisible = true
+      console.log('handleLoginClick()', '>>>>>>>>>>>>>>>>>>')
+      this.loginVisible = true
+    },
+    handleLogout() {
+      this.$store.dispatch('user/logout').then(() => {
+        console.log('handleLogout.loginout', '>>>>>>>>>>>>>>>>')
+      })
     },
     handleProjectSetting() {
       console.log('handleProjectSetting', this.projectMethodDataList)
       this.serviceProjectFlag = Object.keys(this.projectMethodDataList).length !== 0
-    },
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    },
-    handleLogin() {
-      this.loading = true
-      this.$store.dispatch('user/login', this.loginForm).then(() => {
-        this.$router.push({ path: this.redirect || '/' })
-        this.loading = false
-      }).catch(() => {
-        this.loading = false
-      })
     }
   }
 }
