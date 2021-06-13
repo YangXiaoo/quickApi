@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
-@RequestMapping("/api/register")
+@RequestMapping("/api")
 public class RegisterServiceImpl {
     private ConcurrentHashMap<String, List<String>> runningService = new ConcurrentHashMap<>(); // 记录运行中的服务器
     private  ConcurrentHashMap<String, Date> serviceTimeRecord = new ConcurrentHashMap<>();
