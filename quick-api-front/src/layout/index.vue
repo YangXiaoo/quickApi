@@ -49,6 +49,7 @@ export default {
   .app-wrapper {
     width: 100%;
     height: 100%;
+    margin:0px 0px -10px 0px;
     background-color: #ffff;
     display: flex;
     flex-flow: column nowrap;

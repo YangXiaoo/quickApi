@@ -130,7 +130,7 @@ export default {
     float: left;
     height: 100%;
     line-height: 40px;
-    padding-left: $sideBarWidth;
+    // padding-left: $sideBarWidth;
 
     &:focus {
       outline: none;

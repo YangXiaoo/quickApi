@@ -28,19 +28,19 @@
         <el-tab-pane label="文档">
           <div class="doc-container">
             <div>
-              <el-button type="success" size="small" style="width: 10%">{{ pageData.requestType }}</el-button>
+              <el-button type="success" style="width: 15%">{{ pageData.requestType }}</el-button>
               <el-tag type="success" style="width: 80%; margin-left:10px;">
                 {{ pageData.path }}
               </el-tag>
             </div>
             <el-divider />
             <div>
-              <el-button type="success" size="small" style="width: 10%">请求类型</el-button>
+              <el-button type="success" style="width: 15%">请求类型</el-button>
               <el-tag style="width: 80%; margin-left: 10px;">{{ pageData.contentType }} </el-tag>
             </div>
             <div v-show="pageData.headerJson">
               <el-divider>请求头说明</el-divider>
-              <el-table :data="methodApiData.headerJsonValues" size="small" border fit highlight-current-row>
+              <el-table :data="methodApiData.headerJsonValues" border fit highlight-current-row>
                 <!-- 参数名 -->
                 <el-table-column label="参数名">
                   <template slot-scope="{ row }">
@@ -96,7 +96,7 @@
             </div>
             <div v-show="pageData.requestType === 'POST' && pageData.contentType !== 'none'">
               <el-divider>POST参数说明</el-divider>
-              <el-table :data="methodApiData.bodyJsonDataValues" size="small" border fit highlight-current-row>
+              <el-table :data="methodApiData.bodyJsonDataValues" border fit highlight-current-row>
                 <!-- 参数名 -->
                 <el-table-column label="参数名">
                   <template slot-scope="{ row }">
@@ -124,7 +124,7 @@
             </div>
             <div v-show="pageData.responseBody">
               <el-divider>响应值说明</el-divider>
-              <el-table :data="methodApiData.responseBodyValues" size="small" border fit highlight-current-row>
+              <el-table :data="methodApiData.responseBodyValues" border fit highlight-current-row>
                 <!-- 参数名 -->
                 <el-table-column label="参数名">
                   <template slot-scope="{ row }">
@@ -306,8 +306,8 @@ export default {
 <style lang="scss" scoped>
 .request-main {
   background: #fff;
-  margin: 10px 10px 10px 10px;
-  padding: 10px;
+  margin: 10px 5px 10px 5px;
+  padding: 5px;
   border-radius: 5px;
 }
 
