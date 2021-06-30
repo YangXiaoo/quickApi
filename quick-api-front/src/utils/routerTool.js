@@ -1,5 +1,6 @@
 import MainLayout from '@/layout'
 import router from '@/router'
+import { resetRouter } from '@/router'
 // import { getUUID32 } from '@/utils/uuid'
 /**
  * 从api信息中获得路由
@@ -151,6 +152,11 @@ export function getUserMethodGroupMap(methodDataList) {
  * 将项目的方法路由挂载到Router中
  */
 export function addProjectMethodDataRoutes(routes) {
+  router.addRoutes(routes)
+}
+
+export function replaceRoutes(routes) {
+  resetRouter()
   router.addRoutes(routes)
 }
 

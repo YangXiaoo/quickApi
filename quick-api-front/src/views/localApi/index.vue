@@ -404,6 +404,7 @@ export default {
         console.log('handleSaveMethodName', data)
         this.methodName = data.name
         this.methodGroup = data.methodGroup
+        this.updateVisitedView(data.name, data.methodGroup)
       }).catch((error) => {
         this.$message({
           message: error || '更新失败',
@@ -494,6 +495,18 @@ export default {
       this.dialogObj.visible = false
       this.dialogObj.methodName = ''
       this.dialogObj.methodGroup = ''
+    },
+    updateVisitedView(title, group) {
+      const { name } = this.$route
+      if (name) {
+        const tmpRoutes = { ...this.$route }
+        tmpRoutes.meta = {
+          title: title,
+          group: group
+        }
+        console.log('tab.index.updateVisitedView.tmpRoutes', tmpRoutes)
+        this.$store.dispatch('tagsView/updateVisitedView', tmpRoutes)
+      }
     }
   }
 }

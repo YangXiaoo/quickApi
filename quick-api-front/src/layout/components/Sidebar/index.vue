@@ -147,10 +147,7 @@ export default {
     openUrl(path) {
       if (path !== 'LocalApiHome') {
         if (this.isLocalProject) {
-          if (!this.showDialog) {
-            this.showDialog = true
-            this.checkLogin()
-          }
+          this.checkLogin()
         }
       }
       console.log('openUrl', path)
@@ -249,10 +246,7 @@ export default {
     checkLogin() {
       if (!this.isLogin) {
         if (this.isLocalProject) {
-          if (this.showDialog) {
-            // this.$message('请登录')
-            this.loginVisible = true
-          }
+          this.loginVisible = true
         } else {
           this.$message('请登录')
           this.loginVisible = true

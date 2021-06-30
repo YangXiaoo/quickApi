@@ -6,7 +6,8 @@ import { updateMethodData } from '@/api/methodData'
 import {
   getProjectMethodGroupMap,
   getRoutesFromGroupMap,
-  addProjectMethodDataRoutes
+  addProjectMethodDataRoutes,
+  replaceRoutes
 } from '@/utils/routerTool'
 
 const state = {
@@ -102,6 +103,8 @@ const actions = {
         const localProjectRoutes = getRoutesFromGroupMap(groupMap)
         commit('SET_LOCAL_PROJECT_ROUTES', localProjectRoutes)
 
+        // replaceRoutes(localProjectRoutes)
+        addProjectMethodDataRoutes(localProjectRoutes)
         resolve(state.localProjectRoutes)
       }).catch(error => {
         reject(error || '异常错误')

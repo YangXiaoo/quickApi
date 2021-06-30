@@ -133,6 +133,11 @@ const actions = {
       })
     })
   },
+  importPostmanApi({ state, dispatch }, data) {
+    return new Promise((resolve, reject) => {
+      // 解析内容
+    })
+  },
   setRoutes({ commit }, data) {
     const groupMap = getUserMethodGroupMap(data)
     commit('SET_USER_GROUP_LIST', Object.keys(groupMap))
