@@ -303,6 +303,9 @@ export default {
       cursor: pointer;
       font-size: 12px;
 
+      &:first-of-type {
+        margin-top: 5px;
+      }
       &:hover {
         background: #d8d8d8;
         border-radius: 5px;
