@@ -132,7 +132,7 @@ export default {
   height: 40px;
   overflow: hidden;
   position: relative;
-  background: #009983;
+  background: #424242;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .left-menu {
@@ -150,13 +150,18 @@ export default {
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: #f7f7f76b;
       vertical-align: text-bottom;
 
       &:hover {
         cursor: pointer;
         transition: background .3s;
-        background: rgba(59, 224, 133, 0.025)
+        background: rgba(171, 190, 180, 0.164)
+      }
+
+      &:active {
+        cursor: pointer;
+        background: rgba(171, 190, 180, 0.164)
       }
 
       &.hover-effect {
@@ -185,15 +190,18 @@ export default {
       padding: 0 8px;
       height: 100%;
       font-size: 18px;
-      color: #5a5e66;
+      color: #f7f7f76b;
       vertical-align: text-bottom;
 
       &:hover {
         cursor: pointer;
         transition: background .3s;
-        background: rgba(59, 224, 133, 0.025)
+        background: rgba(171, 190, 180, 0.164)
       }
-
+      &:active {
+        cursor: pointer;
+        background: rgba(171, 190, 180, 0.164)
+      }
       &.hover-effect {
         cursor: pointer;
         transition: background .3s;

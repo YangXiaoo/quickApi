@@ -2,13 +2,28 @@
   <div class="side-container">
     <div class="side-bar-container">
       <div v-if="isLocalProject" name="localApi" class="side-bar-item" @click="openUrl('LocalApiHome')">
-        本地
+        <div class="item-icon">
+          <i class="el-icon-monitor" />
+        </div>
+        <div class="item-desc">
+          本地
+        </div>
       </div>
       <div name="userApi" class="side-bar-item" @click="openUrl('UserApiHome')">
-        个人
+        <div class="item-icon">
+          <i class="el-icon-star-on" />
+        </div>
+        <div class="item-desc">
+          个人
+        </div>
       </div>
       <div name="projectApi" class="side-bar-item" @click="openUrl('ProjectApiHome')">
-        项目
+        <div class="item-icon">
+          <i class="el-icon-connection" />
+        </div>
+        <div class="item-desc">
+          项目
+        </div>
       </div>
 
     </div>
@@ -278,23 +293,36 @@ export default {
 
   .side-bar-container {
     width: $sideBarWidth;
-    background: #42b983;
+    background: #ffff;
     box-sizing: border-box;
+    border-right: solid #f7f7f7;
 
     .side-bar-item {
-      height: 40px;
-      padding: 10px 2px 0px 2px;
-      vertical-align: middle;
+      height: 50px;
+      margin: 0 5px 5px 5px;
       cursor: pointer;
+      font-size: 12px;
 
       &:hover {
-        background: #b4b4b4;
+        background: #d8d8d8;
+        border-radius: 5px;
+      }
+
+      .item-icon {
+        margin-left: 3px;
+        font-size: 30px;
+      }
+      .item-desc {
+        margin-left: 6px;
+        margin-top: -2px;
       }
     }
   }
 
   .current {
-    background: #b4b4b4;
+    background: #d8d8d8;
+    // margin: 10px 10px 10px 10px;
+    border-radius: 5px;
   }
   .side-content-container {
     width: $sideContentWidth;

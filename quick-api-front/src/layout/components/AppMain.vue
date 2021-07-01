@@ -1,11 +1,13 @@
 <template>
   <div class="qa-main-app">
-    <transition name="fade-transform" mode="out-in">
-      <!-- <keep-alive :include="cachedViews"> -->
+    <!-- <transition name="fade-transform">
       <keep-alive :exclude="['_none__']">
         <router-view :key="key" />
       </keep-alive>
-    </transition>
+    </transition> -->
+    <keep-alive :exclude="['_none__']">
+      <router-view :key="key" />
+    </keep-alive>
   </div>
 </template>
 
