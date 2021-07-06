@@ -25,7 +25,14 @@
           项目
         </div>
       </div>
-
+      <div name="setting" class="side-bar-item" @click="openUrl('LocalProjectSetting')">
+        <div class="item-icon">
+          <i class="el-icon-connection" />
+        </div>
+        <div class="item-desc">
+          设置
+        </div>
+      </div>
     </div>
     <div class="side-content-container">
       <div v-if="isLocalProject" name="localApi" class="side-content-item">
@@ -78,6 +85,9 @@
           </el-collapse-item>
         </el-collapse>
       </div>
+      <div name="setting" class="side-content-item">
+        <qa-sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
+      </div>
     </div>
     <Login :trigger="loginVisible" />
   </div>
@@ -86,12 +96,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
+import QaSidebarItem from './QaSidebarItem'
 import Login from '@/views/login'
 import variables from '@/styles/variables.scss'
 
 export default {
   name: 'SidebarIndex',
-  components: { SidebarItem, Login },
+  components: { SidebarItem, Login, QaSidebarItem },
   data() {
     return {
       localProjectMethodMenu: [],

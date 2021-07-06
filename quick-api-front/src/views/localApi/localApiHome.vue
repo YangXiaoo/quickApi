@@ -189,6 +189,9 @@ export default {
         }
       }
       return unfinishedList
+    },
+    handleSetLineChartData(val) {
+      
     }
   }
 }

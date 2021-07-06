@@ -107,7 +107,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   position: relative;
-  margin: 90px 10px 10px 10px;
+  margin: 10px 10px 10px 10px;
   border-radius: 5px;
 
   .history-table {
