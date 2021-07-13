@@ -42,7 +42,7 @@
         </div>
       </div>
       <div class="submenu-container">
-        <div v-for="child in item.children" :key="child.path" class="sidebar-submenu">
+        <div v-for="child in item.children" :key="basePath + child.path" class="sidebar-submenu" @click="handleClickMenuItem(child.path)">
           <div class="sidebar-submenu-request-type">
             <span class="post">post</span>
           </div>
@@ -103,10 +103,14 @@ export default {
       } else {
         document.body.removeEventListener('click', this.closeMenu)
       }
+    },
+    $route() {
+      this.showCurrentMenuItem()
     }
   },
   mounted() {
-    this.sidebarMenuMoseOn()
+    this.sidebarMenuMouseOn()
+    this.sidebarMenuItemMouseOn()
   },
   methods: {
     openMenu(tag, event) {
@@ -114,7 +118,6 @@ export default {
       console.log('tag', tag)
       console.log('event', event)
       const menuMinWidth = 40
-      console.log('openMenu()>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
       const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
       console.log('offsetLeft', offsetLeft)
       const offsetWidth = this.$el.offsetWidth // container width
@@ -171,23 +174,82 @@ export default {
       }
       return path.resolve(this.basePath, routePath)
     },
-    sidebarMenuMoseOn() {
+    sidebarMenuMouseOn() {
       const menuList = document.getElementsByClassName('sidebar-menu-title')
 
       for (let i = 0; i < menuList.length; ++i) {
         menuList[i].onmousedown = function() {
           if (menuList[i].nextElementSibling.getAttribute('class').indexOf('menu-colse') !== -1) {
             menuList[i].nextElementSibling.setAttribute('class', 'submenu-container')
+            menuList[i].setAttribute('class', 'current-menu sidebar-menu-title')
           } else {
             menuList[i].nextElementSibling.setAttribute('class', 'menu-colse')
+            menuList[i].setAttribute('class', 'sidebar-menu-title')
           }
         }
 
         menuList[i].nextElementSibling.setAttribute('class', 'menu-colse')
       }
     },
-    handleMenueClick() {
+    sidebarMenuItemMouseOn() {
+      const menuItemList = document.getElementsByClassName('sidebar-submenu')
 
+      for (let i = 0; i < menuItemList.length; ++i) {
+        menuItemList[i].onmousedown = function() {
+          if (menuItemList[i].getAttribute('class').indexOf('current-menu-item') !== -1) {
+            menuItemList[i].setAttribute('class', 'sidebar-submenu')
+          } else {
+            menuItemList[i].setAttribute('class', 'sidebar-submenu current-menu-item')
+            for (let j = 0; j < menuItemList.length; ++j) {
+              if (j !== i) {
+                menuItemList[j].setAttribute('class', 'sidebar-submenu')
+              }
+            }
+          }
+        }
+
+        menuItemList[i].setAttribute('class', 'sidebar-submenu')
+      }
+    },
+    handleClickMenuItem(path) {
+      this.$router.push({
+        path: this.resolvePath(path)
+      })
+    },
+    showCurrentMenuItem() {
+      const curPath = this.$route.path
+      console.log('showCurrentMenuItem', curPath)
+
+      const menuItemList = document.getElementsByClassName('sidebar-submenu')
+
+      for (let i = 0; i < menuItemList.length; ++i) {
+        
+          console.log('menuItemList[i].key', i,  menuItemList[i])
+        if (menuItemList[i].getAttribute('key') === curPath) {
+          console.log('menuItemList[i].key', menuItemList[i].getAttribute('key'))
+          console.log('showCurrentMenuItem -<<<<<<<<')
+          menuItemList[i].setAttribute('class', 'sidebar-submenu current-menu-item')
+          console.log('showCurrentMenuItem -<<<<<<<<')
+          // 关闭其它菜单current显示
+          for (let j = 0; j < menuItemList.length; ++j) {
+            if (j !== i) {
+              menuItemList[j].setAttribute('class', 'sidebar-submenu')
+            }
+          }
+
+          console.log('showCurrentMenuItem ------------------')
+          // 如果父级菜单关闭，则打开
+          const menuItemContainerElement = menuItemList[i].parentNode
+          console.log('showCurrentMenuItem', menuItemContainerElement)
+          if (menuItemContainerElement) {
+            if (menuItemContainerElement.previousSbiling.getAttribute('class').indexOf('current-menu') === -1) {
+              menuItemContainerElement.previousSbiling.setAttribute('class', 'current-menu sidebar-menu-title')
+            }
+          }
+        } else {
+          menuItemList[i].setAttribute('class', 'sidebar-submenu')
+        }
+      }
     }
   }
 }
@@ -224,6 +286,10 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
+    height: 58px;
+    align-items: center;
+    cursor: pointer;
+    border-top: 1px solid #d8d8d8;
 
     &:hover {
       background: #d8d8d8;
@@ -233,6 +299,7 @@ export default {
     }
     .sidebar-menu-title-name {
       width: 60%;
+      font-size: 16px;
     }
     .sidebar-menu-title-right {
       width: 20%;
@@ -243,7 +310,13 @@ export default {
     display: none;
   }
 
+  .current-menu {
+    // background: #d8d8d8;
+    box-shadow: 0 1px 4px #d8d8d8;
+  }
+
   .submenu-container {
+    background: #ffff;
   }
 
   .sidebar-submenu {
@@ -252,9 +325,15 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center;
+    height: 50px;
+    align-items: center;
+    cursor: pointer;
+
+    padding-left: 10px;
 
     &:hover {
-      background: #d8d8d8;
+      background: #eae6e6;
+      padding-left: -10px;
     }
 
     .sidebar-submenu-request-type {
@@ -269,10 +348,16 @@ export default {
     }
     .sidebar-submenu-title {
       width: 60%;
+      font-size: 14px;
     }
     .sidebar-submenu-right {
       width: 20%;
     }
+  }
+
+  .current-menu-item {
+    background: #eae6e6;
+    padding-left: -10px;
   }
 }
 </style>

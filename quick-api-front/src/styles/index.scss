@@ -76,3 +76,8 @@ div.jsoneditor-menu a.jsoneditor-poweredBy {
     padding: 10px;
     display: none;
 }
+
+.el-dropdown-menu__item:hover {
+  background-color: #d8d8d8 !important;
+  color: black !important;
+}
