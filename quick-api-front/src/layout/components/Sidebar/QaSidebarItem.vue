@@ -41,15 +41,15 @@
           </div>
         </div>
       </div>
-      <div class="submenu-container">
-        <div v-for="child in item.children" :key="basePath + child.path" class="sidebar-submenu" @click="handleClickMenuItem(child.path)">
-          <div class="sidebar-submenu-request-type">
+      <div class="submenu-item-container">
+        <div v-for="child in item.children" :key="basePath + child.path" :path="resolvePath(child.path)" class="submenu-item" @click="handleClickMenuItem(child.path)">
+          <div class="submenu-item-request-type">
             <span class="post">post</span>
           </div>
-          <div class="sidebar-submenu-title">
+          <div class="submenu-item-title">
             {{ child.meta.title }}
           </div>
-          <div class="sidebar-submenu-right">
+          <div class="submenu-item-right">
             ...
           </div>
         </div>
@@ -180,7 +180,7 @@ export default {
       for (let i = 0; i < menuList.length; ++i) {
         menuList[i].onmousedown = function() {
           if (menuList[i].nextElementSibling.getAttribute('class').indexOf('menu-colse') !== -1) {
-            menuList[i].nextElementSibling.setAttribute('class', 'submenu-container')
+            menuList[i].nextElementSibling.setAttribute('class', 'submenu-item-container')
             menuList[i].setAttribute('class', 'current-menu sidebar-menu-title')
           } else {
             menuList[i].nextElementSibling.setAttribute('class', 'menu-colse')
@@ -192,23 +192,23 @@ export default {
       }
     },
     sidebarMenuItemMouseOn() {
-      const menuItemList = document.getElementsByClassName('sidebar-submenu')
+      const menuItemList = document.getElementsByClassName('submenu-item')
 
       for (let i = 0; i < menuItemList.length; ++i) {
         menuItemList[i].onmousedown = function() {
           if (menuItemList[i].getAttribute('class').indexOf('current-menu-item') !== -1) {
-            menuItemList[i].setAttribute('class', 'sidebar-submenu')
+            menuItemList[i].setAttribute('class', 'submenu-item')
           } else {
-            menuItemList[i].setAttribute('class', 'sidebar-submenu current-menu-item')
+            menuItemList[i].setAttribute('class', 'submenu-item current-menu-item')
             for (let j = 0; j < menuItemList.length; ++j) {
               if (j !== i) {
-                menuItemList[j].setAttribute('class', 'sidebar-submenu')
+                menuItemList[j].setAttribute('class', 'submenu-item')
               }
             }
           }
         }
 
-        menuItemList[i].setAttribute('class', 'sidebar-submenu')
+        menuItemList[i].setAttribute('class', 'submenu-item')
       }
     },
     handleClickMenuItem(path) {
@@ -220,36 +220,37 @@ export default {
       const curPath = this.$route.path
       console.log('showCurrentMenuItem', curPath)
 
-      const menuItemList = document.getElementsByClassName('sidebar-submenu')
+      const menuItemList = document.getElementsByClassName('submenu-item')
 
-      for (let i = 0; i < menuItemList.length; ++i) {
-        
-          console.log('menuItemList[i].key', i,  menuItemList[i])
-        if (menuItemList[i].getAttribute('key') === curPath) {
-          console.log('menuItemList[i].key', menuItemList[i].getAttribute('key'))
-          console.log('showCurrentMenuItem -<<<<<<<<')
-          menuItemList[i].setAttribute('class', 'sidebar-submenu current-menu-item')
-          console.log('showCurrentMenuItem -<<<<<<<<')
-          // 关闭其它菜单current显示
-          for (let j = 0; j < menuItemList.length; ++j) {
-            if (j !== i) {
-              menuItemList[j].setAttribute('class', 'sidebar-submenu')
+      this.$nextTick(() => {
+        for (let i = 0; i < menuItemList.length; ++i) {
+          if (menuItemList[i].getAttribute('path') === curPath) {
+            menuItemList[i].setAttribute('class', 'submenu-item current-menu-item')
+            // 关闭其它菜单current显示
+            for (let j = 0; j < menuItemList.length; ++j) {
+              if (j !== i) {
+                menuItemList[j].setAttribute('class', 'submenu-item')
+              }
             }
-          }
 
-          console.log('showCurrentMenuItem ------------------')
-          // 如果父级菜单关闭，则打开
-          const menuItemContainerElement = menuItemList[i].parentNode
-          console.log('showCurrentMenuItem', menuItemContainerElement)
-          if (menuItemContainerElement) {
-            if (menuItemContainerElement.previousSbiling.getAttribute('class').indexOf('current-menu') === -1) {
-              menuItemContainerElement.previousSbiling.setAttribute('class', 'current-menu sidebar-menu-title')
+            // 如果父级菜单关闭，则打开
+            const menuItemContainerElement = menuItemList[i].parentNode
+            if (menuItemContainerElement) {
+              if (menuItemContainerElement.getAttribute('class').indexOf('menu-colse') !== -1) {
+                menuItemContainerElement.setAttribute('class', 'submenu-item-container')
+              }
+
+              if (menuItemContainerElement.previousElementSibling) {
+                if (menuItemContainerElement.previousElementSibling.getAttribute('class').indexOf('current-menu') === -1) {
+                  menuItemContainerElement.previousElementSibling.setAttribute('class', 'current-menu sidebar-menu-title')
+                }
+              }
             }
+          } else {
+            menuItemList[i].setAttribute('class', 'submenu-item')
           }
-        } else {
-          menuItemList[i].setAttribute('class', 'sidebar-submenu')
         }
-      }
+      })
     }
   }
 }
@@ -315,11 +316,11 @@ export default {
     box-shadow: 0 1px 4px #d8d8d8;
   }
 
-  .submenu-container {
+  .submenu-item-container {
     background: #ffff;
   }
 
-  .sidebar-submenu {
+  .submenu-item {
     width: 100%;
     background: #ffff;
     display: flex;
@@ -336,7 +337,7 @@ export default {
       padding-left: -10px;
     }
 
-    .sidebar-submenu-request-type {
+    .submenu-item-request-type {
       width: 20%;
       padding: 2px 2px 2px 5px;
       .post {
@@ -346,11 +347,11 @@ export default {
         color: greenyellow;
       }
     }
-    .sidebar-submenu-title {
+    .submenu-item-title {
       width: 60%;
       font-size: 14px;
     }
-    .sidebar-submenu-right {
+    .submenu-item-right {
       width: 20%;
     }
   }
