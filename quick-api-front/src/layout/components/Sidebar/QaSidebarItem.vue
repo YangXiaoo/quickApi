@@ -1,44 +1,36 @@
 <template>
-  <!-- <div v-if="!item.hidden">
-    <template v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow">
-      <app-link v-if="onlyOneChild.meta" :to="resolvePath(onlyOneChild.path)">
-        <el-menu-item :index="resolvePath(onlyOneChild.path)" :class="{'submenu-title-noDropdown':!isNest}">
-          <item :icon="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" :title="onlyOneChild.meta.title" />
-        </el-menu-item>
-      </app-link>
-    </template>
-
-    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body @contextmenu.prevent.native="openMenu(tag,$event)">
-      <template slot="title">
-        <div>
-          <span>{{ item.meta.title }}</span>
-        </div>
-      </template>
-      <sidebar-item v-for="child in item.children" :key="child.path" :is-nest="true" :item="child" :base-path="resolvePath(child.path)" class="nest-menu" />
-    </el-submenu>
-    <ul v-show="visible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
-      <li @click="closeMenu()">取消</li>
-      <li>新建</li>
-      <li>编辑</li>
-      <li>删除</li>
-    </ul>
-  </div> -->
   <div>
     <div class="sidebar-menu">
       <div class="sidebar-menu-title">
         <div class="sidebar-menu-title-left">
-          "上"
+          <!-- <i class="el-icon-arrow-down" /> -->
         </div>
         <div class="sidebar-menu-title-name">
           <span>{{ item.meta.title }}</span>
         </div>
-        <div class="sidebar-menu-title-right">
-          <div class="sidebar-menu-title-right-top">
+        <div class="sidebar-menu-title-right" @click.stop="handleClickMenuExtend(item, $event)">
+          <!-- <div class="sidebar-menu-title-right-top">
             you
           </div>
           <div class="sidebar-menu-title-right-bottom">
-            ...
-          </div>
+            <i class="el-icon-more" />
+          </div> -->
+          <el-popover
+            v-model="menuExtendVisible"
+            placement="bottom"
+            title=""
+            width="150"
+            trigger="manual"
+          >
+            <ul class="menu-extend">
+              <li>新建</li>
+              <li>重名</li>
+              <li>删除</li>
+            </ul>
+            <span slot="reference">
+              <i class="el-icon-more" />
+            </span>
+          </el-popover>
         </div>
       </div>
       <div class="submenu-item-container">
@@ -49,12 +41,18 @@
           <div class="submenu-item-title">
             {{ child.meta.title }}
           </div>
-          <div class="submenu-item-right">
-            ...
+          <div class="submenu-item-right" @click.stop="handleClickSubmenuExtend(item, $event)">
+            <i class="el-icon-more" />
           </div>
         </div>
       </div>
     </div>
+    <ul v-show="submenuExtendVisible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+      <li @click="closeSubmenuExtend()">取消</li>
+      <li>新建</li>
+      <li>编辑</li>
+      <li>删除</li>
+    </ul>
   </div>
 </template>
 
@@ -83,11 +81,9 @@ export default {
     }
   },
   data() {
-    // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
-    // TODO: refactor with render function
-    this.onlyOneChild = null
     return {
-      visible: false,
+      submenuExtendVisible: false,
+      menuExtendVisible: false,
       top: 0,
       left: 0
     }
@@ -97,13 +93,6 @@ export default {
     ])
   },
   watch: {
-    visible(value) {
-      if (value) {
-        document.body.addEventListener('click', this.closeMenu)
-      } else {
-        document.body.removeEventListener('click', this.closeMenu)
-      }
-    },
     $route() {
       this.showCurrentMenuItem()
     }
@@ -113,17 +102,18 @@ export default {
     this.sidebarMenuItemMouseOn()
   },
   methods: {
-    openMenu(tag, event) {
-      this.closeMenu()
-      console.log('tag', tag)
+    handleClickSubmenuExtend(item, event) {
+      this.closeSubmenuExtend()
+      // this.submenuExtendVisible = !this.submenuExtendVisible
       console.log('event', event)
       const menuMinWidth = 40
+      console.log('openMenu()>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
       const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
       console.log('offsetLeft', offsetLeft)
       const offsetWidth = this.$el.offsetWidth // container width
       console.log('offsetWidth', offsetWidth)
       const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = event.clientX - 45 // 20: margin right
+      const left = event.clientX - 0 // 20: margin right
       console.log('event.clientX ', event.clientX)
 
       if (left > maxLeft) {
@@ -132,38 +122,18 @@ export default {
         this.left = left
       }
 
-      this.top = event.clientY - 45
-      this.visible = true
+      this.top = event.clientY
+
+      this.submenuExtendVisible = true
     },
-    closeMenu() {
-      this.visible = false
+    handleClickMenuExtend(item, event) {
+      this.menuExtendVisible = !this.menuExtendVisible
+    },
+    closeSubmenuExtend() {
+      this.submenuExtendVisible = false
     },
     handleScroll() {
-      this.closeMenu()
-    },
-    hasOneShowingChild(children = [], parent) {
-      const showingChildren = children.filter(item => {
-        if (item.hidden) {
-          return false
-        } else {
-          // Temp set(will be used if only has one showing child)
-          this.onlyOneChild = item
-          return true
-        }
-      })
-
-      // // When there is only one child router, the child router is displayed by default
-      // if (showingChildren.length === 1) {
-      //   return true
-      // }
-
-      // Show parent if there are no child router to display
-      if (showingChildren.length === 0) {
-        this.onlyOneChild = { ...parent, path: '', noShowingChildren: true }
-        return true
-      }
-
-      return false
+      this.closeSubmenuExtend()
     },
     resolvePath(routePath) {
       if (isExternal(routePath)) {
@@ -178,24 +148,29 @@ export default {
       const menuList = document.getElementsByClassName('sidebar-menu-title')
 
       for (let i = 0; i < menuList.length; ++i) {
-        menuList[i].onmousedown = function() {
+        menuList[i].onclick = function() {
           if (menuList[i].nextElementSibling.getAttribute('class').indexOf('menu-colse') !== -1) {
             menuList[i].nextElementSibling.setAttribute('class', 'submenu-item-container')
             menuList[i].setAttribute('class', 'current-menu sidebar-menu-title')
+
+            // 菜单展开标识
+            menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-up" />'
           } else {
             menuList[i].nextElementSibling.setAttribute('class', 'menu-colse')
             menuList[i].setAttribute('class', 'sidebar-menu-title')
+            menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-down" />'
           }
         }
 
         menuList[i].nextElementSibling.setAttribute('class', 'menu-colse')
+        menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-down" />'
       }
     },
     sidebarMenuItemMouseOn() {
       const menuItemList = document.getElementsByClassName('submenu-item')
 
       for (let i = 0; i < menuItemList.length; ++i) {
-        menuItemList[i].onmousedown = function() {
+        menuItemList[i].onclick = function() {
           if (menuItemList[i].getAttribute('class').indexOf('current-menu-item') !== -1) {
             menuItemList[i].setAttribute('class', 'submenu-item')
           } else {
@@ -243,6 +218,7 @@ export default {
               if (menuItemContainerElement.previousElementSibling) {
                 if (menuItemContainerElement.previousElementSibling.getAttribute('class').indexOf('current-menu') === -1) {
                   menuItemContainerElement.previousElementSibling.setAttribute('class', 'current-menu sidebar-menu-title')
+                  menuItemContainerElement.previousElementSibling.firstElementChild.innerHTML = '<i class="el-icon-arrow-up" />'
                 }
               }
             }
@@ -259,17 +235,36 @@ export default {
 <style lang="scss" scoped>
 @import "~@/styles/variables.scss";
 .contextmenu {
-  margin: 0;
-  background: #fff;
-  z-index: 3000;
-  position: absolute;
-  list-style-type: none;
-  padding: 0px 0;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 400;
-  color: #333;
-  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+    margin: 0;
+    background: #FFF;
+    border: 1px solid #EBEEF5;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    z-index: 3000;
+    min-width: 150px;
+    position: absolute;
+    list-style-type: none;
+    padding: 0px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+  li {
+    margin: 0;
+    padding: 7px 16px;
+    cursor: pointer;
+    &:hover {
+      background: #eee;
+    }
+  }
+}
+.menu-extend {
+    margin: 0;
+    list-style-type: none;
+    padding: 0px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
   li {
     margin: 0;
     padding: 7px 16px;
@@ -296,15 +291,41 @@ export default {
       background: #d8d8d8;
     }
     .sidebar-menu-title-left {
+      margin-left: 10px;
       width: 20%;
     }
     .sidebar-menu-title-name {
-      width: 60%;
+      width: 65%;
       font-size: 16px;
     }
     .sidebar-menu-title-right {
-      width: 20%;
-      float: right;
+      width: 15%;
+      padding-right: 10px;
+      text-align: right;
+      color: #ffff;
+
+      &:hover {
+        font-size: 120%;
+        color: #424242;
+      }
+
+      // .sidebar-menu-title-right-top {
+      //   display: flex;
+      //   height: 29px;
+      //   padding-right: 5px;
+      //   text-align: right;
+      //   align-items: center;
+      //   justify-content: center;
+      //   border-bottom: 1px solid #f7f7f7;
+      // }
+      // .sidebar-menu-title-right-bottom {
+      //   display: flex;
+      //   padding-right: 5px;
+      //   text-align: right;
+      //   align-items: center;
+      //   justify-content: center;
+      //   height: 29px;
+      // }
     }
   }
   .menu-colse {
@@ -353,6 +374,14 @@ export default {
     }
     .submenu-item-right {
       width: 20%;
+      padding-right: 10px;
+      text-align: right;
+      color: #ffff;
+
+      &:hover {
+        font-size: 120%;
+        color: #424242;
+      }
     }
   }
 
