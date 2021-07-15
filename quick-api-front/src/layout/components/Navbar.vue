@@ -8,6 +8,9 @@
         <div class="left-menu-item" @click="handleImportClick">
           <i class="el-icon-bottom" />
         </div>
+        <div v-if="isLocalProject" class="left-menu-item" @click="handlePushApiClick">
+          <i class="el-icon-upload" />
+        </div>
         <div class="left-menu-item" @click="handleNewTabClick">
           <i class="el-icon-plus" />
         </div>
@@ -98,6 +101,10 @@ export default {
         return
       }
       this.importTrigger = !this.importTrigger
+    },
+    // 同步本地接口到远程服务器
+    handlePushApiClick() {
+      this.$router.push({ name: 'PushLocalApi' })
     },
     handleSettingClick() {
       this.$message({

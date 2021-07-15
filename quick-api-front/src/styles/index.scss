@@ -136,3 +136,9 @@ div.jsoneditor-menu a.jsoneditor-poweredBy {
   justify-content: center;
   align-content: center;
 }
+
+// 左右radio
+.el-switch.is-checked .el-switch__core {
+  border-color: #e68c51;
+  background-color: #e68c51;
+}

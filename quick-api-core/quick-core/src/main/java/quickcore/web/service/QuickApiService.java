@@ -64,6 +64,8 @@ public class QuickApiService {
     @Value("${server.port:8080}")
     private String port;
 
+    private Map<String, MethodModel> localMapInfo = new HashMap<>();
+    private Map<String, MethodModel> serverMapInfo = new HashMap<>();
     private static boolean SEND_FLAG = false;
     /**
      * 前端请求本地接口
@@ -169,17 +171,17 @@ public class QuickApiService {
                 if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
                     preMethodModelList = (List<MethodModel>) serviceApiData.getData();
 
-                    Map<String, MethodModel> localMapInfo = this.getMethodMapInfo(methodModelList);
-                    Map<String, MethodModel> serverMapInfo = this.getMethodMapInfo(preMethodModelList);
+                    this.localMapInfo = this.getMethodMapInfo(methodModelList);
+                    this.serverMapInfo = this.getMethodMapInfo(preMethodModelList);
 
                     // 不自动删除本地不存在的接口
                     //List<MethodModel> deleteMethodList = this.compareApiInfo2Delete(localMapInfo, serverMapInfo);
                     //this.deleteMethodDataList(deleteMethodList);                    // 删除失效的方法
 
-                    List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(localMapInfo, serverMapInfo);
-                    this.pushLocalData(uploadMethodList);
+                    //List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(this.localMapInfo, this.serverMapInfo);
+                    //this.pushLocalData(uploadMethodList);
 
-                    this.syncLocalData(localMapInfo, serverMapInfo);    // 同步数据
+                    this.syncLocalData(this.localMapInfo, this.serverMapInfo);    // 同步数据
                 } else {
                     // 上传本地接口方法数据
                     this.pushLocalData(methodModelList);
@@ -445,20 +447,6 @@ public class QuickApiService {
     }
 
     /**
-     * 删除一组接口方法信息
-     * @param data 待删除的接口信息
-     * @return void
-     * @author yangxiao
-     * @date 2021/1/3 21:48
-     */
-    public void deleteMethodDataList(List<MethodModel> data) {
-        String url = hostServiceName + SERVICE.DELETE_METHOD_DATA_LIST;
-        Map<String, Object> map = new HashMap<>();
-        map.put("data", data);
-        RequestUtil.callService(url, map);
-    }
-
-    /**
      * 检查服务器连接
      * @return quickcore.common.tools.JsonModel
      * @author yangxiao
@@ -514,4 +502,96 @@ public class QuickApiService {
 
         return jsonModel;
     }
+
+    @PostMapping("/getLocalMapInfo")
+    public JsonModel getLocalMapInfo(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            jsonModel.success("success", this.localMapInfo);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    @PostMapping("/getServerMapInfo")
+    public JsonModel getServerMapInfo(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            jsonModel.success("success", this.serverMapInfo);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 删除一组接口方法信息
+     * @return void
+     * @author yangxiao
+     * @date 2021/1/3 21:48
+     */
+    @PostMapping("/deleteMethodDataListFromLocalDiff")
+    public JsonModel deleteMethodDataList(@RequestBody Map<String, Object> dummy) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            List<MethodModel> deleteDataList = this.compareApiInfo2Delete(this.localMapInfo, this.serverMapInfo);
+            String url = hostServiceName + SERVICE.DELETE_METHOD_DATA_LIST;
+            Map<String, Object> map = new HashMap<>();
+            map.put("data", deleteDataList);
+            RequestUtil.callService(url, map);
+
+            jsonModel.success("success", true);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 获得远程服务有而本地服务没有的接口
+     * @param
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/7/15 23:19
+     */
+    @PostMapping("/getDeleteMethodList")
+    public JsonModel getDeleteMethodList(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            List<MethodModel> data = this.compareApiInfo2Delete(this.localMapInfo, this.serverMapInfo);
+            jsonModel.success("success", data);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+    /**
+     * 获得远程服务有而本地服务没有的接口
+     * @param
+     * @return quickcore.common.tools.JsonModel
+     * @author yangxiao
+     * @date 2021/7/15 23:19
+     */
+    @PostMapping("/getUploadMethodList")
+    public JsonModel getUploadMethodList(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(this.localMapInfo, this.serverMapInfo);
+            jsonModel.success("success", uploadMethodList);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
+
+
 }
+// 手动同步到远程数据服务，同步时显示远程服务有而本地没有的接口，让用户选择是否删除，本地新增接口全部上传
+// 服务端项目搜索出的结果，可以手动点击拉取最新数据

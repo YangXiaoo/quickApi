@@ -37,3 +37,19 @@ export function getConnection(data) {
     data
   })
 }
+
+export function getDeleteMethodList(data = {}) {
+  return request({
+    url: baseUrl + '/getDeleteMethodList',
+    method: 'post',
+    data
+  })
+}
+
+export function getUploadMethodList(data = {}) {
+  return request({
+    url: baseUrl + '/getUploadMethodList',
+    method: 'post',
+    data
+  })
+}

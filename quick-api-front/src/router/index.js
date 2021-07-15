@@ -66,6 +66,15 @@ export const constantRoutes = [
           title: '提交记录',
           affix: false
         }
+      },
+      {
+        path: 'pushLocalApi',
+        name: 'PushLocalApi',
+        component: () => import('@/views/commit/pushLocalApi'),
+        meta: {
+          title: '同步',
+          affix: false
+        }
       }
     ]
   },

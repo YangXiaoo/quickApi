@@ -20,8 +20,8 @@ public class AnnotationTestBController {
         return jsonModel;
     }
 
-    @RequestMapping(value = "pathB-B", method = RequestMethod.POST)
-    public JsonModel pathB(@RequestBody Map<String, String> map) {
+    @RequestMapping(value = "pathB-Repeat", method = RequestMethod.POST)
+    public JsonModel pathBRepeat(@RequestBody Map<String, String> map) {
         JsonModel jsonModel = new JsonModel();
         jsonModel.success("成功", map);
         return jsonModel;
