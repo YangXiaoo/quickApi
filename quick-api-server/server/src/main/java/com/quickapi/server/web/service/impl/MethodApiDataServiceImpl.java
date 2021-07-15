@@ -52,7 +52,7 @@ public class MethodApiDataServiceImpl {
 
     /**
      * 查找用户提交记录
-     * @return java.util.List<com.quickapi.server.web.dao.entity.ApiDoc>
+     * @return java.util.List<com.quickapi.server.web.dao.entity.ProjectApIExample>
      * @author yangxiao
      * @date 2021/1/26 21:00
      */

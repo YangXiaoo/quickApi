@@ -1,14 +1,13 @@
 package com.quickapi.server.web.logic;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.quickapi.server.common.constant.CONSTANT_DEFINE;
 import com.quickapi.server.common.tools.DateTool;
 import com.quickapi.server.common.utils.UUIDUtil;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.MethodPageDataDao;
-import com.quickapi.server.web.dao.entity.UserProjectPageData;
+import com.quickapi.server.web.dao.entity.UserProjectApiPageData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -37,20 +36,20 @@ public class MethodPageDataLogic {
         }
         boolean insertFlag = true;
 
-        QueryWrapper<UserProjectPageData> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserProjectApiPageData> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("PROJECT_NAME", projectName);
         queryWrapper.eq("METHOD_URL", url);
         queryWrapper.eq("USER_NAME", userName);
         queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
-        List<UserProjectPageData> pageDataList = methodPageDataDao.selectList(queryWrapper);
+        List<UserProjectApiPageData> pageDataList = methodPageDataDao.selectList(queryWrapper);
         if (!CollectionUtils.isEmpty(pageDataList)) {
             if (pageDataList.size() > 1) {                                    // 删除
-                for (UserProjectPageData tmp : pageDataList) {
+                for (UserProjectApiPageData tmp : pageDataList) {
                     tmp.setDeleteFlag(CONSTANT_DEFINE.IS_DELETE);
                     methodPageDataDao.updateById(tmp);
                 }
             } else {                                                        // 更新
-                UserProjectPageData pageData = pageDataList.get(0);
+                UserProjectApiPageData pageData = pageDataList.get(0);
                 pageData.setApiJsonData(pageJsonData);
                 pageData.setUpdateTime(DateTool.getCurrentDate());
                 methodPageDataDao.updateById(pageData);
@@ -59,7 +58,7 @@ public class MethodPageDataLogic {
         }
 
         if (insertFlag) {
-            UserProjectPageData pageData = new UserProjectPageData();
+            UserProjectApiPageData pageData = new UserProjectApiPageData();
             pageData.setApiJsonData(pageJsonData);
             pageData.setMethodUrl(url);
             pageData.setUserName(userName);
@@ -80,22 +79,22 @@ public class MethodPageDataLogic {
      * @param projectName 项目名
      * @param url 路由
      * @param userName 用户名
-     * @return com.quickapi.server.web.dao.entity.UserProjectPageData
+     * @return com.quickapi.server.web.dao.entity.UserProjectApiPageData
      * @author yangxiao
      * @date 2021/1/17 17:48
      */
-    public UserProjectPageData getUserProjectMethodPageData(String projectName, String url, String userName) {
+    public UserProjectApiPageData getUserProjectMethodPageData(String projectName, String url, String userName) {
         if (StringUtils.isBlank(projectName) || StringUtils.isBlank(url) || StringUtils.isBlank(userName)) {
             throw new BusinessException("getUserProjectMethodPageData()参数不完整");
         }
-        UserProjectPageData pageData = null;
+        UserProjectApiPageData pageData = null;
         
-        QueryWrapper<UserProjectPageData> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<UserProjectApiPageData> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("PROJECT_NAME", projectName);
         queryWrapper.eq("METHOD_URL", url);
         queryWrapper.eq("USER_NAME", userName);
         queryWrapper.eq("DELETE_FLAG", CONSTANT_DEFINE.NOT_DELETE);
-        List<UserProjectPageData> pageDataList = methodPageDataDao.selectList(queryWrapper);
+        List<UserProjectApiPageData> pageDataList = methodPageDataDao.selectList(queryWrapper);
             if (!CollectionUtils.isEmpty(pageDataList)) {
             if (pageDataList.size() > 1) {
                 throw new BusinessException("getUserProjectMethodPageData(), projectName: " + projectName
@@ -112,14 +111,14 @@ public class MethodPageDataLogic {
     /**
      * 根据ID查询数据
      * @param pageData 用户页面数据
-     * @return java.util.List<com.quickapi.server.web.dao.entity.UserProjectPageData>
+     * @return java.util.List<com.quickapi.server.web.dao.entity.UserProjectApiPageData>
      * @author yangxiao
      * @date 2021/1/17 17:47
      */
-    public List<UserProjectPageData> selectUserProjectPageDataById(UserProjectPageData pageData) {
-        List<UserProjectPageData> ret = null;
+    public List<UserProjectApiPageData> selectUserProjectPageDataById(UserProjectApiPageData pageData) {
+        List<UserProjectApiPageData> ret = null;
         if (pageData != null) {
-            QueryWrapper<UserProjectPageData> queryWrapper = new QueryWrapper<>();
+            QueryWrapper<UserProjectApiPageData> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("USER_PROJECT_PAGE_DATA_ID", pageData.getUserProjectPageDataId());
             ret = methodPageDataDao.selectList(queryWrapper);
         }

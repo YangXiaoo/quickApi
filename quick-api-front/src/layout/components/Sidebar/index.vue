@@ -36,16 +36,17 @@
     </div>
     <div class="side-content-container">
       <div v-if="isLocalProject" name="localApi" class="side-content-item">
-        <el-menu
+        <!-- <el-menu
           :default-active="activeMenu"
           :unique-opened="false"
           :collapse-transition="false"
         >
           <sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
-        </el-menu>
+        </el-menu> -->
+        <qa-sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
       </div>
       <div name="userApi" class="side-content-item">
-        <el-menu
+        <!-- <el-menu
           v-show="userMethodMenu.length > 0"
           :default-active="activeMenu"
           :collapse="isCollapse"
@@ -54,7 +55,8 @@
           mode="vertical"
         >
           <sidebar-item v-for="route in userMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
-        </el-menu>
+        </el-menu> -->
+        <qa-sidebar-item v-for="route in userMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
         <div v-show="!userMethodMenu.length" style="align-item:center;">
           暂无接口
         </div>
@@ -73,7 +75,7 @@
                 {{ peojectName }}
               </div>
             </template>
-            <el-menu
+            <!-- <el-menu
               :default-active="activeMenu"
               :collapse="isCollapse"
               :unique-opened="false"
@@ -81,12 +83,13 @@
               mode="vertical"
             >
               <sidebar-item v-for="route in subMenu" :key="route.path" :item="route" :base-path="route.path" />
-            </el-menu>
+            </el-menu> -->
+            <qa-sidebar-item v-for="route in subMenu" :key="route.path" :item="route" :base-path="route.path" />
           </el-collapse-item>
         </el-collapse>
       </div>
       <div name="setting" class="side-content-item">
-        <qa-sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
+        <!-- <qa-sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" /> -->
       </div>
     </div>
     <Login :trigger="loginVisible" />
@@ -346,5 +349,10 @@ export default {
       height: 100%;
       overflow-y: auto;
     }
+  }
+  .collapse-title {
+    font-size: 16px;
+    font-weight: 400;
+    margin-left: 8px;
   }
 </style>

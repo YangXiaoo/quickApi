@@ -36,6 +36,6 @@ public interface SERVICE {
     String UPDATE_USER_METHOD_DATA = "/api/updateUserMethodData";                            // 更新接口方法信息
 
     // 服务器连接
-    String CHECK_SERVER_STATUS = "/api/check/checkServerStatus";
-    String SEND_LOCALHOST_STATUS = "/api/register/reportStatus";
+    String CHECK_SERVER_STATUS = "/api/checkServerStatus";
+    String SEND_LOCALHOST_STATUS = "/api/reportStatus";
 }

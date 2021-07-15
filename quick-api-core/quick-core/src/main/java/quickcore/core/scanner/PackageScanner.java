@@ -20,7 +20,7 @@ import java.util.jar.JarFile;
  * @author yangxiao
  */
 public class PackageScanner {
-    private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(PackageScanner.class);
 
     private String basePackage;
     private ClassLoader cl;

@@ -40,13 +40,15 @@ export function getRoutesFromGroupMap(groupMap) {
         component: () => import('@/views/localApi/index'),
         meta: {
           title: '',
-          group: ''
+          group: '',
+          requestType: ''
         }
       }
       curChildRouter.path = api.url.substring(1)
       curChildRouter.name = api.methodName
       curChildRouter.meta.title = api.name // 设置子菜单名称
       curChildRouter.meta.group = api.group // 设置子菜单名称
+      curChildRouter.meta.requestType = api.requestType
 
       curRouter.children.push(curChildRouter)
     }
@@ -89,7 +91,8 @@ export function getProjectRoutesFromMethodDataList(apiInfo) {
         meta: {
           title: '',
           group: '',
-          projectName: ''
+          projectName: '',
+          requestType: ''
         }
       }
       curChildRouter.path = api.url.substring(1)
@@ -97,6 +100,7 @@ export function getProjectRoutesFromMethodDataList(apiInfo) {
       curChildRouter.meta.title = api.name
       curChildRouter.meta.group = api.methodGroup
       curChildRouter.meta.projectName = api.projectName
+      curChildRouter.meta.requestType = api.requestType
 
       curRouter.children.push(curChildRouter)
     }
@@ -128,7 +132,6 @@ export function getProjectMethodGroupMap(apiInfo) {
         data[api.methodGroup] = [api]
       }
     }
-
   }
 
   return data
@@ -211,7 +214,8 @@ export function generateNewTabPage() {
     name: groupUrl,
     component: () => import('@/views/tab/index'),
     meta: {
-      title: 'undefined'
+      title: 'undefined',
+      requestType: 'GET'
     }
   }
   curRouter.children.push(curChildRouter)
@@ -247,13 +251,15 @@ export function getUserRoutesFromMthodGroupMap(methodGroupMap) {
         component: () => import('@/views/tab/index'),
         meta: {
           title: '',
-          group: ''
+          group: '',
+          requestType: ''
         }
       }
       curChildRouter.path = methodData.url
       curChildRouter.name = methodData.url
       curChildRouter.meta.title = methodData.methodName // 设置子菜单名称
       curChildRouter.meta.group = methodData.methodGroup // 设置子菜单名称
+      curChildRouter.meta.requestType = methodData.requestType
 
       curRouter.children.push(curChildRouter)
     }

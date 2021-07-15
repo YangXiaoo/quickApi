@@ -172,8 +172,9 @@ public class QuickApiService {
                     Map<String, MethodModel> localMapInfo = this.getMethodMapInfo(methodModelList);
                     Map<String, MethodModel> serverMapInfo = this.getMethodMapInfo(preMethodModelList);
 
-                    List<MethodModel> deleteMethodList = this.compareApiInfo2Delete(localMapInfo, serverMapInfo);
-                    this.deleteMethodDataList(deleteMethodList);                    // 删除失效的方法
+                    // 不自动删除本地不存在的接口
+                    //List<MethodModel> deleteMethodList = this.compareApiInfo2Delete(localMapInfo, serverMapInfo);
+                    //this.deleteMethodDataList(deleteMethodList);                    // 删除失效的方法
 
                     List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(localMapInfo, serverMapInfo);
                     this.pushLocalData(uploadMethodList);

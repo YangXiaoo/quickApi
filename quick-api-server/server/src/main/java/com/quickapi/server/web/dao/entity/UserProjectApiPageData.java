@@ -5,11 +5,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
 
-@TableName("user_api")
-public class UserApi {
+@TableName("user_project_api_page_data")
+public class UserProjectApiPageData {
   @TableId
-  private String userApiId;
-  private String methodId;
+  private String userProjectPageDataId;
+  private String projectId;
+  private String projectName;
   private String methodUrl;
   private String userId;
   private String userName;
@@ -19,21 +20,30 @@ public class UserApi {
   private Date updateTime;
 
 
-  public String getUserApiId() {
-    return userApiId;
+  public String getUserProjectPageDataId() {
+    return userProjectPageDataId;
   }
 
-  public void setUserApiId(String userApiId) {
-    this.userApiId = userApiId;
+  public void setUserProjectPageDataId(String userProjectPageDataId) {
+    this.userProjectPageDataId = userProjectPageDataId;
   }
 
 
-  public String getMethodId() {
-    return methodId;
+  public String getProjectId() {
+    return projectId;
   }
 
-  public void setMethodId(String methodId) {
-    this.methodId = methodId;
+  public void setProjectId(String projectId) {
+    this.projectId = projectId;
+  }
+
+
+  public String getProjectName() {
+    return projectName;
+  }
+
+  public void setProjectName(String projectName) {
+    this.projectName = projectName;
   }
 
 

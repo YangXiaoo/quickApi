@@ -174,20 +174,20 @@
         <el-button type="primary" @click="handleSaveMethodApiData">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="修改方信息" :visible.sync="dialogObj.visible" width="30%">
-      <el-form>
+    <el-dialog title="修改方信息" :visible.sync="dialogObj.visible" width="25%">
+      <el-form label-width="80px">
         <el-form-item label="所属组">
           <el-select v-model="dialogObj.methodGroup" filterable allow-create default-first-option placeholder="请选择组别">
             <el-option v-for="item of localProjectGroupList" :key="item" :label="item" :value="item" />
           </el-select>
         </el-form-item>
         <el-form-item label="方法名">
-          <el-input v-model="dialogObj.methodName" />
+          <el-input v-model="dialogObj.methodName" style="width: 204px" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogObj.visible = false">取 消</el-button>
-        <el-button type="primary" @click="handleSaveMethodName">确 定</el-button>
+        <el-button type="warning" @click="handleSaveMethodName">确 定</el-button>
       </div>
     </el-dialog>
   </div>

@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-dialog title="登录" :visible.sync="dialogLoginVisible">
+    <el-dialog title="登录" :visible.sync="dialogLoginVisible" width="25%">
       <el-form label-width="80px" :model="loginForm">
         <el-form-item label="名称">
           <el-input v-model="loginForm.username" />
@@ -8,8 +8,12 @@
         <el-form-item label="密码">
           <el-input v-model="loginForm.password" />
         </el-form-item>
-        <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <!-- <el-button @click="dialogObj.visible = false">取 消</el-button>
+          <el-button type="warning" @click="handleSaveMethodName">确 定</el-button> -->
+        <el-button :loading="loading" type="warning" class="login-button" @click.native.prevent="handleLogin">登录</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -50,6 +54,9 @@ export default {
       immediate: true
     },
     visible(newValue) {
+      this.dialogLoginVisible = true
+    },
+    trigger(newValue) {
       this.dialogLoginVisible = true
     }
   },

@@ -923,20 +923,24 @@
       <Charset>utf8mb4</Charset>
       <DefaultForCharset>0</DefaultForCharset>
     </collation>
-    <table id="233" parent="7" name="api_doc"/>
-    <table id="234" parent="7" name="method_model"/>
+    <table id="233" parent="7" name="project_api_example">
+      <Comment>项目接口示例文档</Comment>
+    </table>
+    <table id="234" parent="7" name="project_api_method">
+      <Comment>项目接口方法</Comment>
+    </table>
     <table id="235" parent="7" name="project_info"/>
-    <table id="236" parent="7" name="user_api">
-      <Comment>我的接口</Comment>
+    <table id="236" parent="7" name="user_api_method">
+      <Comment>个人接口方法</Comment>
     </table>
-    <table id="237" parent="7" name="user_method">
-      <Comment>用户接口方法</Comment>
+    <table id="237" parent="7" name="user_api_page_data">
+      <Comment>个人接口页面数据</Comment>
     </table>
-    <table id="238" parent="7" name="user_project_info">
-      <Comment>用户拥有的项目信息</Comment>
-    </table>
-    <table id="239" parent="7" name="user_project_page_data">
+    <table id="238" parent="7" name="user_project_api_page_data">
       <Comment>个人项目页面数据</Comment>
+    </table>
+    <table id="239" parent="7" name="user_project_info">
+      <Comment>用户拥有的项目信息</Comment>
     </table>
     <column id="240" parent="233" name="API_DOC_ID">
       <Position>1</Position>
@@ -1201,230 +1205,236 @@
       <ColNames>PROJECT_INFO_ID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="281" parent="236" name="USER_API_ID">
+    <column id="281" parent="236" name="USER_METHOD_ID">
       <Position>1</Position>
       <DataType>varchar(32)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="282" parent="236" name="METHOD_ID">
+    <column id="282" parent="236" name="URL">
+      <Position>2</Position>
+      <DataType>varchar(1000)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="283" parent="236" name="METHOD_NAME">
+      <Position>3</Position>
+      <DataType>varchar(64)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="284" parent="236" name="METHOD_GROUP">
+      <Position>4</Position>
+      <DataType>varchar(128)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="285" parent="236" name="USER_NAME">
+      <Position>5</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="286" parent="236" name="USER_ID">
+      <Position>6</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="287" parent="236" name="CREATE_TIME">
+      <Position>7</Position>
+      <DataType>datetime|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="288" parent="236" name="UPDATE_TIME">
+      <Position>8</Position>
+      <DataType>datetime|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="289" parent="236" name="DELETE_FLAG">
+      <Position>9</Position>
+      <DataType>varchar(4)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="290" parent="236" name="REQUEST_TYPE">
+      <Position>10</Position>
+      <Comment>请求类型</Comment>
+      <DataType>varchar(20)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="291" parent="236" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>USER_METHOD_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="292" parent="237" name="USER_API_ID">
+      <Position>1</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="293" parent="237" name="METHOD_ID">
       <Position>2</Position>
       <Comment>方法ID</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="283" parent="236" name="METHOD_URL">
+    <column id="294" parent="237" name="METHOD_URL">
       <Position>3</Position>
       <DataType>varchar(1000)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="284" parent="236" name="USER_ID">
+    <column id="295" parent="237" name="USER_ID">
       <Position>4</Position>
       <Comment>用户ID</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="285" parent="236" name="USER_NAME">
+    <column id="296" parent="237" name="USER_NAME">
       <Position>5</Position>
       <Comment>用户姓名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="286" parent="236" name="CREATE_TIME">
+    <column id="297" parent="237" name="CREATE_TIME">
       <Position>6</Position>
       <DataType>datetime|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="287" parent="236" name="API_JSON_DATA">
+    <column id="298" parent="237" name="API_JSON_DATA">
       <Position>7</Position>
       <Comment>接口页面信息</Comment>
       <DataType>text|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="288" parent="236" name="DELETE_FLAG">
+    <column id="299" parent="237" name="DELETE_FLAG">
       <Position>8</Position>
       <DataType>varchar(2)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="289" parent="236" name="UPDATE_TIME">
+    <column id="300" parent="237" name="UPDATE_TIME">
       <Position>9</Position>
       <DataType>datetime|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="290" parent="236" name="PRIMARY">
+    <key id="301" parent="237" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>USER_API_ID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="291" parent="237" name="USER_METHOD_ID">
+    <column id="302" parent="238" name="USER_PROJECT_PAGE_DATA_ID">
       <Position>1</Position>
       <DataType>varchar(32)|0s</DataType>
       <NotNull>1</NotNull>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="292" parent="237" name="URL">
-      <Position>2</Position>
-      <DataType>varchar(1000)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="293" parent="237" name="METHOD_NAME">
-      <Position>3</Position>
-      <DataType>varchar(64)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="294" parent="237" name="METHOD_GROUP">
-      <Position>4</Position>
-      <DataType>varchar(128)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="295" parent="237" name="USER_NAME">
-      <Position>5</Position>
-      <DataType>varchar(32)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="296" parent="237" name="USER_ID">
-      <Position>6</Position>
-      <DataType>varchar(32)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="297" parent="237" name="CREATE_TIME">
-      <Position>7</Position>
-      <DataType>datetime|0s</DataType>
-      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="298" parent="237" name="UPDATE_TIME">
-      <Position>8</Position>
-      <DataType>datetime|0s</DataType>
-      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="299" parent="237" name="DELETE_FLAG">
-      <Position>9</Position>
-      <DataType>varchar(4)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <key id="300" parent="237" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>USER_METHOD_ID</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="301" parent="238" name="USER_PROJECT_INFO_ID">
-      <Position>1</Position>
-      <DataType>varchar(32)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="302" parent="238" name="PROJECT_INFO_ID">
-      <Position>2</Position>
-      <DataType>varchar(32)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="303" parent="238" name="PROJECT_NAME">
-      <Position>3</Position>
-      <DataType>varchar(64)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="304" parent="238" name="PROJECT_DESC">
-      <Position>4</Position>
-      <DataType>varchar(256)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="305" parent="238" name="USER_NAME">
-      <Position>5</Position>
-      <DataType>varchar(64)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="306" parent="238" name="CREATE_TIME">
-      <Position>6</Position>
-      <DataType>datetime|0s</DataType>
-      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="307" parent="238" name="UPDATE_TIME">
-      <Position>7</Position>
-      <DataType>datetime|0s</DataType>
-      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="308" parent="238" name="DELETE_FLAG">
-      <Position>8</Position>
-      <DataType>varchar(4)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="309" parent="238" name="USER_ID">
-      <Position>9</Position>
-      <DataType>varchar(32)|0s</DataType>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <key id="310" parent="238" name="PRIMARY">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>USER_PROJECT_INFO_ID</ColNames>
-      <Primary>1</Primary>
-    </key>
-    <column id="311" parent="239" name="USER_PROJECT_PAGE_DATA_ID">
-      <Position>1</Position>
-      <DataType>varchar(32)|0s</DataType>
-      <NotNull>1</NotNull>
-      <ColumnKind>normal</ColumnKind>
-    </column>
-    <column id="312" parent="239" name="PROJECT_ID">
+    <column id="303" parent="238" name="PROJECT_ID">
       <Position>2</Position>
       <Comment>项目ID</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="313" parent="239" name="PROJECT_NAME">
+    <column id="304" parent="238" name="PROJECT_NAME">
       <Position>3</Position>
       <Comment>项目名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="314" parent="239" name="METHOD_URL">
+    <column id="305" parent="238" name="METHOD_URL">
       <Position>4</Position>
       <DataType>varchar(1000)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="315" parent="239" name="USER_ID">
+    <column id="306" parent="238" name="USER_ID">
       <Position>5</Position>
       <Comment>用户ID</Comment>
       <DataType>varchar(32)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="316" parent="239" name="USER_NAME">
+    <column id="307" parent="238" name="USER_NAME">
       <Position>6</Position>
       <Comment>用户姓名</Comment>
       <DataType>varchar(64)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="317" parent="239" name="CREATE_TIME">
+    <column id="308" parent="238" name="CREATE_TIME">
       <Position>7</Position>
       <DataType>datetime|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="318" parent="239" name="API_JSON_DATA">
+    <column id="309" parent="238" name="API_JSON_DATA">
       <Position>8</Position>
       <Comment>接口页面信息</Comment>
       <DataType>text|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="319" parent="239" name="DELETE_FLAG">
+    <column id="310" parent="238" name="DELETE_FLAG">
       <Position>9</Position>
       <DataType>varchar(2)|0s</DataType>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <column id="320" parent="239" name="UPDATE_TIME">
+    <column id="311" parent="238" name="UPDATE_TIME">
       <Position>10</Position>
       <DataType>datetime|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <ColumnKind>normal</ColumnKind>
     </column>
-    <key id="321" parent="239" name="PRIMARY">
+    <key id="312" parent="238" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>USER_PROJECT_PAGE_DATA_ID</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="313" parent="239" name="USER_PROJECT_INFO_ID">
+      <Position>1</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <NotNull>1</NotNull>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="314" parent="239" name="PROJECT_INFO_ID">
+      <Position>2</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="315" parent="239" name="PROJECT_NAME">
+      <Position>3</Position>
+      <DataType>varchar(64)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="316" parent="239" name="PROJECT_DESC">
+      <Position>4</Position>
+      <DataType>varchar(256)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="317" parent="239" name="USER_NAME">
+      <Position>5</Position>
+      <DataType>varchar(64)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="318" parent="239" name="CREATE_TIME">
+      <Position>6</Position>
+      <DataType>datetime|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="319" parent="239" name="UPDATE_TIME">
+      <Position>7</Position>
+      <DataType>datetime|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="320" parent="239" name="DELETE_FLAG">
+      <Position>8</Position>
+      <DataType>varchar(4)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <column id="321" parent="239" name="USER_ID">
+      <Position>9</Position>
+      <DataType>varchar(32)|0s</DataType>
+      <ColumnKind>normal</ColumnKind>
+    </column>
+    <key id="322" parent="239" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>USER_PROJECT_INFO_ID</ColNames>
       <Primary>1</Primary>
     </key>
   </database-model>

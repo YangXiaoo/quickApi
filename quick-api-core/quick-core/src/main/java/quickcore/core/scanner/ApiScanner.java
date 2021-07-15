@@ -19,7 +19,7 @@ import java.util.*;
  * @author yangxiao
  */
 public class ApiScanner {
-    private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApiScanner.class);
     /**
      * 扫描所有接口，获得对应的方法信息
      * @param basePackageArray 包名

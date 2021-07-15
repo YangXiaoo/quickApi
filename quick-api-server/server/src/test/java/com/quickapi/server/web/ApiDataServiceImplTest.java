@@ -16,7 +16,7 @@ public class ApiDataServiceImplTest extends BaseTest {
 
     @Test
     public void testInsert() {
-        //MethodModel apiDataEntity = new MethodModel();
+        //ProjectApiMethod apiDataEntity = new ProjectApiMethod();
         //apiDataEntity.setProjectName("test");
         //apiDataEntity.setDelete(CONSTANT_DEFINE.NOT_DELETE);
         //apiDataEntity.setAuthor("yangxiao");

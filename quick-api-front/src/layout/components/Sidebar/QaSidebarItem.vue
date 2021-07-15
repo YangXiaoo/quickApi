@@ -3,19 +3,14 @@
     <div class="sidebar-menu">
       <div class="sidebar-menu-title">
         <div class="sidebar-menu-title-left">
-          <!-- <i class="el-icon-arrow-down" /> -->
+          <!-- <i class="el-icon-arrow-right" /> -->
         </div>
         <div class="sidebar-menu-title-name">
           <span>{{ item.meta.title }}</span>
         </div>
         <div class="sidebar-menu-title-right" @click.stop="handleClickMenuExtend(item, $event)">
-          <!-- <div class="sidebar-menu-title-right-top">
-            you
-          </div>
-          <div class="sidebar-menu-title-right-bottom">
-            <i class="el-icon-more" />
-          </div> -->
-          <el-popover
+          <i class="el-icon-more" />
+          <!-- <el-popover
             v-model="menuExtendVisible"
             placement="bottom"
             title=""
@@ -30,25 +25,31 @@
             <span slot="reference">
               <i class="el-icon-more" />
             </span>
-          </el-popover>
+          </el-popover> -->
         </div>
       </div>
       <div class="submenu-item-container">
         <div v-for="child in item.children" :key="basePath + child.path" :path="resolvePath(child.path)" class="submenu-item" @click="handleClickMenuItem(child.path)">
           <div class="submenu-item-request-type">
-            <span class="post">post</span>
+            <span :class="hanldeRequestTypeStyle(child.meta.requestType || 'GET')">{{ child.meta.requestType || 'GET' }}</span>
           </div>
           <div class="submenu-item-title">
             {{ child.meta.title }}
           </div>
-          <div class="submenu-item-right" @click.stop="handleClickSubmenuExtend(item, $event)">
+          <!-- <div class="submenu-item-right" @click.stop="handleClickSubmenuExtend(item, $event)">
             <i class="el-icon-more" />
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
     <ul v-show="submenuExtendVisible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="closeSubmenuExtend()">取消</li>
+      <li>新建</li>
+      <li>编辑</li>
+      <li>删除</li>
+    </ul>
+    <ul v-show="menuExtendVisible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
+      <li @click="closeMenuExtend()">取消</li>
       <li>新建</li>
       <li>编辑</li>
       <li>删除</li>
@@ -104,16 +105,14 @@ export default {
   methods: {
     handleClickSubmenuExtend(item, event) {
       this.closeSubmenuExtend()
-      // this.submenuExtendVisible = !this.submenuExtendVisible
       console.log('event', event)
       const menuMinWidth = 40
-      console.log('openMenu()>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
       const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
       console.log('offsetLeft', offsetLeft)
       const offsetWidth = this.$el.offsetWidth // container width
       console.log('offsetWidth', offsetWidth)
       const maxLeft = offsetWidth - menuMinWidth // left boundary
-      const left = event.clientX - 0 // 20: margin right
+      const left = event.clientX + 1000 // 20: margin right
       console.log('event.clientX ', event.clientX)
 
       if (left > maxLeft) {
@@ -127,10 +126,30 @@ export default {
       this.submenuExtendVisible = true
     },
     handleClickMenuExtend(item, event) {
-      this.menuExtendVisible = !this.menuExtendVisible
+      this.closeMenuExtend()
+      const menuMinWidth = 40
+      const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
+      console.log('offsetLeft', offsetLeft)
+      const offsetWidth = this.$el.offsetWidth // container width
+      console.log('offsetWidth', offsetWidth)
+      const maxLeft = offsetWidth - menuMinWidth // left boundary
+      const left = event.clientX - 20 // 20: margin right
+      console.log('event.clientX ', event.clientX)
+
+      if (left > maxLeft) {
+        this.left = maxLeft
+      } else {
+        this.left = left
+      }
+
+      this.top = event.clientY
+      this.menuExtendVisible = true
     },
     closeSubmenuExtend() {
       this.submenuExtendVisible = false
+    },
+    closeMenuExtend() {
+      this.menuExtendVisible = false
     },
     handleScroll() {
       this.closeSubmenuExtend()
@@ -154,23 +173,23 @@ export default {
             menuList[i].setAttribute('class', 'current-menu sidebar-menu-title')
 
             // 菜单展开标识
-            menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-up" />'
+            menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-down" />'
           } else {
             menuList[i].nextElementSibling.setAttribute('class', 'menu-colse')
             menuList[i].setAttribute('class', 'sidebar-menu-title')
-            menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-down" />'
+            menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-right" />'
           }
         }
 
         menuList[i].nextElementSibling.setAttribute('class', 'menu-colse')
-        menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-down" />'
+        menuList[i].firstElementChild.innerHTML = '<i class="el-icon-arrow-right" />'
       }
     },
     sidebarMenuItemMouseOn() {
       const menuItemList = document.getElementsByClassName('submenu-item')
 
       for (let i = 0; i < menuItemList.length; ++i) {
-        menuItemList[i].onclick = function() {
+        menuItemList[i].onmousedown = function() {
           if (menuItemList[i].getAttribute('class').indexOf('current-menu-item') !== -1) {
             menuItemList[i].setAttribute('class', 'submenu-item')
           } else {
@@ -181,9 +200,12 @@ export default {
               }
             }
           }
+          // for (let j = 0; j < menuItemList.length; ++j) {
+          //   menuItemList[j].setAttribute('class', 'submenu-item')
+          // }
         }
 
-        menuItemList[i].setAttribute('class', 'submenu-item')
+        // menuItemList[i].setAttribute('class', 'submenu-item')
       }
     },
     handleClickMenuItem(path) {
@@ -218,7 +240,7 @@ export default {
               if (menuItemContainerElement.previousElementSibling) {
                 if (menuItemContainerElement.previousElementSibling.getAttribute('class').indexOf('current-menu') === -1) {
                   menuItemContainerElement.previousElementSibling.setAttribute('class', 'current-menu sidebar-menu-title')
-                  menuItemContainerElement.previousElementSibling.firstElementChild.innerHTML = '<i class="el-icon-arrow-up" />'
+                  menuItemContainerElement.previousElementSibling.firstElementChild.innerHTML = '<i class="el-icon-arrow-down" />'
                 }
               }
             }
@@ -227,6 +249,19 @@ export default {
           }
         }
       })
+    },
+    hanldeRequestTypeStyle(requestType) {
+      if (requestType) {
+        if (requestType === 'POST') {
+          return 'post'
+        } else if (requestType === 'GET') {
+          return 'get'
+        } else if (requestType === '通用') {
+          return 'normal'
+        }
+      } else {
+        return 'GET'
+      }
     }
   }
 }
@@ -292,11 +327,12 @@ export default {
     }
     .sidebar-menu-title-left {
       margin-left: 10px;
-      width: 20%;
+      width: 10%;
     }
     .sidebar-menu-title-name {
-      width: 65%;
+      width: 75%;
       font-size: 16px;
+      text-align: left;
     }
     .sidebar-menu-title-right {
       width: 15%;
@@ -360,29 +396,34 @@ export default {
 
     .submenu-item-request-type {
       width: 20%;
+      font-size: 14px;
       padding: 2px 2px 2px 5px;
+      text-align: left;
       .post {
         color: orange;
       }
       .get {
-        color: greenyellow;
+        color: #7ecd71d1;
+      }
+      .narmal {
+        color: #f7f7f7;
       }
     }
     .submenu-item-title {
-      width: 60%;
+      width: 80%;
       font-size: 14px;
     }
-    .submenu-item-right {
-      width: 20%;
-      padding-right: 10px;
-      text-align: right;
-      color: #ffff;
+    // .submenu-item-right {
+    //   width: 20%;
+    //   padding-right: 10px;
+    //   text-align: right;
+    //   color: #ffff;
 
-      &:hover {
-        font-size: 120%;
-        color: #424242;
-      }
-    }
+    //   &:hover {
+    //     font-size: 120%;
+    //     color: #424242;
+    //   }
+    // }
   }
 
   .current-menu-item {

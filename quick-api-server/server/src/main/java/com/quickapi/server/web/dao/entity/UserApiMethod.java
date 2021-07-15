@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
 
-@TableName("user_method")
-public class UserMethod {
+@TableName("user_api_method")
+public class UserApiMethod {
   @TableId
   private String userMethodId;
   private String url;

@@ -27,7 +27,7 @@ public class CheckServiceImpl {
      * @author yangxiao
      * @date 2021/1/3 21:59
      */
-    @PostMapping("/check/checkServerStatus")
+    @PostMapping("/checkServerStatus")
     public JsonModel checkServerStatus(@RequestBody Map<String, Object> map) {
         logger.info("checkServerStatus");
         JsonModel jsonModel = new JsonModel();

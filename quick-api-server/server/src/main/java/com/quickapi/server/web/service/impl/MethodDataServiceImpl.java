@@ -6,7 +6,7 @@ import com.quickapi.server.common.constant.JSON_MODEL_CODE;
 import com.quickapi.server.common.utils.JsonModel;
 import com.quickapi.server.common.utils.ModelUtil;
 import com.quickapi.server.exception.BusinessException;
-import com.quickapi.server.web.dao.entity.MethodModel;
+import com.quickapi.server.web.dao.entity.ProjectApiMethod;
 import com.quickapi.server.web.logic.MethodDataLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class MethodDataServiceImpl {
                 throw new BusinessException("没有传入项目名");
             }
 
-            List<MethodModel> res = methodDataLogic.findApiDataByProjectName(projectName);
+            List<ProjectApiMethod> res = methodDataLogic.findApiDataByProjectName(projectName);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, res);
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
@@ -67,14 +67,14 @@ public class MethodDataServiceImpl {
     public JsonModel saveMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            Object object = map.get("methodModel");
+            Object object = map.get("projectApiMethod");
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> methodModelMap = objectMapper.convertValue(object, Map.class);
-            MethodModel methodModel = ModelUtil.mapToMethodModel(methodModelMap);
-            if (methodModel == null) {
+            ProjectApiMethod projectApiMethod = ModelUtil.mapToMethodModel(methodModelMap);
+            if (projectApiMethod == null) {
                 throw new BusinessException("没有数据");
             }
-            methodDataLogic.saveMethodData(methodModel);
+            methodDataLogic.saveMethodData(projectApiMethod);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
@@ -89,7 +89,7 @@ public class MethodDataServiceImpl {
      * 删除一组接口方法数据
      * @param map 查询条件
      *            projectName 项目名
-     *            data List<MethodModel> 接口数据
+     *            data List<ProjectApiMethod> 接口数据
      * @return com.quickapi.server.common.utils.JsonModel
      * @author yangxiao
      * @date 2021/1/3 21:52
@@ -101,11 +101,11 @@ public class MethodDataServiceImpl {
             Object object = map.get("data");
             ObjectMapper objectMapper = new ObjectMapper();
             List<Map<String, Object>> objList = objectMapper.convertValue(object, List.class);
-            List<MethodModel> methodModelList = new ArrayList<>();
+            List<ProjectApiMethod> projectApiMethodList = new ArrayList<>();
             for (Map<String, Object> obj : objList) {
-                methodModelList.add(ModelUtil.mapToMethodModel(obj));
+                projectApiMethodList.add(ModelUtil.mapToMethodModel(obj));
             }
-            methodDataLogic.deleteMethodDataList(methodModelList);
+            methodDataLogic.deleteMethodDataList(projectApiMethodList);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "删除数据成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());
