@@ -114,8 +114,11 @@ export default {
             message: '同步成功',
             type: 'success'
           })
-          getLocalProjectData()
-          this.getSyncDataList()
+          getLocalProjectData().then(res => {
+            if (res.data.code === '000') {
+              this.getSyncDataList()
+            }
+          })
         }
       })
     },
