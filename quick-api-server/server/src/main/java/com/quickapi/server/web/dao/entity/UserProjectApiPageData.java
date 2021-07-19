@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 
 import java.util.Date;
 
-@TableName("user_project_api_page_data")
+@TableName("project_api_page_data")
 public class UserProjectApiPageData {
   @TableId
   private String userProjectPageDataId;

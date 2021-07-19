@@ -21,4 +21,11 @@ public interface CONSTANT_DEFINE {
 
     // 向服务端发送请求间隔 毫秒
     long REPORT_GAP = 30 * 1000;
+
+    // 通用常量
+    String IS_DELETE = "01";        // 删除
+    String NOT_DELETE = "00";       // 未删除
+
+    String IS_DOWNLOAD = "01";      // 是下载方法
+    String NOT_DOWNLOAD = "00";     // 不是下载方法
 }

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -184,7 +185,7 @@ public class QuickApiService {
                     this.syncLocalData(this.localMapInfo, this.serverMapInfo);    // 同步数据
                 } else {
                     // 上传本地接口方法数据
-                    this.pushLocalData(methodModelList);
+                    //this.pushLocalData(methodModelList);
                 }
             } else {
                 logger.warn("远程服务器未连接成功, 只支持本地测试!");
@@ -375,13 +376,12 @@ public class QuickApiService {
      * @date 2020/12/27 22:29
      */
     public void syncLocalData(Map<String, MethodModel> localMapInfo, Map<String, MethodModel> serverMapInfo) {
-        // TODO 检查是否修改本地数据
         for (Map.Entry<String, MethodModel> it : serverMapInfo.entrySet()) {
             if (localMapInfo.containsKey(it.getKey())) {
                 MethodModel localMethodModel = localMapInfo.get(it.getKey());
                 MethodModel remoteMethodModel = it.getValue();
                 if (!localMethodModel.equalsValue(remoteMethodModel)) {
-                    if (!remoteMethodModel.isDelete()) {
+                    if (!StringUtils.equals(remoteMethodModel.getDeleteFlag(), CONSTANT_DEFINE.IS_DELETE)) {
                         localMethodModel.setName(remoteMethodModel.getName());
                         localMethodModel.setGroup(remoteMethodModel.getGroup());
                         localMethodModel.setContentType(remoteMethodModel.getContentType());
@@ -591,7 +591,33 @@ public class QuickApiService {
         return jsonModel;
     }
 
+    @PostMapping("/syncProjectApiMethod")
+    public JsonModel syncProjectApiMethod(@RequestBody List<MethodModel>  methodModelList) {
+        JsonModel jsonModel = new JsonModel();
+        try {
 
+            List<MethodModel> deleteMethod = new ArrayList<>();
+            List<MethodModel> addMethod = new ArrayList<>();
+            for (MethodModel methodModel : methodModelList) {
+                if (StringUtils.equals(methodModel.getDeleteFlag(), CONSTANT_DEFINE.IS_DELETE)) {
+                    deleteMethod.add(methodModel);
+                } else {
+                    addMethod.add(methodModel);
+                }
+            }
+
+            String url = hostServiceName + SERVICE.DELETE_METHOD_DATA_LIST;
+            Map<String, Object> map = new HashMap<>();
+            map.put("data", deleteMethod);
+            RequestUtil.callService(url, map);
+
+            this.pushLocalData(addMethod);
+
+            jsonModel.success("success", true);
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
 }
-// 手动同步到远程数据服务，同步时显示远程服务有而本地没有的接口，让用户选择是否删除，本地新增接口全部上传
-// 服务端项目搜索出的结果，可以手动点击拉取最新数据

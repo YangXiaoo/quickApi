@@ -53,3 +53,11 @@ export function getUploadMethodList(data = {}) {
     data
   })
 }
+
+export function syncProjectApiMethod(data) {
+  return request({
+    url: baseUrl + '/syncProjectApiMethod',
+    method: 'post',
+    data
+  })
+}

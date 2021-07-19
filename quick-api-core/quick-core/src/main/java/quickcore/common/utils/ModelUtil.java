@@ -25,8 +25,9 @@ public class ModelUtil {
         methodModel.setName((String)map.get("name"));
         methodModel.setVersion((String)map.get("version"));
         methodModel.setAuthor((String)map.get("author"));
-        methodModel.setDownload(map.get("download") == "true");
-        methodModel.setToken(map.get("token") == "true");
+        methodModel.setDownload((String)map.get("download"));
+        methodModel.setToken((String)map.get("token"));
+        methodModel.setDeleteFlag((String)map.get("deleteFlag"));
 
         return methodModel;
     }

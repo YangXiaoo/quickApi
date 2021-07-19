@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.quickapi.server.common.constant.JSON_MODEL_CODE;
 import com.quickapi.server.common.utils.JsonModel;
+import com.quickapi.server.common.utils.MapToBean;
 import com.quickapi.server.common.utils.ModelUtil;
 import com.quickapi.server.exception.BusinessException;
 import com.quickapi.server.web.dao.entity.ProjectApiMethod;
@@ -67,7 +68,7 @@ public class MethodDataServiceImpl {
     public JsonModel saveMethodData(@RequestBody Map<String, Object> map) {
         JsonModel jsonModel = new JsonModel();
         try {
-            Object object = map.get("projectApiMethod");
+            Object object = map.get("methodModel");
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> methodModelMap = objectMapper.convertValue(object, Map.class);
             ProjectApiMethod projectApiMethod = ModelUtil.mapToMethodModel(methodModelMap);
@@ -116,6 +117,27 @@ public class MethodDataServiceImpl {
         return jsonModel;
     }
 
+    @PostMapping("syncProjectApiMethod")
+    public JsonModel syncProjectApiMethod(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            Object object = map.get("data");
+            ObjectMapper objectMapper = new ObjectMapper();
+            List<Map<String, Object>> objList = objectMapper.convertValue(object, List.class);
+            List<ProjectApiMethod> projectApiMethodList = new ArrayList<>();
+            for (Map<String, Object> obj : objList) {
+                projectApiMethodList.add(MapToBean.mapToObject(obj, ProjectApiMethod.class));
+            }
+            //methodDataLogic.syncProjectApiMethodList(projectApiMethodList);
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS, "删除数据成功");
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
     /**
      * 更新方法信息
      * @param map 保存数据

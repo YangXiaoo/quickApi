@@ -26,8 +26,9 @@ public class ModelUtil {
         projectApiMethod.setUrl((String)map.get("url"));
         projectApiMethod.setVersion((String)map.get("version"));
         projectApiMethod.setAuthor((String)map.get("author"));
-        projectApiMethod.setDownload((Boolean)map.get("download") ? "true" : "false");
-        projectApiMethod.setToken((Boolean)map.get("token") ? "true" : "false");
+        projectApiMethod.setDownload((String)map.get("download"));
+        projectApiMethod.setToken((String)map.get("token"));
+        projectApiMethod.setDeleteFlag((String)map.get("deleteFlag"));
 
         return projectApiMethod;
     }

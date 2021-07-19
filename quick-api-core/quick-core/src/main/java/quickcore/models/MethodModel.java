@@ -22,9 +22,9 @@ public class MethodModel implements Comparable<MethodModel>{
 
     private String createTime;
     private String updateTime;
-    private boolean download;
-    private boolean token;
-    private boolean delete;
+    private String download;
+    private String token;
+    private String deleteFlag;
 
     /**
      * 将对象按名称典序升序排序
@@ -39,7 +39,7 @@ public class MethodModel implements Comparable<MethodModel>{
     /**
      * 判断对象的值是否相等
      * @param obj 比较对象
-     * @return boolean
+     * @return String
      * @author yangxiao
      * @date 2020/12/27 18:06
      */
@@ -57,22 +57,22 @@ public class MethodModel implements Comparable<MethodModel>{
                 && StringUtils.equals(obj.getCreateTime(), createTime)
                 && StringUtils.equals(obj.getUpdateTime(), updateTime)
                 && StringUtils.equals(obj.getProjectName(), projectName)
-                && obj.isDownload() == download
-                && obj.isToken() == token;
+                && StringUtils.equals(obj.isDownload(),download)
+                && StringUtils.equals(obj.isToken(), token);
     }
 
-    public boolean isToken() {
+    public String isToken() {
         return token;
     }
 
-    public void setToken(boolean token) {
+    public void setToken(String token) {
         this.token = token;
     }
 
-    public boolean isDownload() {
+    public String isDownload() {
         return download;
     }
-    public void setDownload(boolean download) {
+    public void setDownload(String download) {
         this.download = download;
     }
     public String getAuthor() {
@@ -147,11 +147,11 @@ public class MethodModel implements Comparable<MethodModel>{
     public void setClassName(String className) {
         this.className = className;
     }
-    public boolean isDelete() {
-        return delete;
+    public String getDeleteFlag() {
+        return deleteFlag;
     }
-    public void setDelete(boolean delete) {
-        this.delete = delete;
+    public void setDeleteFlag(String deleteFlag) {
+        this.deleteFlag = deleteFlag;
     }
 
     public String getProjectName() {
