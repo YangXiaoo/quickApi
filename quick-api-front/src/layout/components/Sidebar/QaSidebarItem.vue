@@ -50,10 +50,39 @@
     </ul>
     <ul v-show="menuExtendVisible" :style="{left:left+'px',top:top+'px'}" class="contextmenu">
       <li @click="closeMenuExtend()">取消</li>
-      <li>新建</li>
-      <li>编辑</li>
-      <li>删除</li>
+      <li @click="renameMethodGroup()">重命名</li>
     </ul>
+
+    <!-- 本地项目菜单 -->
+    <el-dialog v-if="isLocal" title="修改菜单名" :visible.sync="localDialogObj.visible" width="25%">
+      <el-form label-width="80px">
+        <el-form-item label="所属组">
+          <el-select v-model="localDialogObj.groupItem.meta.title" filterable allow-create default-first-option placeholder="请选择组别">
+            <el-option v-for="obj of localProjectGroupList" :key="obj" :label="obj" :value="obj" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="localDialogObj.visible = false">取 消</el-button>
+        <el-button type="warning" @click="handleSaveMethodName">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 用户菜单 -->
+    <el-dialog v-if="!isLocal" title="修改菜单名" :visible.sync="userDialogObj.visible" width="25%">
+      <el-form label-width="80px">
+        <el-form-item label="所属组">
+          <el-select v-model="userDialogObj.groupItem.meta.title" filterable allow-create default-first-option placeholder="请选择组别">
+            <el-option v-for="obj of userGroupList" :key="obj" :label="obj" :value="obj" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="userDialogObj.visible = false">取 消</el-button>
+        <el-button type="warning" @click="handleSaveUserMethodName">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -79,6 +108,10 @@ export default {
     basePath: {
       type: String,
       default: ''
+    },
+    isLocal: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -86,11 +119,34 @@ export default {
       submenuExtendVisible: false,
       menuExtendVisible: false,
       top: 0,
-      left: 0
+      left: 0,
+      localDialogObj: {
+        visible: false,
+        groupItem: {
+          meta: {
+            title: ''
+          }
+        }
+      },
+      userDialogObj: {
+        visible: false,
+        methodName: '',
+        methodGroup: '',
+        groupItem: {
+          meta: {
+            title: ''
+          }
+        }
+      }
     }
   },
   computed: {
     ...mapGetters([
+      'localProjectGroupList',
+      'localProjectName',
+      'author',
+      'loginName',
+      'userGroupList'
     ])
   },
   watch: {
@@ -126,6 +182,11 @@ export default {
       this.submenuExtendVisible = true
     },
     handleClickMenuExtend(item, event) {
+      if (this.isLocal) {
+        this.localDialogObj.groupItem = item
+      } else {
+        this.userDialogObj.groupItem = item
+      }
       this.closeMenuExtend()
       const menuMinWidth = 40
       const offsetLeft = this.$el.getBoundingClientRect().left // container margin left
@@ -261,6 +322,54 @@ export default {
         }
       } else {
         return 'GET'
+      }
+    },
+    handleSaveMethodName() {
+      // 获得菜单，根据菜单path对菜单的title进行修改
+      for (const child of this.localDialogObj.groupItem.children) {
+        const data = {
+          url: '/' + child.path,
+          projectName: this.localProjectName,
+          name: child.meta.title,
+          methodGroup: this.localDialogObj.groupItem.meta.title,
+          author: this.author
+        }
+
+        this.$store.dispatch('localProject/updateProjectMethodData', data).then(res => {
+          // this.updateVisitedView(data.name, data.methodGroup)
+        }).catch((error) => {
+          this.$message({
+            message: error || '更新失败',
+            type: 'warning'
+          })
+        })
+      }
+      this.resetDialog()
+    },
+    renameMethodGroup() {
+      if (this.isLocal) {
+        this.localDialogObj.visible = true
+        this.closeMenuExtend()
+      } else {
+        this.userDialogObj.visible = true
+        this.closeMenuExtend()
+      }
+    },
+    resetDialog() {
+      this.localDialogObj.visible = false
+      this.userDialogObj.visible = false
+    },
+    handleSaveUserMethodName() {
+      for (const child of this.userDialogObj.groupItem.children) {
+        const data = {
+          userName: this.loginName, // 推荐使用邮箱
+          url: child.path, // 路由
+          methodName: child.meta.title, // 方法名
+          methodGroup: this.userDialogObj.groupItem.meta.title
+        }
+        this.$store.dispatch('userMethodData/updateUserMethodData', data)
+
+        this.resetDialog()
       }
     }
   }

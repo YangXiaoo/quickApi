@@ -139,8 +139,9 @@ export default {
   justify-content: center;
 }
 .push-container {
+  box-sizing: border-box;
   margin: 10px 20px;
-  width: 100%;
+  width: 90%;
   font-size: 12px;
   position: relative;
   overflow: auto;

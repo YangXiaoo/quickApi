@@ -43,7 +43,7 @@
         >
           <sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
         </el-menu> -->
-        <qa-sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" />
+        <qa-sidebar-item v-for="route in localProjectMethodMenu" :key="route.path" :item="route" :base-path="route.path" :is-local="true" />
       </div>
       <div name="userApi" class="side-content-item">
         <!-- <el-menu
