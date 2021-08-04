@@ -109,7 +109,7 @@
       </div>
       <div v-show="pageData.requestType === 'POST' && pageData.contentType !== 'none'">
         <el-divider>POST参数说明</el-divider>
-        <el-table :data="methodApiData.bodyJsonDataValues" size="small" border fit highlight-current-row>
+        <el-table :data="methodApiData.bodyJsonDataValues" size="small" border fit highlight-current-row row-key="name" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -133,14 +133,14 @@
           <!-- 参数说明 -->
           <el-table-column label="参数说明">
             <template slot-scope="{ row }">
-              <el-input v-model="row.description" size="small" />
+              <el-input v-if="!row.children" v-model="row.description" type="textarea" size="small" />
             </template>
           </el-table-column>
         </el-table>
       </div>
       <div v-show="pageData.responseBody">
         <el-divider>响应值说明</el-divider>
-        <el-table :data="methodApiData.responseBodyValues" size="small" border fit highlight-current-row>
+        <el-table :data="methodApiData.responseBodyValues" size="small" border fit highlight-current-row row-key="name" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
           <!-- 参数名 -->
           <el-table-column label="参数名">
             <template slot-scope="{ row }">
@@ -150,7 +150,7 @@
           <!-- 参数值 -->
           <el-table-column label="参数值">
             <template slot-scope="{ row }">
-              <span> {{ row.value }} </span>
+              <span v-if="!row.children"> {{ row.value }} </span>
             </template>
           </el-table-column>
           <!-- 参数说明 -->

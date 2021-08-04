@@ -68,7 +68,7 @@
             </div>
             <div v-show="pageData.requestType === 'GET'">
               <el-divider>get参数说明</el-divider>
-              <el-table :data="methodApiData.getTypeParamValues" size="small" border fit highlight-current-row>
+              <el-table :data="methodApiData.getTypeParamValues" size="small" border fit highlight-current-row row-key="name" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
                 <!-- 参数名 -->
                 <el-table-column label="参数名">
                   <template slot-scope="{ row }">
@@ -89,14 +89,14 @@
                 <!-- 参数说明 -->
                 <el-table-column label="参数说明">
                   <template slot-scope="{ row }">
-                    <span> {{ row.description }} </span>
+                    <span v-if="!row.children"> {{ row.description }} </span>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
             <div v-show="pageData.requestType === 'POST' && pageData.contentType !== 'none'">
               <el-divider>POST参数说明</el-divider>
-              <el-table :data="methodApiData.bodyJsonDataValues" border fit highlight-current-row>
+              <el-table :data="methodApiData.bodyJsonDataValues" border fit highlight-current-row row-key="name" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
                 <!-- 参数名 -->
                 <el-table-column label="参数名">
                   <template slot-scope="{ row }">
@@ -117,14 +117,14 @@
                 <!-- 参数说明 -->
                 <el-table-column label="参数说明">
                   <template slot-scope="{ row }">
-                    <span> {{ row.description }} </span>
+                    <span v-if="!row.children"> {{ row.description }} </span>
                   </template>
                 </el-table-column>
               </el-table>
             </div>
             <div v-show="pageData.responseBody">
               <el-divider>响应值说明</el-divider>
-              <el-table :data="methodApiData.responseBodyValues" border fit highlight-current-row>
+              <el-table :data="methodApiData.responseBodyValues" border fit highlight-current-row row-key="name" :tree-props="{children: 'children', hasChildren: 'hasChildren'}">
                 <!-- 参数名 -->
                 <el-table-column label="参数名">
                   <template slot-scope="{ row }">

@@ -14,8 +14,19 @@ export function parseParams(data) {
       }
 
       tableItem.name = key
-      tableItem.value = data[key]
-      tableItem.description = ''
+      tableItem.value = JSON.stringify(data[key])
+      tableItem.description = '' // 说明
+
+      if (data[key] instanceof Object && Object.keys(data[key]).length) {
+        tableItem.children = []
+        for (const tmpKey in data[key]) {
+          tableItem.children.push({
+            name: tmpKey, // 参数名
+            value: JSON.stringify(data[key][tmpKey]),
+            description: ''
+          })
+        }
+      }
 
       dataList.push(tableItem)
     }
@@ -39,8 +50,20 @@ export function parseRequestData(data) {
       const tableItem = {
         name: key, // 参数名
         type: typeof data[key],
-        required: 'false',
-        description: '' // 说明
+        required: 'true',
+        description: JSON.stringify(data[key]) // 说明
+      }
+      if (data[key] instanceof Object && Object.keys(data[key]).length) {
+        tableItem.children = []
+        for (const tmpKey in data[key]) {
+          tableItem.children.push({
+            name: tmpKey, // 参数名
+            type: typeof data[key][tmpKey],
+            required: 'true',
+            description: JSON.stringify(data[key][tmpKey]) // 说明
+
+          })
+        }
       }
 
       dataList.push(tableItem)

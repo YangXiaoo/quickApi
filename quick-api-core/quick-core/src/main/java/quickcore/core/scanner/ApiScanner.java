@@ -148,7 +148,7 @@ public class ApiScanner {
                         }
 
                         // 不是请求方法则跳过
-                        if (methodModel.getUrl().equals(CONSTANT_DEFINE.UNDEFINE_API_URL)) continue;
+                        //if (methodModel.getUrl().equals(CONSTANT_DEFINE.UNDEFINE_API_URL)) continue;
 
                         if (!methodModel.getGroup().equals(apiModel.getGroup())) {
                             if (!methodGroup.containsKey(methodModel.getGroup())) {

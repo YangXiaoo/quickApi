@@ -119,6 +119,15 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/ws',
+    name: 'WebSocket',
+    component: () => import('@/views/ws/WebSocket'),
+    meta: {
+      title: 'ws',
+      affix: false // 不关闭
+    }
+  },
+  {
     path: '*',
     redirect: '/quickApi'
   }
