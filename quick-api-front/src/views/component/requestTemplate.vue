@@ -185,15 +185,6 @@ export default {
           type: 'warning'
         })
       })
-
-      // callApi(
-      //   this.pageData.path,
-      //   contentType,
-      //   this.pageData.headerJson,
-      //   queryData,
-      //   this.pageData.requestType
-      // )
-
     },
     /* 点击保存事件*/
     handleClickSave() {
