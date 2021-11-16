@@ -5,7 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +35,6 @@ import java.util.Map;
 @Service
 public class QuickApiLogic {
     private static final Logger logger = LoggerFactory.getLogger(QuickApiLogic.class);
-
-    @Autowired
-    private WebApplicationContext applicationContext;
 
     @Value("${quickApi.basePackages:}")
     private String basePackages;
@@ -91,7 +87,7 @@ public class QuickApiLogic {
      * @date 2020/11/28 17:59
      */
     @GetMapping("/api")
-    public JsonModel loadQApi() {
+    public JsonModel loadQApi(WebApplicationContext applicationContext) {
         JsonModel jsonModel = new JsonModel();
         String curBasePackages = "";
         Map<String, Object> apiMapInfo = new HashMap<>();
@@ -153,8 +149,8 @@ public class QuickApiLogic {
             }
 
             System.out.println("curBasePackages: " + curBasePackages);
-            List<MethodModel> methodModelList = ApiScanner.scanApi(curBasePackages.split(","), applicationContext);
-            System.out.println(projectName);
+            //List<MethodModel> methodModelList = ApiScanner.scanApi(curBasePackages.split(","), applicationContext);
+            List<MethodModel> methodModelList = ApiScanner.getPackagesRequestMethodModelList(curBasePackages.split(","));
             List<MethodModel> preMethodModelList;
 
             if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
@@ -201,7 +197,6 @@ public class QuickApiLogic {
 
         return jsonModel;
     }
-
     /**
      * 报告测试端服务状态
      * @param

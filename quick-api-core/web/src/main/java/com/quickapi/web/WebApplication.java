@@ -10,7 +10,7 @@ import quickcore.web.service.WebSocketService;
 
 
 @Import(value = { WebSocketConfig.class, WebSocketService.class, MyApplicationContextAware.class})
-@QuickApi(basePackages = "com.quickapi", localServiceName = "http://localhost:8899", projectName = "quickApi-test")
+@QuickApi(basePackages = "com.quickapi.web", localServiceName = "http://localhost:8899", projectName = "quickApi-test")
 @SpringBootApplication(scanBasePackages="quickcore")
 public class WebApplication {
 

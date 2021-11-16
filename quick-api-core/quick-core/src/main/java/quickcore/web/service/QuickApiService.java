@@ -84,126 +84,126 @@ public class QuickApiService {
         return RequestUtil.callApi(path, contentType, headerJson, queryData, type);
     }
 
-    /**
-     * 获得接口所有信息
-     * <p>
-     *     推荐使用配置方法
-     * </p>
-     * @return java.util.Map<java.lang.String,java.lang.Object>
-     * @author yangxiao
-     * @date 2020/11/28 17:59
-     */
-    @GetMapping("/api")
-    public JsonModel loadQApi() {
-        JsonModel jsonModel = new JsonModel();
-        String curBasePackages = "";
-        Map<String, Object> apiMapInfo = new HashMap<>();
-        try {
-            // 从配置文件中获取信息
-            if (!StringUtils.isEmpty(basePackages)) {
-                curBasePackages = basePackages;
-                apiMapInfo.put("projectName", projectName);
-                apiMapInfo.put("description", description);
-                apiMapInfo.put("enabled", enabled ? "Yes" : "No");
-                apiMapInfo.put("serviceNames", serviceNames);
-                apiMapInfo.put("localServiceName", localServiceName);
-                apiMapInfo.put("version", version);
-                apiMapInfo.put("author", author);
-                apiMapInfo.put("hostServiceName", hostServiceName);
-                apiMapInfo.put("basePackages", basePackages);
-                logger.info("curBasePackages: " + curBasePackages);
-                if (!enabled) {
-                    throw new BusinessException("接口已关闭");
-                }
-            } else {
-                // 从QuickApi注解中获取配置信息
-                Map<String, Object> beans = applicationContext.getBeansWithAnnotation(QuickApi.class);
-                boolean returnFlag = false;                                                                 // 是否获得配置信息标志位
-                if (!beans.isEmpty()) {
-                    for (Map.Entry<String, Object> beanEntry : beans.entrySet()) {
-                        Object obj = beanEntry.getValue();
-                        Class<?> bootClass = obj.getClass();
-                        QuickApi quickApiAnnotation = bootClass.getAnnotation(QuickApi.class);
-                        curBasePackages = quickApiAnnotation.basePackages();
-                        if (StringUtils.isEmpty(curBasePackages)) {
-                            returnFlag = true;
-                            break;
-                        }
-
-                        apiMapInfo.put("projectName", quickApiAnnotation.projectName());
-                        apiMapInfo.put("basePackages", quickApiAnnotation.basePackages());
-                        apiMapInfo.put("description", quickApiAnnotation.description());
-                        this.projectName = quickApiAnnotation.projectName();
-                        apiMapInfo.put("enabled", quickApiAnnotation.enabled() ? "Yes" : "No");
-                        apiMapInfo.put("serviceNames", quickApiAnnotation.serverNames());
-                        apiMapInfo.put("localServiceName", quickApiAnnotation.localServiceName());
-                        apiMapInfo.put("version", quickApiAnnotation.version());
-                        apiMapInfo.put("author", quickApiAnnotation.author());
-                        apiMapInfo.put("hostServiceName", quickApiAnnotation.hostServiceName());
-                        this.author = quickApiAnnotation.author();
-                        this.hostServiceName = quickApiAnnotation.hostServiceName();
-                        if (!quickApiAnnotation.enabled()) {
-                            throw new BusinessException("接口已关闭");
-                        }
-                        returnFlag = true;
-                        break;
-                    }
-                }
-
-                if (!returnFlag) {
-                    throw new BusinessException("接口已关闭");
-                }
-            }
-
-            System.out.println("curBasePackages: " + curBasePackages);
-            List<MethodModel>  methodModelList = ApiScanner.scanApi(curBasePackages.split(","), applicationContext);
-            System.out.println(projectName);
-            List<MethodModel> preMethodModelList;
-
-            if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
-                if (!SEND_FLAG) {
-                    SEND_FLAG = true;
-                    new Thread(reportStatus()).start();
-                }
-                this.saveUserProjectInfo((String)apiMapInfo.get("author"), projectName);
-                this.saveLocalProjectInfo(apiMapInfo);
-                // 比较本地与服务器的接口信息看是否需要更新接口信息
-                JsonModel serviceApiData = this.pullServiceData(projectName);
-                if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
-                    preMethodModelList = (List<MethodModel>) serviceApiData.getData();
-
-                    this.localMapInfo = this.getMethodMapInfo(methodModelList);
-                    this.serverMapInfo = this.getMethodMapInfo(preMethodModelList);
-
-                    // 不自动删除本地不存在的接口
-                    //List<MethodModel> deleteMethodList = this.compareApiInfo2Delete(localMapInfo, serverMapInfo);
-                    //this.deleteMethodDataList(deleteMethodList);                    // 删除失效的方法
-
-                    //List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(this.localMapInfo, this.serverMapInfo);
-                    //this.pushLocalData(uploadMethodList);
-
-                    this.syncLocalData(this.localMapInfo, this.serverMapInfo);    // 同步数据
-                } else {
-                    // 上传本地接口方法数据
-                    //this.pushLocalData(methodModelList);
-                }
-            } else {
-                logger.warn("远程服务器未连接成功, 只支持本地测试!");
-            }
-
-            this.cacheMethodInfo(methodModelList);         // 缓存本地
-            apiMapInfo.put("methodDataList", methodModelList);
-            jsonModel.success("获取接口信息成功", apiMapInfo);
-        } catch (BusinessException be) {
-            logger.error("错误", be);
-            jsonModel.error(be.getMessage());
-        } catch (Exception e) {
-            logger.error("未知错误", e);
-            jsonModel.error(e.getLocalizedMessage());
-        }
-
-        return jsonModel;
-    }
+    ///**
+    // * 获得接口所有信息
+    // * <p>
+    // *     推荐使用配置方法
+    // * </p>
+    // * @return java.util.Map<java.lang.String,java.lang.Object>
+    // * @author yangxiao
+    // * @date 2020/11/28 17:59
+    // */
+    //@GetMapping("/api")
+    //public JsonModel loadQApi() {
+    //    JsonModel jsonModel = new JsonModel();
+    //    String curBasePackages = "";
+    //    Map<String, Object> apiMapInfo = new HashMap<>();
+    //    try {
+    //        // 从配置文件中获取信息
+    //        if (!StringUtils.isEmpty(basePackages)) {
+    //            curBasePackages = basePackages;
+    //            apiMapInfo.put("projectName", projectName);
+    //            apiMapInfo.put("description", description);
+    //            apiMapInfo.put("enabled", enabled ? "Yes" : "No");
+    //            apiMapInfo.put("serviceNames", serviceNames);
+    //            apiMapInfo.put("localServiceName", localServiceName);
+    //            apiMapInfo.put("version", version);
+    //            apiMapInfo.put("author", author);
+    //            apiMapInfo.put("hostServiceName", hostServiceName);
+    //            apiMapInfo.put("basePackages", basePackages);
+    //            logger.info("curBasePackages: " + curBasePackages);
+    //            if (!enabled) {
+    //                throw new BusinessException("接口已关闭");
+    //            }
+    //        } else {
+    //            // 从QuickApi注解中获取配置信息
+    //            Map<String, Object> beans = applicationContext.getBeansWithAnnotation(QuickApi.class);
+    //            boolean returnFlag = false;                                                                 // 是否获得配置信息标志位
+    //            if (!beans.isEmpty()) {
+    //                for (Map.Entry<String, Object> beanEntry : beans.entrySet()) {
+    //                    Object obj = beanEntry.getValue();
+    //                    Class<?> bootClass = obj.getClass();
+    //                    QuickApi quickApiAnnotation = bootClass.getAnnotation(QuickApi.class);
+    //                    curBasePackages = quickApiAnnotation.basePackages();
+    //                    if (StringUtils.isEmpty(curBasePackages)) {
+    //                        returnFlag = true;
+    //                        break;
+    //                    }
+    //
+    //                    apiMapInfo.put("projectName", quickApiAnnotation.projectName());
+    //                    apiMapInfo.put("basePackages", quickApiAnnotation.basePackages());
+    //                    apiMapInfo.put("description", quickApiAnnotation.description());
+    //                    this.projectName = quickApiAnnotation.projectName();
+    //                    apiMapInfo.put("enabled", quickApiAnnotation.enabled() ? "Yes" : "No");
+    //                    apiMapInfo.put("serviceNames", quickApiAnnotation.serverNames());
+    //                    apiMapInfo.put("localServiceName", quickApiAnnotation.localServiceName());
+    //                    apiMapInfo.put("version", quickApiAnnotation.version());
+    //                    apiMapInfo.put("author", quickApiAnnotation.author());
+    //                    apiMapInfo.put("hostServiceName", quickApiAnnotation.hostServiceName());
+    //                    this.author = quickApiAnnotation.author();
+    //                    this.hostServiceName = quickApiAnnotation.hostServiceName();
+    //                    if (!quickApiAnnotation.enabled()) {
+    //                        throw new BusinessException("接口已关闭");
+    //                    }
+    //                    returnFlag = true;
+    //                    break;
+    //                }
+    //            }
+    //
+    //            if (!returnFlag) {
+    //                throw new BusinessException("接口已关闭");
+    //            }
+    //        }
+    //
+    //        System.out.println("curBasePackages: " + curBasePackages);
+    //        List<MethodModel>  methodModelList = ApiScanner.scanApi(curBasePackages.split(","), applicationContext);
+    //        System.out.println(projectName);
+    //        List<MethodModel> preMethodModelList;
+    //
+    //        if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
+    //            if (!SEND_FLAG) {
+    //                SEND_FLAG = true;
+    //                new Thread(reportStatus()).start();
+    //            }
+    //            this.saveUserProjectInfo((String)apiMapInfo.get("author"), projectName);
+    //            this.saveLocalProjectInfo(apiMapInfo);
+    //            // 比较本地与服务器的接口信息看是否需要更新接口信息
+    //            JsonModel serviceApiData = this.pullServiceData(projectName);
+    //            if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
+    //                preMethodModelList = (List<MethodModel>) serviceApiData.getData();
+    //
+    //                this.localMapInfo = this.getMethodMapInfo(methodModelList);
+    //                this.serverMapInfo = this.getMethodMapInfo(preMethodModelList);
+    //
+    //                // 不自动删除本地不存在的接口
+    //                //List<MethodModel> deleteMethodList = this.compareApiInfo2Delete(localMapInfo, serverMapInfo);
+    //                //this.deleteMethodDataList(deleteMethodList);                    // 删除失效的方法
+    //
+    //                //List<MethodModel> uploadMethodList = this.compareApiInfo2Upload(this.localMapInfo, this.serverMapInfo);
+    //                //this.pushLocalData(uploadMethodList);
+    //
+    //                this.syncLocalData(this.localMapInfo, this.serverMapInfo);    // 同步数据
+    //            } else {
+    //                // 上传本地接口方法数据
+    //                //this.pushLocalData(methodModelList);
+    //            }
+    //        } else {
+    //            logger.warn("远程服务器未连接成功, 只支持本地测试!");
+    //        }
+    //
+    //        this.cacheMethodInfo(methodModelList);         // 缓存本地
+    //        apiMapInfo.put("methodDataList", methodModelList);
+    //        jsonModel.success("获取接口信息成功", apiMapInfo);
+    //    } catch (BusinessException be) {
+    //        logger.error("错误", be);
+    //        jsonModel.error(be.getMessage());
+    //    } catch (Exception e) {
+    //        logger.error("未知错误", e);
+    //        jsonModel.error(e.getLocalizedMessage());
+    //    }
+    //
+    //    return jsonModel;
+    //}
 
     /**
      * 报告测试端服务状态

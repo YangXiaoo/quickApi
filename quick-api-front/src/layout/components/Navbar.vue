@@ -14,6 +14,12 @@
         <div class="left-menu-item" @click="handleNewTabClick">
           <i class="el-icon-plus" />
         </div>
+        <div class="left-menu-item" @click="connectWebsocket">
+          连接
+        </div>
+        <div class="left-menu-item" @click="refreshLocalApiData">
+          刷新
+        </div>
       </div>
       <div class="right-menu">
         <el-dropdown class="right-menu-item hover-effect" trigger="click">
@@ -43,6 +49,7 @@
     </div>
     <Login :trigger="loginVisible" />
     <ImportPostmanApi :trigger="importTrigger" />
+    <WebsocketConnect :trigger="wsConnectTrigger" />
   </div>
 </template>
 
@@ -52,15 +59,17 @@ import { generateNewTabPage } from '@/utils/routerTool'
 
 import Login from '@/views/login'
 import ImportPostmanApi from '@/views/component/importPostmanApi.vue'
+import WebsocketConnect from '@/views/component/websocketConnect.vue'
 
 export default {
-  components: { Login, ImportPostmanApi },
+  components: { Login, ImportPostmanApi, WebsocketConnect },
   data() {
     return {
       serviceProjectFlag: false,
       loading: false,
       loginVisible: false,
-      importTrigger: false
+      importTrigger: false,
+      wsConnectTrigger: false
     }
   },
   computed: {
@@ -128,6 +137,16 @@ export default {
     handleProjectSetting() {
       console.log('handleProjectSetting', this.projectMethodDataList)
       this.serviceProjectFlag = Object.keys(this.projectMethodDataList).length !== 0
+    },
+    connectWebsocket() {
+      this.wsConnectTrigger = !this.wsConnectTrigger
+    },
+    refreshLocalApiData() {
+      const req = {
+        requestMethod: 'getLocalApiMethod',
+        requestData: ''
+      }
+      this.$store.dispatch('websocket/send', req)
     }
   }
 }

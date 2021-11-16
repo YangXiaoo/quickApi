@@ -19,6 +19,10 @@ public interface CONSTANT_DEFINE {
     String KEY_METHOD_URL = "methodURL";
     String KEY_REQUEST_TYPE = "requestType";
 
+    // 请求类型
+    String REQUEST_TYPE_POST = "POST";
+    String REQUEST_TYPE_GET = "GET";
+
     // 向服务端发送请求间隔 毫秒
     long REPORT_GAP = 30 * 1000;
 

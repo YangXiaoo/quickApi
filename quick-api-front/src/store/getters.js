@@ -33,6 +33,12 @@ const getters = {
   userRoutes: state => state.userMethodData.userRoutes,
 
   visitedViews: state => state.tagsView.visitedViews,
-  cachedViews: state => state.tagsView.cachedViews
+  cachedViews: state => state.tagsView.cachedViews,
+
+  wsData: state => state.websocket.wsData,
+  wsConnectStatus: state => state.websocket.wsConnectStatus,
+  wsPort: state => state.websocket.wsPort,
+  wsPath: state => state.websocket.wsPath,
+  wsHost: state => state.websocket.wsHost
 }
 export default getters

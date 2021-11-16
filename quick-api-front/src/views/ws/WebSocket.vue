@@ -10,20 +10,21 @@
       <div>
         <el-button @click="connect">连接</el-button> <br>
       </div>
-      {{ tipMessage }}
+      {{ wsConnectStatus }}
       <div>
         <div>
           请求方法:<el-input v-model="data" /><br><el-button @click="send">发送</el-button>
         </div>
         <br>
         结果：
-        {{ message.data }}
+        {{ wsData }}
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'WebSocket',
   data() {
@@ -32,10 +33,15 @@ export default {
       port: '8899',
       path: '/ws',
       socket: '',
-      tipMessage: '',
       message: '',
       data: ''
     }
+  },
+  computed: {
+    ...mapGetters([
+      'wsConnectStatus',
+      'wsData'
+    ])
   },
   mounted() {
     this.initSocket()
@@ -50,34 +56,16 @@ export default {
       }
     },
     connect() {
-      const wsUrl = this.host + ':' + this.port + this.path
-      this.socket = new WebSocket(wsUrl)
-      this.socket.onopen = this.onopen
-      this.socket.onerror = this.onerror
-      this.socket.onmessage = this.onmessage
-      this.socket.onclose = this.onclose
-    },
-    onopen() {
-      this.tipMessage = '连接成功'
-      console.log('open>>>>>>>>>>>>')
-    },
-    onerror() {
-      this.tipMessage = '连接失败'
-      console.log('error>>>>>>>>>>>>')
-    },
-    onmessage(msg) {
-      this.message = msg
-      console.log('message>>>>>>>>>>>>', msg)
-    },
-    onclose() {
-      console.log('close>>>>>>>>>>>>')
+      this.$store.dispatch('websocket/connect')
     },
     send() {
       const param = {
         requestMethod: this.data,
         requestData: {}
       }
-      this.socket.send(JSON.stringify(param))
+      // this.socket.send(JSON.stringify(param))
+
+      this.$store.dispatch('websocket/send', param)
     }
   }
 }

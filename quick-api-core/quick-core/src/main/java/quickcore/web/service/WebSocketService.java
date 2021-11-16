@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.WebApplicationContext;
 import quickcore.common.tools.JsonModel;
 import quickcore.core.utils.StringUtils;
 import quickcore.web.logic.QuickApiLogic;
@@ -20,16 +22,22 @@ import java.io.IOException;
 import java.util.Map;
 
 @ServerEndpoint(value = "/ws")
-@Component
+@RestController
 public class WebSocketService {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketService.class);
 
+    private static WebApplicationContext applicationContext;
     //@Autowired
     private static QuickApiLogic quickApiLogic; //关键点2
 
     @Autowired  //关键点3
     public void setQuickApiLogic (QuickApiLogic quickApiLogic){
         WebSocketService.quickApiLogic = quickApiLogic;
+    }
+
+    @Autowired
+    public void setApplicationContext(WebApplicationContext webApplicationContext) {
+        WebSocketService.applicationContext = webApplicationContext;
     }
 
     @OnOpen
@@ -62,8 +70,9 @@ public class WebSocketService {
         Object ret = null;
         Map<String, Object> map =  JSONObject.parseObject(data, new TypeReference<Map<String, Object>>(){});
         String requestMethod = (String) map.get("requestMethod");
+        //Map<String, Object> requestData = (Map) map.get("requestData");
         if (StringUtils.equals("getLocalApiMethod", requestMethod)) {
-            JsonModel jsonModel = quickApiLogic.loadQApi();
+            JsonModel jsonModel = quickApiLogic.loadQApi(applicationContext);
             ret = jsonModel.getData();
         } else if (StringUtils.equals("getLocalDeleteApiMethodList", requestMethod)) {
 

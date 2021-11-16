@@ -58,26 +58,16 @@ const actions = {
   /** 获得本地项目数据，并将方法路由挂载到Router中 */
   setLocalProjectRoutes({ commit, dispatch }, data) {
     return new Promise((resolve, reject) => {
-      getLocalProjectData(data).then(res => {
-        if (res.data.code !== '000') {
-          reject(res.message || '获取测试项目数据失败')
-        }
-        // // 是本地项目
-        // dispatch('app/setLocalProjectFlag', true, { root: true })
+      console.log('setLocalProjectRoutes.data', data)
+      commit('SET_LOCAL_PROJECT_INFO', data)
+      console.log('setLocalProjectRoutes.data', data)
+      const groupMap = getProjectMethodGroupMap(data.methodDataList)
+      commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
+      const localProjectRoutes = getRoutesFromGroupMap(groupMap)
+      commit('SET_LOCAL_PROJECT_ROUTES', localProjectRoutes)
+      addProjectMethodDataRoutes(localProjectRoutes)
 
-        commit('SET_LOCAL_PROJECT_INFO', res.data.data)
-        console.log('setLocalProjectRoutes.data', res.data.data)
-        const groupMap = getProjectMethodGroupMap(res.data.data.methodDataList)
-        commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
-
-        const localProjectRoutes = getRoutesFromGroupMap(groupMap)
-        commit('SET_LOCAL_PROJECT_ROUTES', localProjectRoutes)
-        addProjectMethodDataRoutes(localProjectRoutes)
-
-        resolve(localProjectRoutes)
-      }).catch(error => {
-        reject(error || '异常错误')
-      })
+      resolve(localProjectRoutes)
     })
   },
   /** 修改接口信息 */
