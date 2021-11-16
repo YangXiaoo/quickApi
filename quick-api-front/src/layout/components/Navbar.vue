@@ -147,7 +147,11 @@ export default {
         requestData: ''
       }
       this.$store.dispatch('websocket/send', req).then(res => {
-        this.$store.dispatch('localProject/setLocalProjectRoutes', res)
+        if (res) {
+          this.$store.dispatch('localProject/setLocalProjectRoutes', res)
+        } else {
+          console.log('[refreshLocalApiData]', '没有数据')
+        }
       })
     }
   }
