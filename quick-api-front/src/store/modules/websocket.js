@@ -5,7 +5,8 @@ const state = {
   socket: '',
   wsConnectStatus: false,
   requestMethod: '',
-  wsData: {}
+  wsData: {},
+  promisePools: {} // 回调池
 }
 
 const mutations = {
@@ -31,44 +32,69 @@ const mutations = {
 
 const actions = {
   connect({ commit, dispatch, state }, parm) {
-    if (parm) {
-      state.wsHost = parm.host
-      state.wsPort = parm.port
-    }
-    if (state.socket === '') {
-      const wsUrl = 'ws://' + state.wsHost + ':' + state.wsPort + state.wsPath
-      state.socket = new WebSocket(wsUrl)
-      state.socket.onopen = () => {
-        state.wsConnectStatus = true
-        console.log('open>>>>>>>>>>>>')
+    return new Promise((resolve, reject) => {
+      if (parm) {
+        state.wsHost = parm.host
+        state.wsPort = parm.port
       }
-      state.socket.onerror = () => {
-        state.socket = ''
-        state.wsConnectStatus = false
-        console.log('error>>>>>>>>>>>>')
-      }
-      state.socket.onmessage = (msg) => {
-        state.wsData[state.requestMethod] = JSON.parse(msg.data)
-        if (state.requestMethod === 'getLocalApiMethod') {
-          dispatch('localProject/setLocalProjectRoutes', JSON.parse(msg.data), { root: true })
+      if (state.socket === '') {
+        const wsUrl = 'ws://' + state.wsHost + ':' + state.wsPort + state.wsPath
+        state.socket = new WebSocket(wsUrl)
+        state.socket.onopen = () => {
+          state.wsConnectStatus = true
+          console.log('open>>>>>>>>>>>>')
+          resolve()
         }
-        console.log('[ws] onmessage', state.requestMethod, msg)
+
+        state.socket.onerror = (e) => {
+          console.log('error>>>>>>>>>>>>')
+          reject(e)
+        }
+
+        state.socket.onmessage = (msg) => {
+          console.log('[ws] onmessage', state.requestMethod, msg)
+          const data = JSON.parse(msg.data)
+          const token = data.token
+
+          const req = state.promisePools[token]
+          if (data.code === '000') {
+            req.resolve(data.rsp)
+          } else {
+            req.reject(data.rsp)
+          }
+
+          delete state.promisePools[token]
+        }
+
+        state.socket.onclose = () => {
+          if (state.wsConnectStatus) {
+            // 非主动关闭尝试重连
+          }
+          console.log('close>>>>>>>>>>>>')
+          state.socket = ''
+          state.wsConnectStatus = false
+        }
       }
-      state.socket.onclose = () => {
-        console.log('close>>>>>>>>>>>>')
-        state.socket = ''
-      }
-    }
+    })
   },
   send({ commit, dispatch, state }, param) {
     // const param = {
     //   requestMethod: requestMethod,
     //   requestData: requestData
     // }
+    param.token = JSON.stringify(param)
     console.log('[ws]send data', param)
     state.requestMethod = param.requestMethod
     if (state.socket !== '') {
-      state.socket.send(JSON.stringify(param))
+      return new Promise((resolve, reject) => {
+        state.promisePools[param.token] = {
+          resolve,
+          reject,
+          param
+        }
+
+        state.socket.send(JSON.stringify(param))
+      })
     } else {
       console.log('[ws] 未连接')
     }
@@ -78,6 +104,12 @@ const actions = {
       console.log('[ws]get data', requestMethod, state[requestMethod])
       resolve(state[requestMethod])
     })
+  },
+  close({ commit, dispatch, state }) {
+    state.wsConnectStatus = false
+    state.socket.close()
+    state.socket = ''
+    state.promisePools = {}
   }
 }
 

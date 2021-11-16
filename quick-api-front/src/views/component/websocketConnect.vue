@@ -58,12 +58,17 @@ export default {
         port: this.port
       }
 
-      this.$store.dispatch('websocket/connect', param)
-      // const req = {
-      //   requestMethod: 'getLocalApiMethod',
-      //   requestData: ''
-      // }
-      // this.$store.dispatch('websocket/send', req)
+      this.$store.dispatch('websocket/connect', param).then(() => {
+        console.log('连接')
+        const req = {
+          requestMethod: 'getLocalApiMethod',
+          requestData: ''
+        }
+        this.$store.dispatch('websocket/send', req).then(res => {
+          console.log('返回', res)
+          this.$store.dispatch('localProject/setLocalProjectRoutes', res)
+        })
+      })
       this.dialogVisible = false
     }
   }

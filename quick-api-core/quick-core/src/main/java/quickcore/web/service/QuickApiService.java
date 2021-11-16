@@ -5,19 +5,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import quickcore.annotations.QuickApi;
 import quickcore.common.constants.CONSTANT_DEFINE;
-import quickcore.common.constants.JSON_MODEL_CODE;
 import quickcore.common.constants.SERVICE;
 import quickcore.common.tools.IPTool;
 import quickcore.common.tools.JsonModel;
 import quickcore.common.utils.ModelUtil;
-import quickcore.core.scanner.ApiScanner;
 import quickcore.core.utils.StringUtils;
 import quickcore.exception.BusinessException;
 import quickcore.models.MethodModel;
@@ -160,7 +156,7 @@ public class QuickApiService {
     //        System.out.println(projectName);
     //        List<MethodModel> preMethodModelList;
     //
-    //        if (StringUtils.equals(this.checkServerStatus().getCode(), JSON_MODEL_CODE.SUCCESS)) {
+    //        if (StringUtils.equals(this.checkServerStatus().getCode(), MODEL_CODE.SUCCESS)) {
     //            if (!SEND_FLAG) {
     //                SEND_FLAG = true;
     //                new Thread(reportStatus()).start();
@@ -169,7 +165,7 @@ public class QuickApiService {
     //            this.saveLocalProjectInfo(apiMapInfo);
     //            // 比较本地与服务器的接口信息看是否需要更新接口信息
     //            JsonModel serviceApiData = this.pullServiceData(projectName);
-    //            if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), JSON_MODEL_CODE.SUCCESS) ) {
+    //            if (serviceApiData != null && StringUtils.equals(serviceApiData.getCode(), MODEL_CODE.SUCCESS) ) {
     //                preMethodModelList = (List<MethodModel>) serviceApiData.getData();
     //
     //                this.localMapInfo = this.getMethodMapInfo(methodModelList);

@@ -162,29 +162,38 @@ export default {
         queryData = this.pageData.getTypeParam
         contentType = ''
       }
+      const req = {
+        requestMethod: 'callApi',
+        requestData: {
+          path: this.pageData.path,
+          contentType: contentType,
+          headerJson: this.pageData.headerJson,
+          queryData: queryData,
+          type: this.pageData.requestType
+        }
+      }
+      this.$store.dispatch('websocket/send', req).then((res) => {
+        this.pageData.responseBody = res.data
+        this.pageData.responseHeader = res.headers
+        this.$message({
+          message: res.statusText || '请求成功',
+          type: 'success'
+        })
+      }).catch((error) => {
+        this.$message({
+          message: error || '请求失败',
+          type: 'warning'
+        })
+      })
 
-      callApi(
-        this.pageData.path,
-        contentType,
-        this.pageData.headerJson,
-        queryData,
-        this.pageData.requestType
-      )
-        .then((res) => {
-          console.log(res)
-          this.pageData.responseBody = res.data
-          this.pageData.responseHeader = res.headers
-          this.$message({
-            message: res.statusText || '请求成功',
-            type: 'success'
-          })
-        })
-        .catch((error) => {
-          this.$message({
-            message: error || '请求失败',
-            type: 'warning'
-          })
-        })
+      // callApi(
+      //   this.pageData.path,
+      //   contentType,
+      //   this.pageData.headerJson,
+      //   queryData,
+      //   this.pageData.requestType
+      // )
+
     },
     /* 点击保存事件*/
     handleClickSave() {

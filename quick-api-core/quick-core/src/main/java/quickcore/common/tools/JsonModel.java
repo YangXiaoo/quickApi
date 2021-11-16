@@ -1,6 +1,6 @@
 package quickcore.common.tools;
 
-import quickcore.common.constants.JSON_MODEL_CODE;
+import quickcore.common.constants.MODEL_CODE;
 
 /**
  * 定义返回格式
@@ -44,7 +44,7 @@ public class JsonModel {
      * @date 2020/11/29 14:12
      */
     public void success(String message, Object data) {
-        this.code = JSON_MODEL_CODE.SUCCESS;
+        this.code = quickcore.common.constants.MODEL_CODE.SUCCESS;
         this.message = message;
         this.data = data;
     }
@@ -60,7 +60,7 @@ public class JsonModel {
      * @date 2020/11/29 14:24
      */
     public void error(String message) {
-        this.code = JSON_MODEL_CODE.ERROR;
+        this.code = MODEL_CODE.ERROR;
         this.message = message;
     }
 
@@ -73,7 +73,7 @@ public class JsonModel {
      * @date 2020/11/29 14:12
      */
     public void warning(String message, Object data) {
-        this.code = JSON_MODEL_CODE.WARNING;
+        this.code = quickcore.common.constants.MODEL_CODE.WARNING;
         this.message = message;
         this.data = data;
     }

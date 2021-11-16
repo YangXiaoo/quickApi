@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 import quickcore.common.tools.JsonModel;
+import quickcore.common.tools.WSModel;
 import quickcore.core.utils.StringUtils;
 import quickcore.web.logic.QuickApiLogic;
 
@@ -70,14 +71,23 @@ public class WebSocketService {
         Object ret = null;
         Map<String, Object> map =  JSONObject.parseObject(data, new TypeReference<Map<String, Object>>(){});
         String requestMethod = (String) map.get("requestMethod");
-        //Map<String, Object> requestData = (Map) map.get("requestData");
-        if (StringUtils.equals("getLocalApiMethod", requestMethod)) {
-            JsonModel jsonModel = quickApiLogic.loadQApi(applicationContext);
-            ret = jsonModel.getData();
-        } else if (StringUtils.equals("getLocalDeleteApiMethodList", requestMethod)) {
+        String token = (String) map.get("token");
 
+        WSModel wsModel = new WSModel();
+        wsModel.setToken(token);
+        wsModel.setReq(data);
+        //Map<String, Object> requestData = (Map) map.get("requestData");
+        try {
+            if (StringUtils.equals("getLocalApiMethod", requestMethod)) {
+                JsonModel jsonModel = quickApiLogic.loadQApi(applicationContext);
+                wsModel.success(jsonModel.getData());
+            } else if (StringUtils.equals("getLocalDeleteApiMethodList", requestMethod)) {
+
+            }
+        } catch (Exception e) {
+            wsModel.error(e);
         }
 
-        session.getBasicRemote().sendText(JSONObject.toJSONString(ret));
+        session.getBasicRemote().sendText(JSONObject.toJSONString(wsModel));
     }
 }

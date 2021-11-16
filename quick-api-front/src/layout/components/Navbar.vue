@@ -146,7 +146,9 @@ export default {
         requestMethod: 'getLocalApiMethod',
         requestData: ''
       }
-      this.$store.dispatch('websocket/send', req)
+      this.$store.dispatch('websocket/send', req).then(res => {
+        this.$store.dispatch('localProject/setLocalProjectRoutes', res)
+      })
     }
   }
 }
