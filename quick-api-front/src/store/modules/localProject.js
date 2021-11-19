@@ -58,9 +58,7 @@ const actions = {
   /** 获得本地项目数据，并将方法路由挂载到Router中 */
   setLocalProjectRoutes({ commit, dispatch }, data) {
     return new Promise((resolve, reject) => {
-      console.log('setLocalProjectRoutes.data', data)
       commit('SET_LOCAL_PROJECT_INFO', data)
-      console.log('setLocalProjectRoutes.data', data)
       const groupMap = getProjectMethodGroupMap(data.methodDataList)
       commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
       const localProjectRoutes = getRoutesFromGroupMap(groupMap)
