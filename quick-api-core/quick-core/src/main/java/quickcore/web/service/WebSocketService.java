@@ -5,12 +5,11 @@ import com.alibaba.fastjson.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
 import quickcore.common.tools.JsonModel;
 import quickcore.common.tools.WSModel;
+import quickcore.common.utils.RequestUtil;
 import quickcore.core.utils.StringUtils;
 import quickcore.web.logic.QuickApiLogic;
 
@@ -83,6 +82,17 @@ public class WebSocketService {
                 wsModel.success(jsonModel.getData());
             } else if (StringUtils.equals("getLocalDeleteApiMethodList", requestMethod)) {
 
+            } else if (StringUtils.equals("callApi", requestMethod)) {
+                Map<String, Object> requestData = (Map) map.get("requestData");
+                //callApi(String path, String contentType, String headerJson, String queryData, String type)
+                String path = (String) requestData.get("path");
+                String contentType = (String) requestData.get("contentType");
+                JSONObject headerJson = (JSONObject) requestData.get("headerJson");
+                JSONObject queryData = (JSONObject) requestData.get("queryData");
+                String type = (String) requestData.get("type");
+                Object callResult = RequestUtil.callApi(path, contentType, headerJson.toJSONString(), queryData.toJSONString(), type);
+
+                wsModel.success(callResult);
             }
         } catch (Exception e) {
             wsModel.error(e);

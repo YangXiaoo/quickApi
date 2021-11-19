@@ -137,7 +137,7 @@ export default {
      * 点击请求类型Tab
      */
     handleClickRequest(tab, event) {
-      console.log(tab, event)
+      // console.log(tab, event)
     },
     /**
      * 点击响应值
@@ -167,13 +167,14 @@ export default {
         requestData: {
           path: this.pageData.path,
           contentType: contentType,
-          headerJson: this.pageData.headerJson,
-          queryData: queryData,
+          headerJson: this.pageData.headerJson || {},
+          queryData: queryData || {},
           type: this.pageData.requestType
         }
       }
       this.$store.dispatch('websocket/send', req).then((res) => {
-        this.pageData.responseBody = res.data
+        console.log('[DEBUG]', 'callApi result', res)
+        this.pageData.responseBody = res.body
         this.pageData.responseHeader = res.headers
         this.$message({
           message: res.statusText || '请求成功',

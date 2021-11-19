@@ -23,8 +23,8 @@ import java.util.Map;
  * @author yangxiao
  * @date 2020-11-28
  */
-public class RequestUtil {
-    private static final Logger logger = LoggerFactory.getLogger(RequestUtil.class);
+public class SpringUtil {
+    private static final Logger logger = LoggerFactory.getLogger(SpringUtil.class);
 
     /**
      * 获得所有方法的请求信息
