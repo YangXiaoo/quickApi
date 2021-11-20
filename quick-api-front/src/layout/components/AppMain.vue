@@ -1,10 +1,5 @@
 <template>
   <div class="qa-main-app">
-    <!-- <transition name="fade-transform">
-      <keep-alive :exclude="['_none__']">
-        <router-view :key="key" />
-      </keep-alive>
-    </transition> -->
     <keep-alive :exclude="['_none__']">
       <router-view :key="key" />
     </keep-alive>

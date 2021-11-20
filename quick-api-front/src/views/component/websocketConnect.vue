@@ -38,7 +38,8 @@ export default {
   computed: {
     ...mapGetters([
       'wsHost',
-      'wsPort'
+      'wsPort',
+      'wsConnectStatus'
     ])
   },
   watch: {
@@ -53,19 +54,34 @@ export default {
   },
   methods: {
     connectWebsocket() {
+      if (this.wsConnectStatus) {
+        this.$message({
+          message: '已连接',
+          type: 'warning'
+        })
+        this.dialogVisible = false
+
+        return
+      }
       const param = {
         host: this.host,
         port: this.port
       }
 
       this.$store.dispatch('websocket/connect', param).then(() => {
-        console.log('连接')
+        this.$message({
+          message: '连接成功',
+          type: 'success'
+        })
         const req = {
           requestMethod: 'getLocalApiMethod',
           requestData: ''
         }
         this.$store.dispatch('websocket/send', req).then(res => {
-          console.log('返回', res)
+          this.$message({
+            message: '成功获取接口',
+            type: 'success'
+          })
           this.$store.dispatch('localProject/setLocalProjectRoutes', res)
         })
       })

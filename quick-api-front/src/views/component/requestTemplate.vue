@@ -72,7 +72,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
-import { callApi } from '@/api/localProject'
 export default {
   name: 'RequestTemplate',
   components: {

@@ -149,9 +149,15 @@ export default {
       this.$store.dispatch('websocket/send', req).then(res => {
         if (res) {
           this.$store.dispatch('localProject/setLocalProjectRoutes', res)
+          this.$message({
+            message: '刷新成功',
+            type: 'success'
+          })
         } else {
           console.log('[refreshLocalApiData]', '没有数据')
         }
+      }).catch(error => {
+        this.$message(error || '未连接本地')
       })
     }
   }

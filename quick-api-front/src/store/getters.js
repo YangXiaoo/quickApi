@@ -1,6 +1,5 @@
 const getters = {
   constantRoutes: state => state.app.constantRoutes,
-  isLocalProject: state => state.app.isLocalProject,
   isSettingLocalFlag: state => state.app.isSettingLocalFlag,
 
   // 用户相关
@@ -19,6 +18,7 @@ const getters = {
   localProjectName: state => state.localProject.localProjectName,
   author: state => state.localProject.author, // 使用者
   description: state => state.localProject.description,
+  isLocalProject: state => state.localProject.isLocalProject,
 
   // 服务端搜索出的项目
   projectMethodDataList: state => state.projectMethodData.projectMethodDataList,

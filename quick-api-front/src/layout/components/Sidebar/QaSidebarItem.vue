@@ -10,22 +10,6 @@
         </div>
         <div class="sidebar-menu-title-right" @click.stop="handleClickMenuExtend(item, $event)">
           <i class="el-icon-more" />
-          <!-- <el-popover
-            v-model="menuExtendVisible"
-            placement="bottom"
-            title=""
-            width="150"
-            trigger="manual"
-          >
-            <ul class="menu-extend">
-              <li>新建</li>
-              <li>重名</li>
-              <li>删除</li>
-            </ul>
-            <span slot="reference">
-              <i class="el-icon-more" />
-            </span>
-          </el-popover> -->
         </div>
       </div>
       <div class="submenu-item-container">

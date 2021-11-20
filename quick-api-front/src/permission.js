@@ -14,19 +14,22 @@ router.beforeEach(async(to, from, next) => {
 
   // set page title
   document.title = getPageTitle(to.meta.title)
-  const isSettingLocalFlag = store.getters.isSettingLocalFlag
-  if (!isSettingLocalFlag) {
-    store.dispatch('app/setLocalProjectFlag').then(res => {
-      next()
-      NProgress.done()
-    }).catch(error => {
-      console.debug('setLocalProjectFlag', error)
-      next({ path: '/userApi/home' })
-    })
-  } else {
-    next()
-    NProgress.done()
-  }
+  // const isSettingLocalFlag = store.getters.isSettingLocalFlag
+  // if (!isSettingLocalFlag) {
+  //   store.dispatch('app/setLocalProjectFlag').then(res => {
+  //     next()
+  //     NProgress.done()
+  //   }).catch(error => {
+  //     console.debug('setLocalProjectFlag', error)
+  //     next({ path: '/userApi/home' })
+  //   })
+  // } else {
+  //   next()
+  //   NProgress.done()
+  // }
+
+  next()
+  NProgress.done()
 
   // // determine whether the user has logged in
   // const hasToken = getToken()

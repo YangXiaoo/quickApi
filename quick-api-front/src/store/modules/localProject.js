@@ -1,13 +1,11 @@
 /**
  * 本地测试项目
  */
-import { getLocalProjectData } from '@/api/localProject'
 import { updateMethodData } from '@/api/methodData'
 import {
   getProjectMethodGroupMap,
   getRoutesFromGroupMap,
-  addProjectMethodDataRoutes,
-  replaceRoutes
+  addProjectMethodDataRoutes
 } from '@/utils/routerTool'
 
 const state = {
@@ -21,7 +19,8 @@ const state = {
   hostServiceName: '', // QuickApi数据管理服务端
   version: '', // 项目版本
   author: '',
-  localPageData: {} // 缓存本地页面数据
+  localPageData: {}, // 缓存本地页面数据,
+  isLocalProject: false
 }
 
 const mutations = {
@@ -56,8 +55,9 @@ const mutations = {
 
 const actions = {
   /** 获得本地项目数据，并将方法路由挂载到Router中 */
-  setLocalProjectRoutes({ commit, dispatch }, data) {
+  setLocalProjectRoutes({ commit, dispatch, state }, data) {
     return new Promise((resolve, reject) => {
+      state.isLocalProject = true
       commit('SET_LOCAL_PROJECT_INFO', data)
       const groupMap = getProjectMethodGroupMap(data.methodDataList)
       commit('SET_LOCAL_PROJECT_GROUP_LIST', Object.keys(groupMap))
