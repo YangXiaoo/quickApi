@@ -27,7 +27,7 @@
       </div>
       <div name="setting" class="side-bar-item" @click="openUrl('LocalProjectSetting')">
         <div class="item-icon">
-          <i class="el-icon-connection" />
+          <i class="el-icon-setting" />
         </div>
         <div class="item-desc">
           设置

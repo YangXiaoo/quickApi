@@ -39,15 +39,45 @@
           <el-radio-group v-model="pageData.contentType" style="margin-bottom: 10px" @change="changeBodyType">
             <el-radio label="none">none</el-radio>
             <el-radio label="application/json">application/json</el-radio>
-            <el-radio label="bodyFile">文件</el-radio>
+            <el-radio label="formData">表单</el-radio>
           </el-radio-group>
           <vue-json-editor v-show="pageData.bodyNoneShow" v-model="pageData.bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
           <vue-json-editor v-show="pageData.bodyJsonShow" v-model="pageData.bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
-          <el-card v-show="pageData.bodyFileShow" class="body-file-box">
-            <el-upload class="body-upload-file" action="" multiple :limit="1" :file-list="pageData.fileList">
+          <el-card v-show="pageData.bodyFormDataShow" class="body-file-box">
+            <!-- <el-upload class="body-upload-file" action="" multiple :limit="1" :file-list="pageData.fileList">
               <el-button size="small" type="primary">点击上传</el-button>
               <div slot="tip" class="el-upload__tip">可上传任意格式文件</div>
-            </el-upload>
+            </el-upload> -->
+            <div class="form-data-table">
+              <div v-for="(row, i) of formData" :key="i" class="form-data-row">
+                <div class="form-key">
+                  <div class="form-key-data">
+                    <el-input v-if="row.type !== 'title'" v-model="row.key" />
+                    <span v-else> {{ row.key }} </span>
+                  </div>
+                  <div v-if="row.type !== 'title'" class="form-key-type">
+                    <el-select v-model="row.type" placeholder="请选择">
+                      <el-option label="Text" value="Text" />
+                      <el-option label="File" value="File" />
+                    </el-select>
+                  </div>
+                </div>
+                <div class="form-value">
+                  <el-input v-if="row.type === 'Text'" v-model="row.value" />
+                  <el-upload
+                    v-else-if="row.type === 'File'"
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-remove="handleRemove"
+                    multiple
+                    :file-list="row.fileList">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+                  <span v-else> {{ row.value }} </span>
+                </div>
+              </div>
+            </div>
+
           </el-card>
         </el-tab-pane>
       </el-tabs>
@@ -110,6 +140,10 @@ export default {
   },
   data() {
     return {
+      formData: [
+        { key: 'Key', value: 'Value', type: 'title' },
+        { key: '', value: '', type: 'Text', fileList: [] }
+      ]
     }
   },
   computed: {
@@ -117,17 +151,8 @@ export default {
       // 'serviceProjectTokenSetting'
     ])
   },
-  // watch: {
-  //   pageData: {
-  //     handler(newValue, oldValue) {
-  //       if (newValue.requestType === 'GET') {
-  //         this.pageData.requestActiveName = 'Param'
-  //       } else {
-  //         this.pageData.requestActiveName = 'Body'
-  //       }
-  //     }, deep: true
-  //   }
-  // },
+  watch: {
+  },
   mounted() {
   },
   created() { },
@@ -200,16 +225,16 @@ export default {
       if (value === 'application/json') {
         this.pageData.bodyNoneShow = false
         this.pageData.bodyJsonShow = true
-        this.pageData.bodyFileShow = false
+        this.pageData.bodyFormDataShow = false
         this.pageData.contentType = 'application/json'
-      } else if (value === 'bodyFile') {
+      } else if (value === 'formData') {
         this.pageData.bodyNoneShow = false
         this.pageData.bodyJsonShow = false
-        this.pageData.bodyFileShow = true
+        this.pageData.bodyFormDataShow = true
       } else if (value === 'none') {
         this.pageData.bodyNoneShow = true
         this.pageData.bodyJsonShow = false
-        this.pageData.bodyFileShow = false
+        this.pageData.bodyFormDataShow = false
         this.pageData.contentType = 'none'
       }
     },
@@ -242,6 +267,13 @@ export default {
     },
     onBodySave(value) {
       console.log(value)
+    },
+    hanldeFormDataKeyType(type, row) {
+      console.log('hanldeFormDataKeyType', type, row)
+      this.$set(row, 'type', type)
+    },
+    handleRemove() {
+
     }
   }
 }
@@ -283,5 +315,38 @@ export default {
 }
 .jsoneditor-menu a {
   display: none !important;
+}
+.form-data-table {
+  box-sizing: border-box;
+  border-right: 1px solid #ebeef5;
+  border-top: 1px solid #ebeef5;
+  border-left: 1px solid #ebeef5;
+
+  .form-data-row {
+    border-bottom: 1px solid #ebeef5;
+    display: flex;
+    flex-flow: row nowrap;
+
+    .form-key {
+      width: 50%;
+      display: flex;
+      flex-flow: row nowrap;
+      border-right: 1px solid #ebeef5;
+
+      .form-key-data {
+        width: 85%;
+      }
+
+      .form-key-type {
+        width: 15%;
+        align-items: center;
+        align-self: center;
+      }
+    }
+
+    .form-value {
+      width: 50%;
+    }
+  }
 }
 </style>
