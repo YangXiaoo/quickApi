@@ -39,7 +39,7 @@
           <el-radio-group v-model="pageData.contentType" style="margin-bottom: 10px" @change="changeBodyType">
             <el-radio label="none">none</el-radio>
             <el-radio label="application/json">application/json</el-radio>
-            <el-radio label="formData">表单</el-radio>
+            <el-radio label="form-data">form-data</el-radio>
           </el-radio-group>
           <vue-json-editor v-show="pageData.bodyNoneShow" v-model="pageData.bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
           <vue-json-editor v-show="pageData.bodyJsonShow" v-model="pageData.bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
@@ -49,7 +49,7 @@
               <div slot="tip" class="el-upload__tip">可上传任意格式文件</div>
             </el-upload> -->
             <div class="form-data-table">
-              <div v-for="(row, i) of formData" :key="i" class="form-data-row">
+              <div v-for="(row, i) of pageData.formData" :key="i" class="form-data-row">
                 <div class="form-key">
                   <div class="form-key-data">
                     <el-input v-if="row.type !== 'title'" v-model="row.key" />
@@ -67,12 +67,14 @@
                   <el-upload
                     v-else-if="row.type === 'File'"
                     class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :on-remove="handleRemove"
+                    action=""
+                    :on-change="(file) => handleAddFile(file, row)"
                     multiple
-                    :file-list="row.fileList">
+                    :auto-upload="false"
+                  >
                     <el-button size="small" type="primary">点击上传</el-button>
                   </el-upload>
+                  <!-- <input v-else-if="row.type === 'File'" id="file" type="file" @change="(file) => handleAddFile(file, row)"> -->
                   <span v-else> {{ row.value }} </span>
                 </div>
               </div>
@@ -102,6 +104,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
+import { requestLocalBlobApi } from '@/api/localProject'
 export default {
   name: 'RequestTemplate',
   components: {
@@ -140,10 +143,6 @@ export default {
   },
   data() {
     return {
-      formData: [
-        { key: 'Key', value: 'Value', type: 'title' },
-        { key: '', value: '', type: 'Text', fileList: [] }
-      ]
     }
   },
   computed: {
@@ -173,7 +172,7 @@ export default {
      * 发送请求
      */
     handleSendRequest() {
-      let queryData = null
+      let queryData = {}
       let contentType = this.pageData.contentType
       if (this.pageData.requestType === 'POST') {
         if (this.pageData.contentType === 'none') {
@@ -181,6 +180,29 @@ export default {
           contentType = ''
         } else if (this.pageData.contentType === 'application/json') {
           queryData = this.pageData.bodyJsonData
+        } else if (this.pageData.contentType === 'form-data') {
+          queryData = new FormData()
+          this.pageData.formData.forEach(item => {
+            if (item) {
+              if (item.type === 'Text') {
+                if (item.key) {
+                  queryData.append(item.key, item.value)
+                }
+              } else if (item.type === 'File' && item.key) {
+                if (item.fileList) {
+                  queryData.append(item.key, item.fileList)
+                }
+              }
+            }
+          })
+
+          // 无论本地接口还是非本地项目只要是表单请求，都直连
+          requestLocalBlobApi(this.pageData.path, queryData).then(res => {
+            this.pageData.responseBody = res.body
+            this.pageData.responseHeader = res.headers
+          })
+
+          return
         }
       } else if (this.pageData.requestType === 'GET') {
         queryData = this.pageData.getTypeParam
@@ -196,8 +218,10 @@ export default {
           type: this.pageData.requestType
         }
       }
+
+      // 只有本地接口才用socket进行请求
+      // 个人接口或非本地接口向服务器请求
       this.$store.dispatch('websocket/send', req).then((res) => {
-        console.log('[DEBUG]', 'callApi result', res)
         this.pageData.responseBody = res.body
         this.pageData.responseHeader = res.headers
         this.$message({
@@ -227,7 +251,7 @@ export default {
         this.pageData.bodyJsonShow = true
         this.pageData.bodyFormDataShow = false
         this.pageData.contentType = 'application/json'
-      } else if (value === 'formData') {
+      } else if (value === 'form-data') {
         this.pageData.bodyNoneShow = false
         this.pageData.bodyJsonShow = false
         this.pageData.bodyFormDataShow = true
@@ -274,6 +298,13 @@ export default {
     },
     handleRemove() {
 
+    },
+    handleAddFile(file, row) {
+      // let file=document.querySelector('#file').files[0]
+      console.log('handleAddFile', file, row)
+      if (file) {
+        row.fileList.push(file.raw)
+      }
     }
   }
 }

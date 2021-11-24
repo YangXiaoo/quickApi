@@ -228,7 +228,10 @@ export default {
         bodyJsonData: null,
         bodyStringData: null,
         requestServiceName: '',
-        fileList: [],
+        formData: [
+          { key: 'Key', value: 'Value', type: 'title' },
+          { key: '', value: '', type: 'Text', fileList: [] }
+        ],
 
         // 响应值
         responseHeader: null,

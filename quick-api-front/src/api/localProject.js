@@ -61,3 +61,12 @@ export function syncProjectApiMethod(data) {
     data
   })
 }
+
+export function requestLocalBlobApi(url, data) {
+  return request({
+    url: url,
+    method: 'post',
+    data,
+    type: 'Blob'
+  })
+}

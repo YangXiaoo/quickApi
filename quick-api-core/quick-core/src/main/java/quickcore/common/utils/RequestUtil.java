@@ -28,7 +28,7 @@ public class RequestUtil {
      * @date 2020/11/27 18:01
      */
     public static Object callApi(String path, String contentType, String headerJson, String queryData, String type) {
-        System.out.println(path + ", " + type + ", queryData: " + queryData + ", contentType" + contentType);
+        System.out.println(path + ", " + type + ", queryData: " + queryData + ", contentType " + contentType);
         type = type.toLowerCase();
         Map<String, Object> headerMap = JsonUtils.toMap(headerJson);
         Map<String, Object> queryMap = JsonUtils.toMap(queryData);
@@ -76,6 +76,8 @@ public class RequestUtil {
                     object = restTemplate.exchange(path,HttpMethod.DELETE,requestEntity, Map.class);
                 }
 
+            } else if ("form-data".equals(contentType)) {
+                //
             } else {
                 HttpEntity<MultiValueMap> requestEntity = new HttpEntity<>(requestBody, requestHeaders);
 
