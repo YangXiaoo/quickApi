@@ -78,8 +78,8 @@
                   <span v-else> {{ row.value }} </span>
                 </div>
               </div>
+              <div class="add-row"> <span @click="addFormDataRow">增加</span> <span @click="removeFormDataRow">移除</span> </div>
             </div>
-
           </el-card>
         </el-tab-pane>
       </el-tabs>
@@ -105,6 +105,7 @@
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
 import { requestLocalBlobApi } from '@/api/localProject'
+import { callServiceApi } from '@/api/project'
 export default {
   name: 'RequestTemplate',
   components: {
@@ -147,7 +148,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      // 'serviceProjectTokenSetting'
+      'wsConnectStatus'
     ])
   },
   watch: {
@@ -208,6 +209,7 @@ export default {
         queryData = this.pageData.getTypeParam
         contentType = ''
       }
+
       const req = {
         requestMethod: 'callApi',
         requestData: {
@@ -221,19 +223,38 @@ export default {
 
       // 只有本地接口才用socket进行请求
       // 个人接口或非本地接口向服务器请求
-      this.$store.dispatch('websocket/send', req).then((res) => {
-        this.pageData.responseBody = res.body
-        this.pageData.responseHeader = res.headers
-        this.$message({
-          message: res.statusText || '请求成功',
-          type: 'success'
+      if (this.isLocalProject || this.wsConnectStatus) {
+        this.$store.dispatch('websocket/send', req).then((res) => {
+          this.pageData.responseBody = res.body
+          this.pageData.responseHeader = res.headers
+          this.$message({
+            message: res.statusText || '请求成功',
+            type: 'success'
+          })
+        }).catch((error) => {
+          this.$message({
+            message: error || '请求失败',
+            type: 'warning'
+          })
         })
-      }).catch((error) => {
-        this.$message({
-          message: error || '请求失败',
-          type: 'warning'
+      } else {
+        // 没有本地服务则通过服务器调用
+        // this.changeLocalHostToLocalIp(req.requestData) // 将localhost转换为当前服务IP地址
+        callServiceApi(req.requestData).then((res) => {
+          console.log(res)
+          this.pageData.responseBody = res.data
+          this.pageData.responseHeader = res.headers
+          this.$message({
+            message: res.statusText || '请求成功',
+            type: 'success'
+          })
+        }).catch((error) => {
+          this.$message({
+            message: error || '请求失败',
+            type: 'warning'
+          })
         })
-      })
+      }
     },
     /* 点击保存事件*/
     handleClickSave() {
@@ -300,10 +321,16 @@ export default {
 
     },
     handleAddFile(file, row) {
-      // let file=document.querySelector('#file').files[0]
-      console.log('handleAddFile', file, row)
       if (file) {
         row.fileList.push(file.raw)
+      }
+    },
+    addFormDataRow() {
+      this.pageData.formData.push({ key: '', value: '', type: 'Text', fileList: [] })
+    },
+    removeFormDataRow() {
+      if (this.pageData.formData && this.pageData.formData.length > 1) {
+        this.pageData.formData.pop()
       }
     }
   }
@@ -332,8 +359,9 @@ export default {
   display: none;
 }
 .body-file-box {
-  align-items: center;
   height: 185px;
+  overflow-y: auto;
+  align-items: center;
   text-align: center;
 }
 .body-upload-file {
@@ -352,6 +380,7 @@ export default {
   border-right: 1px solid #ebeef5;
   border-top: 1px solid #ebeef5;
   border-left: 1px solid #ebeef5;
+  overflow-y: auto;
 
   .form-data-row {
     border-bottom: 1px solid #ebeef5;

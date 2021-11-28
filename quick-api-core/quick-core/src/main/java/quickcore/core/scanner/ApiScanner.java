@@ -104,7 +104,6 @@ public class ApiScanner {
 
             for (String className: rawPackageList) {
                 ApiModel apiModel = new ApiModel();
-
                 Class<?> clazz = Class.forName(className);
 
                 // 判断是否为请求类
@@ -136,7 +135,6 @@ public class ApiScanner {
                 }
 
                 logger.info("request class: " + className);
-
                 if (!clazz.isAnnotationPresent(QApi.class)) {
                     apiModel.setName(clazz.getSimpleName());
                     apiModel.setGroup(clazz.getSimpleName());
