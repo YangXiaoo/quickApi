@@ -73,6 +73,29 @@ export function parseRequestData(data) {
   return dataList
 }
 
+export function parseFormDataRequestData(data) {
+  const dataList = []
+  if (data) {
+    for (let i = 1; i < data.length; ++i) {
+      const tmpData = data[i]
+      if (!tmpData.key && !tmpData.value) {
+        continue
+      }
+      // 定义表数据格式
+      const tableItem = {
+        name: tmpData.key, // 参数名
+        type: tmpData.type === 'Text' ? 'String' : 'File',
+        required: 'true',
+        description: tmpData.type === 'Text' ? tmpData.value : 'File' // 说明
+      }
+
+      dataList.push(tableItem)
+    }
+  }
+
+  return dataList
+}
+
 /**
  * 解析Postman文件获得路由
  * @param {Object} data

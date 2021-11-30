@@ -68,17 +68,25 @@
                     v-else-if="row.type === 'File'"
                     class="upload-demo"
                     action=""
+                    :show-file-list="false"
                     :on-change="(file) => handleAddFile(file, row)"
                     multiple
                     :auto-upload="false"
                   >
-                    <el-button size="small" type="primary">点击上传</el-button>
+                    <el-button v-if="!row.fileList.length" slot="trigger" size="small" type="primary">点击上传</el-button>
+                    <div v-else slot="tip">
+                      已选{{ row.fileList.length }}个文件
+                      <el-button style="color:red;" @click="removeFiles(row)">删除</el-button>
+                    </div>
                   </el-upload>
                   <!-- <input v-else-if="row.type === 'File'" id="file" type="file" @change="(file) => handleAddFile(file, row)"> -->
                   <span v-else> {{ row.value }} </span>
                 </div>
               </div>
-              <div class="add-row"> <span @click="addFormDataRow">增加</span> <span @click="removeFormDataRow">移除</span> </div>
+              <div class="add-row">
+                <span @click="addFormDataRow">增加</span>
+                <span @click="removeFormDataRow">移除</span>
+              </div>
             </div>
           </el-card>
         </el-tab-pane>
@@ -317,8 +325,8 @@ export default {
       console.log('hanldeFormDataKeyType', type, row)
       this.$set(row, 'type', type)
     },
-    handleRemove() {
-
+    removeFiles(row) {
+      this.$set(row, 'fileList', [])
     },
     handleAddFile(file, row) {
       if (file) {

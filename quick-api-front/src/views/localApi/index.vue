@@ -200,7 +200,7 @@ import {
   getUserProjectMethodPageData,
   saveUserProjectMethodPageData
 } from '@/api/pageData'
-import { getLocalProjectPath, parseParams, parseRequestData } from '@/utils/commonHelper'
+import { getLocalProjectPath, parseParams, parseRequestData, parseFormDataRequestData } from '@/utils/commonHelper'
 
 import RequestTemplate from '../component/requestTemplate.vue'
 
@@ -245,6 +245,7 @@ export default {
         headerJsonValues: [], // 头参数说明
         getTypeParamValues: [], // 存储所有参数
         bodyJsonDataValues: [], // post请求参数说明
+        bodyFromDataValues: [],
         bodyStringDataValues: [], // String类请求
         responseBodyValues: [],
         responseHeaderDesc: '',
@@ -339,11 +340,8 @@ export default {
       }
     },
     setPageFromApiData() {
-      console.log('setPageFromApiData', this.curMethodApiData)
       this.pageData = JSON.parse(this.curMethodApiData.apiJsonData).pageData
       this.methodApiData = JSON.parse(this.curMethodApiData.apiJsonData).methodApiData
-      console.log('setPageFromApiData.pageData', this.pageData)
-      console.log('setPageFromApiData.methodApiData', this.methodApiData)
     },
     /* 保存文档数据, 需要保存页面数据和文档数据 */
     handleSaveMethodApiData() {
@@ -484,12 +482,18 @@ export default {
       }
     },
     saveMethodApiData() {
-      console.log('saveMethodApiData.bodyJsonData', this.pageData.bodyJsonData)
       // 解析各参数为表单数据
       this.methodApiData.docTitle = ''
       this.methodApiData.headerJsonValues = parseRequestData(this.pageData.headerJson)
-      this.methodApiData.getTypeParamValues = parseRequestData(this.pageData.getTypeParam)
-      this.methodApiData.bodyJsonDataValues = parseRequestData(this.pageData.bodyJsonData)
+      if (this.pageData.requestType === 'GET') {
+        this.methodApiData.getTypeParamValues = parseRequestData(this.pageData.getTypeParam)
+      } else {
+        if (this.pageData.contentType === 'application/json') {
+          this.methodApiData.bodyJsonDataValues = parseRequestData(this.pageData.bodyJsonData)
+        } else if (this.pageData.contentType === 'form-data') {
+          this.methodApiData.bodyJsonDataValues = parseFormDataRequestData(this.pageData.formData)
+        }
+      }
       this.methodApiData.responseBodyValues = parseParams(this.pageData.responseBody)
       this.methodApiData.dialogTableVisible = true // 关闭对话框
     },
@@ -507,7 +511,6 @@ export default {
           title: title,
           group: group
         }
-        console.log('tab.index.updateVisitedView.tmpRoutes', tmpRoutes)
         this.$store.dispatch('tagsView/updateVisitedView', tmpRoutes)
       }
     }
