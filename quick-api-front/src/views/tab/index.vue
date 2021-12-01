@@ -73,7 +73,6 @@ export default {
         bodyStringData: null,
         requestServiceName: '',
         formData: [
-          { key: 'Key', value: 'Value', type: 'title' },
           { key: '', value: '', type: 'Text', fileList: [] }
         ],
 

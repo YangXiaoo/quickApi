@@ -44,11 +44,15 @@
           <vue-json-editor v-show="pageData.bodyNoneShow" v-model="pageData.bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
           <vue-json-editor v-show="pageData.bodyJsonShow" v-model="pageData.bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
           <el-card v-show="pageData.bodyFormDataShow" class="body-file-box">
-            <!-- <el-upload class="body-upload-file" action="" multiple :limit="1" :file-list="pageData.fileList">
-              <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">可上传任意格式文件</div>
-            </el-upload> -->
             <div class="form-data-table">
+              <div class="form-data-row">
+                <div class="form-key-title">
+                  KEY
+                </div>
+                <div class="form-value-title">
+                  VALUE
+                </div>
+              </div>
               <div v-for="(row, i) of pageData.formData" :key="i" class="form-data-row">
                 <div class="form-key">
                   <div class="form-key-data">
@@ -66,7 +70,7 @@
                   <el-input v-if="row.type === 'Text'" v-model="row.value" />
                   <el-upload
                     v-else-if="row.type === 'File'"
-                    class="upload-demo"
+                    class="form-upload"
                     action=""
                     :show-file-list="false"
                     :on-change="(file) => handleAddFile(file, row)"
@@ -74,18 +78,22 @@
                     :auto-upload="false"
                   >
                     <el-button v-if="!row.fileList.length" slot="trigger" size="small" type="primary">点击上传</el-button>
-                    <div v-else slot="tip">
+                    <div v-else slot="tip" class="form-remove-file">
                       已选{{ row.fileList.length }}个文件
-                      <el-button style="color:red;" @click="removeFiles(row)">删除</el-button>
+                      <span style="color:red;" @click="removeFiles(row)"><i class="el-icon-close" /></span>
+                      <!-- <el-button style="color:red;" @click="removeFiles(row)">删除</el-button> -->
                     </div>
                   </el-upload>
-                  <!-- <input v-else-if="row.type === 'File'" id="file" type="file" @change="(file) => handleAddFile(file, row)"> -->
                   <span v-else> {{ row.value }} </span>
                 </div>
+                <div class="form-row-remove">
+                  <span @click="removeFormDataRow(i)"><i class="el-icon-delete" /></span>
+                </div>
               </div>
-              <div class="add-row">
-                <span @click="addFormDataRow">增加</span>
-                <span @click="removeFormDataRow">移除</span>
+            </div>
+            <div class="form-add-row">
+              <div class="form-add-row-button">
+                <span @click="addFormDataRow"><i class="el-icon-plus" /></span>
               </div>
             </div>
           </el-card>
@@ -284,6 +292,7 @@ export default {
         this.pageData.bodyNoneShow = false
         this.pageData.bodyJsonShow = false
         this.pageData.bodyFormDataShow = true
+        this.pageData.contentType = 'form-data'
       } else if (value === 'none') {
         this.pageData.bodyNoneShow = true
         this.pageData.bodyJsonShow = false
@@ -336,10 +345,8 @@ export default {
     addFormDataRow() {
       this.pageData.formData.push({ key: '', value: '', type: 'Text', fileList: [] })
     },
-    removeFormDataRow() {
-      if (this.pageData.formData && this.pageData.formData.length > 1) {
-        this.pageData.formData.pop()
-      }
+    removeFormDataRow(i) {
+      this.pageData.formData.splice(i, 1)
     }
   }
 }
@@ -391,12 +398,37 @@ export default {
   overflow-y: auto;
 
   .form-data-row {
-    border-bottom: 1px solid #ebeef5;
     display: flex;
     flex-flow: row nowrap;
-
-    .form-key {
+    border-bottom: 1px solid #ebeef5;
+    .form-key-title {
+      height: 30px;
+      width: 45%;
+      padding: 3px 0px 3px 0px;
+      border-right: 1px solid #ebeef5;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .form-value-title {
+      height: 30px;
       width: 50%;
+      padding: 3px 0px 3px 0px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .form-row-remove {
+      width: 5%;
+      padding-top: 10px;
+      border-left: 1px solid #ebeef5;
+      text-align: center;
+
+      :hover {
+        color: red;
+        cursor: pointer;
+      }
+    }
+    .form-key {
+      width: 45%;
       display: flex;
       flex-flow: row nowrap;
       border-right: 1px solid #ebeef5;
@@ -414,6 +446,33 @@ export default {
 
     .form-value {
       width: 50%;
+      height: 40px;
+      .form-upload {
+        margin-top:5px;
+      }
+
+      .form-remove-file {
+        margin-top: -15px;
+
+        :hover {
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.form-add-row {
+  float: right;
+  height: 40px;
+
+  .form-add-row-button {
+    width: 55px;
+    padding-top: 10px;
+
+    :hover {
+      color: #e68c51;
+      cursor: pointer;
     }
   }
 }

@@ -76,7 +76,7 @@ export function parseRequestData(data) {
 export function parseFormDataRequestData(data) {
   const dataList = []
   if (data) {
-    for (let i = 1; i < data.length; ++i) {
+    for (let i = 0; i < data.length; ++i) {
       const tmpData = data[i]
       if (!tmpData.key && !tmpData.value) {
         continue

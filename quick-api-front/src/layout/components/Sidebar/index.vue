@@ -11,7 +11,7 @@
       </div>
       <div name="userApi" class="side-bar-item" @click="openUrl('UserApiHome')">
         <div class="item-icon">
-          <i class="el-icon-star-on" />
+          <i class="el-icon-star-off" />
         </div>
         <div class="item-desc">
           个人
