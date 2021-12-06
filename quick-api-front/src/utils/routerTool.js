@@ -219,7 +219,6 @@ export function generateNewTabPage() {
     }
   }
   curRouter.children.push(curChildRouter)
-  console.log('generatePage', curRouter)
   setRoutes([curRouter])
 
   return groupUrl

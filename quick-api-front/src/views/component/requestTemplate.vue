@@ -274,11 +274,9 @@ export default {
     },
     /* 点击保存事件*/
     handleClickSave() {
-      console.log('handleClickSave')
       this.$emit('clickSave')
     },
     handleClickSaveAs(val) {
-      console.log('handleClickSaveAs', val)
       this.$emit('clickSaveAs', val)
     },
     changeBodyType(value) {

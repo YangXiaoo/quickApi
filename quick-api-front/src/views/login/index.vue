@@ -33,7 +33,7 @@ export default {
   data() {
     return {
       loginForm: {
-        username: this.author,
+        username: this.author || 'test',
         password: '111111'
       },
       loading: false,

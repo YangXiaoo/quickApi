@@ -179,7 +179,8 @@ public class MethodDataServiceImpl {
             String userName = (String) map.get("userName");
             String name = (String) map.get("methodName");
             String methodGroup = (String) map.get("methodGroup");
-            methodDataLogic.saveUserMethodData(url, userName, name, methodGroup);
+            String requestType = (String) map.get("requestType");
+            methodDataLogic.saveUserMethodData(url, userName, name, methodGroup, requestType);
             jsonModel.success(JSON_MODEL_CODE.SUCCESS, "保存成功");
         } catch (BusinessException be) {
             jsonModel.error(be.getLocalizedMessage());

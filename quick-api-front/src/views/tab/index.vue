@@ -199,7 +199,8 @@ export default {
         userName: this.loginName, // 推荐使用邮箱
         url: this.url, // 路由
         methodName: this.dialogObj.methodName, // 方法名
-        methodGroup: this.dialogObj.methodGroup
+        methodGroup: this.dialogObj.methodGroup,
+        requestType: this.pageData.requestType
       }
       this.$store.dispatch('userMethodData/saveUserMethodData', data)
       this.methodName = this.dialogObj.methodName

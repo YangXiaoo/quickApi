@@ -43,3 +43,11 @@ export function getRunningService(data) {
     data
   })
 }
+
+export function saveMethodData(data) {
+  return request({
+    url: baseUrl + '/saveMethodData',
+    method: 'post',
+    data
+  })
+}

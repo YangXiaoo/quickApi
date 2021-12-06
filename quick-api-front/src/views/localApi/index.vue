@@ -196,6 +196,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { saveMethodApiData, getMethodApiData, deleteMethodApiData } from '@/api/methodApiData'
+import { saveMethodData } from '@/api/project'
 import {
   getUserProjectMethodPageData,
   saveUserProjectMethodPageData
@@ -260,7 +261,6 @@ export default {
       },
       saveItem: [
         { command: 'saveDoc', label: '保存文档' }
-        // { command: 'saveAsNewTab', label: '另存为我的接口' }
       ],
       url: '', // 页面接口的url，一旦创建不会改变
       methodName: '',
@@ -275,7 +275,8 @@ export default {
       'localServiceName',
       'author',
       'localProjectName',
-      'localProjectGroupList'
+      'localProjectGroupList',
+      'localMethodDataList'
     ])
   },
   mounted() {
@@ -291,6 +292,7 @@ export default {
       this.userName = this.author || 'dummyUser' // 测试使用
       this.methodName = this.$route.meta.title
       this.methodGroup = this.$route.meta.group
+      this.pageData.requestType = this.$route.meta.requestType
     },
     /**
      * 从服务端请求初始化当前页面数据
@@ -350,6 +352,36 @@ export default {
         url: this.url,
         apiData: JSON.stringify(this.$data),
         author: this.author
+      }
+
+      let pushLocalApiFlag = false
+      // 通过url获取当前接口的所有信息并保存到服务器中
+      if (this.localMethodDataList) {
+        this.localMethodDataList.forEach(item => {
+          console.log('localMethodDataList', this.localMethodDataList, this.url)
+          if (item.url === this.url) {
+            this.$set(item, 'projectName', this.localProjectName)
+            const param = {
+              'methodModel': item
+            }
+            saveMethodData(param).then(res => {
+              if (res.data.code === '000') {
+                this.$message({
+                  message: '接口保存成功',
+                  type: 'success'
+                })
+              }
+            })
+            pushLocalApiFlag = true
+          }
+        })
+      }
+
+      if (!pushLocalApiFlag) {
+        this.$message({
+          message: '接口保存失败',
+          type: 'warning'
+        })
       }
 
       saveMethodApiData(data)

@@ -8,7 +8,7 @@
         <div class="sidebar-menu-title-name">
           <span>{{ item.meta.title }}</span>
         </div>
-        <div class="sidebar-menu-title-right" @click.stop="handleClickMenuExtend(item, $event)">
+        <div v-if="editMenu" class="sidebar-menu-title-right" @click.stop="handleClickMenuExtend(item, $event)">
           <i class="el-icon-more" />
         </div>
       </div>
@@ -20,9 +20,6 @@
           <div class="submenu-item-title">
             {{ child.meta.title }}
           </div>
-          <!-- <div class="submenu-item-right" @click.stop="handleClickSubmenuExtend(item, $event)">
-            <i class="el-icon-more" />
-          </div> -->
         </div>
       </div>
     </div>
@@ -66,7 +63,6 @@
         <el-button type="warning" @click="handleSaveUserMethodName">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -96,6 +92,10 @@ export default {
     isLocal: {
       type: Boolean,
       default: false
+    },
+    editMenu: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

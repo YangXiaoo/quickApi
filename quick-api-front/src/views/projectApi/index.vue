@@ -165,6 +165,19 @@
       </el-tabs>
     </div>
     <div v-show="!methodApiDataList || methodApiDataList.length === 0" class="request-main">
+      <div class="doc-container">
+        <div>
+          <el-button type="success" style="width: 15%">{{ pageData.requestType }}</el-button>
+          <el-tag type="success" style="width: 80%; margin-left:10px;">
+            {{ pageData.path }}
+          </el-tag>
+        </div>
+        <el-divider />
+        <div>
+          <el-button type="success" style="width: 15%">请求类型</el-button>
+          <el-tag style="width: 80%; margin-left: 10px;">{{ pageData.contentType }} </el-tag>
+        </div>
+      </div>
       <div class="no-content" style="width: 300px;margin: 40px auto;">
         没有文档
       </div>
@@ -268,10 +281,7 @@ export default {
           console.log('getMethodApiData', this.methodApiDataList)
           if (this.methodApiDataList && this.methodApiDataList.length > 0) {
             this.curMethodApiData = this.methodApiDataList[0]
-            console.log('getMethodApiData.curMethodApiData', this.curMethodApiData)
             this.setPageFromApiData()
-            console.log('getMethodApiData.projectName', this.projectName)
-            console.log('getMethodApiData.serviceProjectAddress', this.serviceProjectAddress)
             if (this.projectName in this.serviceProjectAddress) {
               const serviceAddress = this.serviceProjectAddress[this.projectName]
               this.pageData.path = 'http://' + serviceAddress + this.url

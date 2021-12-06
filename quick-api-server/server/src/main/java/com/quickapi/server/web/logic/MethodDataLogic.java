@@ -274,7 +274,7 @@ public class MethodDataLogic {
      * @author yangxiao
      * @date 2021/1/14 21:33
      */
-    public void saveUserMethodData(String url, String userName, String name, String methodGroup) {
+    public void saveUserMethodData(String url, String userName, String name, String methodGroup, String reqType) {
         if (StringUtils.isBlank(url) || StringUtils.isBlank(userName)
                 || StringUtils.isBlank(name) || StringUtils.isBlank(methodGroup)) {
             throw new BusinessException("saveUserMethodData()参数不完整");
@@ -290,6 +290,7 @@ public class MethodDataLogic {
             tmp.setMethodName(name);
             tmp.setMethodGroup(methodGroup);
             tmp.setDeleteFlag(CONSTANT_DEFINE.NOT_DELETE);
+            tmp.setRequestType(reqType);
             tmp.setUserMethodId(UUIDUtil.getUUID());
             while (!CollectionUtils.isEmpty(selectUserMethodById(tmp))) {
                 tmp.setUserMethodId(UUIDUtil.getUUID());
@@ -303,7 +304,7 @@ public class MethodDataLogic {
             methodModel = methodModelList.get(0);
             methodModel.setMethodName(name);
             methodModel.setMethodGroup(methodGroup);
-
+            methodModel.setRequestType(reqType);
             UpdateWrapper<UserApiMethod> updateWrapper = new UpdateWrapper<>();
             updateWrapper.eq("USER_NAME", userName);
             updateWrapper.eq("URL", url);

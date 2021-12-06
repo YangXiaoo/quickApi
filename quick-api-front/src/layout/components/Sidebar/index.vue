@@ -58,7 +58,7 @@
                 {{ peojectName }}
               </div>
             </template>
-            <qa-sidebar-item v-for="route in subMenu" :key="route.path" :item="route" :base-path="route.path" />
+            <qa-sidebar-item v-for="route in subMenu" :key="route.path" :item="route" :base-path="route.path" :edit-menu="false" />
           </el-collapse-item>
         </el-collapse>
       </div>
@@ -86,7 +86,7 @@ export default {
       localProjectMethodMenu: [],
       projectMethodMenu: {}, // 多个项目
       userMethodMenu: [],
-      projectNameSearchParam: '',
+      projectNameSearchParam: 'quicktest',
       collapseActiveNames: [],
       loginVisible: false,
       showDialog: false

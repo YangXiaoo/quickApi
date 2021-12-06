@@ -100,7 +100,6 @@ export default {
       this.$router.replace({ name: pageName })
     },
     handleImportClick() {
-      console.log('Navbar.handleImportClick()', '>>>>>>>>>>>>>>>')
       if (!this.isLogin) {
         this.$message({
           type: 'info',
@@ -125,17 +124,14 @@ export default {
       this.$router.push({ name: 'History' })
     },
     handleLoginClick() {
-      console.log('handleLoginClick()', '>>>>>>>>>>>>>>>>>>')
       this.loginVisible = !this.loginVisible
     },
     handleLogout() {
       this.$store.dispatch('user/logout').then(() => {
-        console.log('handleLogout.loginout', '>>>>>>>>>>>>>>>>')
         location.reload()
       })
     },
     handleProjectSetting() {
-      console.log('handleProjectSetting', this.projectMethodDataList)
       this.serviceProjectFlag = Object.keys(this.projectMethodDataList).length !== 0
     },
     connectWebsocket() {

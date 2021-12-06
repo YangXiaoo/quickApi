@@ -17,6 +17,7 @@ public class UserApiMethod {
   private Date createTime;
   private Date updateTime;
   private String deleteFlag;
+  private String requestType;
 
 
   public String getUserMethodId() {
@@ -99,4 +100,11 @@ public class UserApiMethod {
     this.deleteFlag = deleteFlag;
   }
 
+  public String getRequestType() {
+    return requestType;
+  }
+
+  public void setRequestType(String requestType) {
+    this.requestType = requestType;
+  }
 }
