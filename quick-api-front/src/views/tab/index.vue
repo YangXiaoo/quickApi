@@ -16,7 +16,7 @@
       </div>
     </div>
     <request-template
-      :page-data="pageData"
+      :page-data.sync="pageData"
       :url="url"
       :is-local-project="false"
       :save-item="saveItem"
@@ -73,7 +73,7 @@ export default {
         bodyStringData: null,
         requestServiceName: '',
         formData: [
-          { key: '', value: '', type: 'Text', fileList: [] }
+          { key: '', value: '', type: 'text', fileList: [] }
         ],
 
         // 响应值
@@ -131,6 +131,7 @@ export default {
         if (res.data.code === '000') {
           if (res.data.data) {
             Object.assign(this.$data.pageData, JSON.parse(res.data.data.apiJsonData)) // 只初始化页面请求数据，不初始化文档
+            console.log('this.$data.pageData', this.$data.pageData)
           }
         }
       })

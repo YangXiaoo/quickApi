@@ -99,6 +99,127 @@ export function parseFormDataRequestData(data) {
 /**
  * 解析Postman文件获得路由
  * @param {Object} data
+ * @return [{api: {}, pageData: {}}, ...]
  */
-export function getRoutersPostmanApiJsonData(data) {
+export function parsePostmanJsonToQuickApi(userName, data) {
+  const apiList = []
+  if (!data) {
+    return apiList
+  }
+  if (data.info) {
+    const methodGroup = data.info.name
+    if (data.item) {
+      data.item.forEach(item => {
+        const groupPath = S4()
+        const uuid = getUUID32()
+        const url = '/' + groupPath + '/' + uuid
+        const api = {
+          methodGroup: methodGroup,
+          methodName: item.name,
+          requestType: item.request.method,
+          url: url,
+          userName
+        }
+
+        const headerJson = {}
+        if (item.request.header) {
+          item.request.header.forEach(header => {
+            headerJson[header.key] = header.value
+          })
+        }
+        const responseHeader = {}
+        if (item.response.header) {
+          item.response.header.forEach(header => {
+            responseHeader[header.key] = header.value
+          })
+        }
+        const formData = []
+        if (item.request.body && item.request.body.formdata) {
+          item.request.body.formdata.forEach(data => {
+            formData.push({
+              key: data.key,
+              value: data.value || '',
+              type: data.type,
+              fileList: []
+            })
+          })
+        }
+        let contentType = ''
+        let requestActiveName = 'Body'
+        const getMethodQuery = {}
+        let bodyJsonData = {}
+        let bodyNoneShow = false
+        let bodyJsonShow = false
+        let bodyFormDataShow = false
+        if (item.request.method === 'GET') { // get
+          contentType = 'none'
+          requestActiveName = 'Param'
+          if (item.request.url.query) {
+            item.request.url.query.forEach(query => {
+              getMethodQuery[query.key] = query.value
+            })
+          }
+        } else {
+          if (item.request.body && item.request.body.formdata) {
+            contentType = 'form-data'
+            bodyFormDataShow = true
+          } else if (item.request.url.raw === 'post-none') {
+            contentType = 'none'
+            bodyNoneShow = true
+          } else if (item.request.body && item.request.body.raw) {
+            contentType = 'application/json'
+            bodyJsonShow = true
+            bodyJsonData = JSON.parse(item.request.body.raw)
+          }
+        }
+        const apiData = {
+          requestActiveName: requestActiveName,
+          responseActiveName: 'Body',
+          path: item.request.url.raw,
+          requestType: item.request.method,
+          headerJson: headerJson,
+          getTypeParam: getMethodQuery,
+          contentType: contentType,
+          bodyNoneShow: bodyNoneShow,
+          bodyJsonShow: bodyJsonShow,
+          bodyFormDataShow: bodyFormDataShow,
+          bodyJsonData: bodyJsonData,
+          bodyStringData: '',
+          requestServiceName: '',
+          formData: formData,
+          responseHeader: responseHeader,
+          responseBody: item.response.body
+        }
+        const pageData = {
+          apiData: JSON.stringify(apiData),
+          url: url,
+          userName
+        }
+
+        apiList.push({
+          api,
+          pageData
+        })
+      })
+    }
+
+    return apiList
+  }
+  // methodGroup: "ccc"
+  // methodName: "ddd"
+  // requestType: "POST"
+  // url: "/dace/c796b02a-e4ba-0262-f67d-576d3fe16fbd"
+  // userName: "test"
+
+  // apiData: "{"requestActiveName":"Body","responseActiveName":"Body","path":"ddd","requestType":"POST","headerJson":null,"getTypeParam":null,"contentType":"none","bodyNoneShow":true,"bodyJsonShow":false,"bodyFileShow":false,"bodyJsonData":null,"bodyStringData":null,"requestServiceName":"","formData":[{"key":"","value":"","type":"Text","fileList":[]}],"responseHeader":null,"responseBody":null}"
+  // url: "/dace/c796b02a-e4ba-0262-f67d-576d3fe16fbd"
+  // userName: "test"
+}
+
+export function getUUID32() {
+  return (S4() + S4() + '-' + S4() + '-' + S4() + '-' + S4() + '-' + S4() + S4() + S4())
+}
+
+function S4() {
+  return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
 }

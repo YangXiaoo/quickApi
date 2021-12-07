@@ -61,15 +61,15 @@
                   </div>
                   <div v-if="row.type !== 'title'" class="form-key-type">
                     <el-select v-model="row.type" placeholder="请选择">
-                      <el-option label="Text" value="Text" />
-                      <el-option label="File" value="File" />
+                      <el-option label="text" value="text" />
+                      <el-option label="file" value="file" />
                     </el-select>
                   </div>
                 </div>
                 <div class="form-value">
-                  <el-input v-if="row.type === 'Text'" v-model="row.value" />
+                  <el-input v-if="row.type === 'text'" v-model="row.value" />
                   <el-upload
-                    v-else-if="row.type === 'File'"
+                    v-else-if="row.type === 'file'"
                     class="form-upload"
                     action=""
                     :show-file-list="false"
@@ -201,11 +201,11 @@ export default {
           queryData = new FormData()
           this.pageData.formData.forEach(item => {
             if (item) {
-              if (item.type === 'Text') {
+              if (item.type === 'text') {
                 if (item.key) {
                   queryData.append(item.key, item.value)
                 }
-              } else if (item.type === 'File' && item.key) {
+              } else if (item.type === 'file' && item.key) {
                 if (item.fileList) {
                   queryData.append(item.key, item.fileList)
                 }
@@ -341,7 +341,7 @@ export default {
       }
     },
     addFormDataRow() {
-      this.pageData.formData.push({ key: '', value: '', type: 'Text', fileList: [] })
+      this.pageData.formData.push({ key: '', value: '', type: 'text', fileList: [] })
     },
     removeFormDataRow(i) {
       this.pageData.formData.splice(i, 1)

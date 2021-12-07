@@ -307,4 +307,20 @@ public class MethodDataServiceImpl {
 
         return jsonModel;
     }
+
+    @PostMapping("saveUserPostmanApiList")
+    public JsonModel saveUserPostmanApiList(@RequestBody Map<String, Object> map) {
+        JsonModel jsonModel = new JsonModel();
+        try {
+            String userName = (String) ;
+            jsonModel.success(JSON_MODEL_CODE.SUCCESS,
+                    methodDataLogic.getProjectFinishedMethodDataMap(projectName));
+        } catch (BusinessException be) {
+            jsonModel.error(be.getLocalizedMessage());
+        } catch (Exception e) {
+            jsonModel.error(e.getLocalizedMessage());
+        }
+
+        return jsonModel;
+    }
 }

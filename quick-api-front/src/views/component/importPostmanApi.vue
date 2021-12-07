@@ -13,14 +13,13 @@
           drag
           action="dummy"
           :multiple="false"
-          :before-upload="beforeUpload"
           :limit="1"
+          :on-change="handleChange"
+          :file-list="fileList"
           :auto-upload="false"
-          :http-request="importApi"
         >
           <i class="el-icon-upload" />
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
         </el-upload>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -33,7 +32,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
+import { parsePostmanJsonToQuickApi } from '@/utils/commonHelper'
+import { saveUserMethodData } from '@/api/methodData'
+import { saveUserMethodApiData } from '@/api/methodApiData'
 export default {
   name: 'ImportPostmanApi',
   props: {
@@ -45,7 +46,8 @@ export default {
   data() {
     return {
       loading: false,
-      dialogVisible: this.trigger
+      dialogVisible: this.trigger,
+      fileList: []
     }
   },
   computed: {
@@ -57,7 +59,6 @@ export default {
   },
   watch: {
     trigger(newValue) {
-      console.log('importPostmanApi.watch.trigger', newValue)
       this.dialogVisible = true
     }
   },
@@ -66,23 +67,48 @@ export default {
       // 检查后缀
     },
     importApi(content) {
+      console.log('importApi', content)
       var reader = new FileReader()
-      reader.readAsText(content.file, 'utf-8')
+      reader.readAsText(content, 'utf-8')
       reader.onload = () => {
         const fileContent = reader.result
         const apiJson = JSON.parse(fileContent)
         const data = {
-          api: apiJson,
-          username: this.loginName
+          data: parsePostmanJsonToQuickApi(this.loginName, apiJson)
         }
-        this.$store.dispatch('userMethodData/importPostmanApi', data)
+        console.log('apiJosn', data)
+        data.data.forEach(item => {
+          saveUserMethodData(item.api)
+          saveUserMethodApiData(item.pageData)
+        })
+        // saveUserPostmanApiList(data).then(res => {
+        //   if (res.data.code === '000') {
+        //     this.$$message({
+        //       message: '导入成功',
+        //       type: 'info'
+        //     })
+        //   }
+        // }).catch(ignore => {
+        //   this.$message({
+        //     message: '导入失败，格式错误',
+        //     type: 'error'
+        //   })
+        // })
       }
     },
     closeImportDialog() {
       this.dialogVisible = false
     },
+    handleChange(file, fileList) {
+      this.fileList = fileList
+    },
     submitImport() {
-      this.$refs.import.submit()
+      console.log('submitImport', '>>>>>>>>', this.fileList)
+      if (this.fileList) {
+        this.fileList.forEach(file => {
+          this.importApi(file.raw)
+        })
+      }
     }
   }
 }

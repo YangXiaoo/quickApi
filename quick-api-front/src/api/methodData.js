@@ -79,3 +79,10 @@ export function getProjectFinishedMethodDataMap(data) {
   })
 }
 
+export function saveUserPostmanApiList(data) {
+  return request({
+    url: baseUrl + '/saveUserPostmanApiList',
+    method: 'post',
+    data
+  })
+}
