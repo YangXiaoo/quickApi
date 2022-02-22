@@ -1,5 +1,11 @@
+quick-api-server/.idea
+quick-api-server/mvnw
+quick-api-server/target
 
-quick-api-server/.idea/workspace.xml
-quick-api-server/.idea/dataSources/7dda9c20-20af-48c7-b824-64e7c27a8776.xml
-quick-api-server/.idea/workspace.xml
-quick-api-server/.idea/workspace.xml
+quick-api-core/.idea
+quick-api-core/mvnw
+quick-api-core/target
+
+quick-api-test/target
+quick-api-test/mvnw
+quick-api-test/.idea
