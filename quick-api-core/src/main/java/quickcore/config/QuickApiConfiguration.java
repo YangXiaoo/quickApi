@@ -5,5 +5,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan("quickcore.**")
-public class QuickApiConfig {
+public class QuickApiConfiguration {
 }

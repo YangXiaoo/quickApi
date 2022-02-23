@@ -5,8 +5,10 @@ import com.alibaba.fastjson.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.socket.server.standard.SpringConfigurator;
 import quickcore.common.tools.JsonModel;
 import quickcore.common.tools.WSModel;
 import quickcore.common.utils.RequestUtil;
@@ -22,6 +24,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @ServerEndpoint(value = "/ws")
+@Component
 @RestController
 public class WebSocketService {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketService.class);

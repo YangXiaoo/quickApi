@@ -11,6 +11,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="quick-api-core" target="9" />
       <module name="server" target="1.8" />
     </bytecodeTargetLevel>
   </component>

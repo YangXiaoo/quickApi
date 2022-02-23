@@ -1,10 +1,9 @@
 quick-api-server/mvnw
 quick-api-server/target
-quick-api-server/.idea
+quick-api-server/.idea/
 
 quick-api-core/mvnw
 quick-api-core/target
-
 quick-api-test/mvnw
 quick-api-test/.idea
 
@@ -31,3 +30,6 @@ target/
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
+
+*.xml
+quick-api-server/.idea/workspace.xml

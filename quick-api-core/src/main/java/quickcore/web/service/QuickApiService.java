@@ -31,8 +31,8 @@ import java.util.List;
  * </p>
  * @author yangxiao
  */
-@RestController
-@RequestMapping("/quickApi")
+//@RestController
+////@RequestMapping("/quickApi")
 public class QuickApiService {
     private static final Logger logger = LoggerFactory.getLogger(QuickApiService.class);
 
