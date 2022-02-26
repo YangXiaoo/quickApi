@@ -1,4 +1,4 @@
-package quickcore.web.service;
+package quickcore.socket;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
@@ -8,12 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.socket.server.standard.SpringConfigurator;
 import quickcore.common.tools.JsonModel;
 import quickcore.common.tools.WSModel;
 import quickcore.common.utils.RequestUtil;
-import quickcore.core.utils.StringUtils;
-import quickcore.web.logic.QuickApiLogic;
+import quickcore.common.utils.StringUtils;
+import quickcore.core.logic.QuickApiLogic;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -26,18 +25,16 @@ import java.util.Map;
 @ServerEndpoint(value = "/ws")
 @Component
 @RestController
-public class WebSocketService {
+public class   WebSocketService {
     private static final Logger logger = LoggerFactory.getLogger(WebSocketService.class);
 
     private static WebApplicationContext applicationContext;
-    //@Autowired
-    private static QuickApiLogic quickApiLogic; //关键点2
+    private static QuickApiLogic quickApiLogic;
 
-    @Autowired  //关键点3
+    @Autowired
     public void setQuickApiLogic (QuickApiLogic quickApiLogic){
         WebSocketService.quickApiLogic = quickApiLogic;
     }
-
     @Autowired
     public void setApplicationContext(WebApplicationContext webApplicationContext) {
         WebSocketService.applicationContext = webApplicationContext;
@@ -45,12 +42,12 @@ public class WebSocketService {
 
     @OnOpen
     public void onOpen(Session session) {
-        logger.info("连接成功");
+        logger.info("[QuickApi] id: " + session.getId() + ", 连接成功");
     }
 
     @OnClose
     public void onClose(Session session) {
-        logger.info("连接关闭");
+        logger.info("[QuickApi] id: " + session.getId() + ", 连接关闭");
     }
 
     /**
@@ -70,6 +67,7 @@ public class WebSocketService {
      */
     @OnMessage
     public void onMsg(Session session, String data) throws IOException {
+        logger.info("[QuickApi] id: " + session.getId() + ", send data: " + data);
         Object ret = null;
         Map<String, Object> map =  JSONObject.parseObject(data, new TypeReference<Map<String, Object>>(){});
         String requestMethod = (String) map.get("requestMethod");
@@ -78,26 +76,27 @@ public class WebSocketService {
         WSModel wsModel = new WSModel();
         wsModel.setToken(token);
         wsModel.setReq(data);
-        //Map<String, Object> requestData = (Map) map.get("requestData");
+
         try {
             if (StringUtils.equals("getLocalApiMethod", requestMethod)) {
-                JsonModel jsonModel = quickApiLogic.loadQApi(applicationContext);
+                JsonModel jsonModel = quickApiLogic.getLocalApiMethod(applicationContext);
                 wsModel.success(jsonModel.getData());
             } else if (StringUtils.equals("getLocalDeleteApiMethodList", requestMethod)) {
 
             } else if (StringUtils.equals("callApi", requestMethod)) {
                 Map<String, Object> requestData = (Map) map.get("requestData");
-                //callApi(String path, String contentType, String headerJson, String queryData, String type)
                 String path = (String) requestData.get("path");
                 String contentType = (String) requestData.get("contentType");
                 JSONObject headerJson = (JSONObject) requestData.get("headerJson");
                 JSONObject queryData = (JSONObject) requestData.get("queryData");
                 String type = (String) requestData.get("type");
-                Object callResult = RequestUtil.callApi(path, contentType, headerJson.toJSONString(), queryData.toJSONString(), type);
+                Object callResult = RequestUtil.callApi(path, contentType, headerJson.toJSONString(),
+                        queryData.toJSONString(), type);
 
                 wsModel.success(callResult);
             }
         } catch (Exception e) {
+            logger.error("[QuickApi] on message error: " + e.getLocalizedMessage());
             wsModel.error(e);
         }
 

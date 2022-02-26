@@ -1,4 +1,4 @@
-package quickcore.web.dao.entity;
+package quickcore.models;
 
 import java.util.Date;
 

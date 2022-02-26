@@ -1,13 +1,13 @@
 package quickcore.models;
 
-import quickcore.core.utils.StringUtils;
+import quickcore.common.utils.StringUtils;
 
 /**
  * QApiMethod注解
  * @author yangxiao
  */
 public class MethodModel implements Comparable<MethodModel>{
-    private String name;                // 注解值
+    private String name;                // 方法别名
     private String group;               // 所属组别
     private String projectName;
     private String description;

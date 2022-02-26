@@ -2,7 +2,7 @@ package quickcore.core.scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import quickcore.core.utils.StringUtils;
+import quickcore.common.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;

@@ -1,7 +1,5 @@
 package quickcore.common.utils;
 
-import quickcore.core.utils.StringUtils;
-
 /**
  * 路径相关工具
  */

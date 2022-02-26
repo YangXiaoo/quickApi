@@ -1,4 +1,4 @@
-package quickcore.core.utils;
+package quickcore.common.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;

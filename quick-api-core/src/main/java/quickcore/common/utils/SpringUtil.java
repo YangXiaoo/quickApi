@@ -1,4 +1,4 @@
-package quickcore.core.utils;
+package quickcore.common.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

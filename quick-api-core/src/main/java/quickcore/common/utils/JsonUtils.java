@@ -1,4 +1,4 @@
-package quickcore.core.utils;
+package quickcore.common.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

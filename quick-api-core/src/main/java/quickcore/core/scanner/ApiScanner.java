@@ -8,7 +8,7 @@ import quickcore.annotations.component.QApi;
 import quickcore.annotations.component.QApiMethod;
 import quickcore.common.constants.CONSTANT_DEFINE;
 import quickcore.common.utils.PathUtil;
-import quickcore.core.utils.StringUtils;
+import quickcore.common.utils.StringUtils;
 import quickcore.models.ApiModel;
 import quickcore.models.MethodModel;
 
