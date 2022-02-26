@@ -341,6 +341,9 @@ export default {
       }
     },
     addFormDataRow() {
+      if (!this.pageData.formData) {
+        this.pageData.formData = []
+      }
       this.pageData.formData.push({ key: '', value: '', type: 'text', fileList: [] })
     },
     removeFormDataRow(i) {
@@ -402,7 +405,9 @@ export default {
     .form-key-title {
       height: 30px;
       width: 45%;
-      padding: 3px 0px 3px 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border-right: 1px solid #ebeef5;
       font-size: 15px;
       font-weight: bold;
@@ -410,7 +415,9 @@ export default {
     .form-value-title {
       height: 30px;
       width: 50%;
-      padding: 3px 0px 3px 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       font-size: 15px;
       font-weight: bold;
     }
@@ -429,15 +436,16 @@ export default {
       width: 45%;
       display: flex;
       flex-flow: row nowrap;
+      justify-items: center;
       border-right: 1px solid #ebeef5;
 
       .form-key-data {
         width: 85%;
+        align-self: center;
       }
 
       .form-key-type {
         width: 15%;
-        align-items: center;
         align-self: center;
       }
     }
@@ -445,12 +453,14 @@ export default {
     .form-value {
       width: 50%;
       height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       .form-upload {
-        margin-top:5px;
       }
 
       .form-remove-file {
-        margin-top: -15px;
+        margin-top: -18px;
 
         :hover {
           cursor: pointer;

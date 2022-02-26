@@ -1,3 +1,5 @@
+import md5 from 'js-md5'
+
 const state = {
   wsHost: 'localhost',
   wsPort: '8899',
@@ -82,7 +84,8 @@ const actions = {
     //   requestMethod: requestMethod,
     //   requestData: requestData
     // }
-    param.token = JSON.stringify(param)
+    console.log('[ws]send data， before md5', param)
+    param.token = md5(JSON.stringify(param)) // 将参数Md5作为请求唯一标识符
     console.log('[ws]send data', param)
     state.requestMethod = param.requestMethod
     if (state.socket !== '') {

@@ -55,6 +55,13 @@
   - 重新写导入Postman接口文件保存接口  v
   - 上传完成后自动刷新个人接口 v
 
-  - 解决后端jar包问题
-    - jar包和项目分离
-    - 识别jar包
+  - 解决后端jar包问题 v
+    - jar包和项目分离 v
+    - 识别jar包 v
+
+- 请求发送新增：发送并下载
+- headers新增Presets
+- 请求Body仿照postman
+- 响应仿照postman显示status, Time, Size
+- 个人接口模块，完成 "另存为新的接口" 功能
+- 个人接口模块同一个接口也可以存储多个例子
