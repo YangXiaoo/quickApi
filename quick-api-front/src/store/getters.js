@@ -39,6 +39,9 @@ const getters = {
   wsConnectStatus: state => state.websocket.wsConnectStatus,
   wsPort: state => state.websocket.wsPort,
   wsPath: state => state.websocket.wsPath,
-  wsHost: state => state.websocket.wsHost
+  wsHost: state => state.websocket.wsHost,
+
+  // presets
+  userPresets: state => state.presets.userPresets
 }
 export default getters

@@ -223,3 +223,20 @@ export function getUUID32() {
 function S4() {
   return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1)
 }
+
+export const download = (content, fileName = 'file') => {
+  const blob = new Blob([content])
+
+  if ('download' in document.createElement('a')) {
+    const link = document.createElement('a')
+    link.download = fileName
+    link.style.display = 'none'
+    link.href = URL.createObjectURL(blob)
+    document.body.appendChild(link)
+    link.click()
+    URL.revokeObjectURL(link.href)
+    document.body.removeChild(link)
+  } else {
+    navigator.msSaveBlob(blob, fileName)
+  }
+}

@@ -68,3 +68,12 @@ export function requestLocalBlobApi(url, data) {
     type: 'Blob'
   })
 }
+
+export function responseLocalBlobApi(url, data) {
+  return request({
+    url: url,
+    method: 'post',
+    data,
+    responseType: 'Blob'
+  })
+}

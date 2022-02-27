@@ -8,16 +8,18 @@
             <el-option label="GET" value="GET" />
           </el-select>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="15">
           <el-input v-model="pageData.path" placeholder="请输入内容" class="input-with-select" />
         </el-col>
-        <el-col :span="2">
-          <el-button type="primary" style="margin-left: 15px" @click="handleSendRequest">
+        <el-col :span="3">
+          <el-dropdown type="primary" split-button @click="handleSendRequest" @command="handleSendRequestAndDowload">
             发送
-          </el-button>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item command="sendAndDownlod">发送并下载</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </el-col>
         <el-col v-show="isShowSave" :span="3">
-          <!-- <el-button type="primary" @click="handleClickSave">保存<i class="el-icon-upload el-icon--right" /></el-button> -->
           <el-dropdown type="primary" split-button @click="handleClickSave" @command="handleClickSaveAs">
             保存
             <el-dropdown-menu slot="dropdown">
@@ -27,20 +29,70 @@
         </el-col>
       </el-row>
     </div>
-    <div class="option-bar" style="margin-top: 15px">
+    <div class="option-bar">
       <el-tabs v-model="pageData.requestActiveName" @tab-click="handleClickRequest">
         <el-tab-pane label="Param" name="Param">
+          <div class="request-operate-bar">
+            <div class="request-operate-left request-operate-list">
+              <div class="request-operate-item">
+                查询参数
+              </div>
+            </div>
+            <div class="request-operate-right request-operate-list">
+              <div class="request-operate-item">
+                <span @click="clearGetParam"><i class="el-icon-delete" /></span>
+              </div>
+            </div>
+          </div>
           <vue-json-editor v-model="pageData.getTypeParam" :show-btns="false" :mode="'code'" lang="zh" @json-change="onParamChange" />
         </el-tab-pane>
         <el-tab-pane label="Header" name="Header">
+          <div class="request-operate-bar">
+            <div class="request-operate-left request-operate-list">
+              <div class="request-operate-item">
+                请求头参数
+              </div>
+            </div>
+            <div class="request-operate-right request-operate-list">
+              <div class="request-operate-item">
+                <el-dropdown class="right-menu-item hover-effect" trigger="click" @command="insertPersetToHeader">
+                  <span>预置</span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="preSetsManage">管理预置</el-dropdown-item>
+                    <el-dropdown-item
+                      v-for="item of presets"
+                      :key="item.presetId"
+                      :command="item.presetId"
+                    >
+                      {{ item.name }}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div class="request-operate-item">
+                <span @click="clearHeaderParam"><i class="el-icon-delete" /></span>
+              </div>
+            </div>
+          </div>
           <vue-json-editor v-model="pageData.headerJson" :show-btns="false" :mode="'code'" lang="zh" @json-change="onHeaderChange" />
         </el-tab-pane>
         <el-tab-pane label="Body" name="Body">
-          <el-radio-group v-model="pageData.contentType" style="margin-bottom: 10px" @change="changeBodyType">
-            <el-radio label="none">none</el-radio>
-            <el-radio label="application/json">application/json</el-radio>
-            <el-radio label="form-data">form-data</el-radio>
-          </el-radio-group>
+          <div class="request-operate-bar">
+            <div class="request-operate-left request-operate-list">
+              <div class="request-operate-item">
+                <el-radio-group v-model="pageData.contentType" @change="changeBodyType">
+                  <el-radio label="none">none</el-radio>
+                  <el-radio label="application/json">application/json</el-radio>
+                  <el-radio label="form-data">form-data</el-radio>
+                </el-radio-group>
+              </div>
+            </div>
+            <div class="request-operate-right request-operate-list">
+              <div class="request-operate-item">
+                <span @click="clearBodyParam"><i class="el-icon-delete" /></span>
+              </div>
+            </div>
+          </div>
           <vue-json-editor v-show="pageData.bodyNoneShow" v-model="pageData.bodyStringData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
           <vue-json-editor v-show="pageData.bodyJsonShow" v-model="pageData.bodyJsonData" :show-btns="false" :mode="'code'" lang="zh" @json-change="onBodyChange" />
           <el-card v-show="pageData.bodyFormDataShow" class="body-file-box">
@@ -81,7 +133,6 @@
                     <div v-else slot="tip" class="form-remove-file">
                       已选{{ row.fileList.length }}个文件
                       <span style="color:red;" @click="removeFiles(row)"><i class="el-icon-close" /></span>
-                      <!-- <el-button style="color:red;" @click="removeFiles(row)">删除</el-button> -->
                     </div>
                   </el-upload>
                   <span v-else> {{ row.value }} </span>
@@ -114,18 +165,25 @@
         </el-tab-pane>
       </el-tabs>
     </div>
+
+    <Presets :trigger="presetTrigger" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
-import { requestLocalBlobApi } from '@/api/localProject'
+import { requestLocalBlobApi, responseLocalBlobApi } from '@/api/localProject'
 import { callServiceApi } from '@/api/project'
+import { getUserPresets } from '@/api/presets'
+import { download } from '@/utils/commonHelper'
+
+import Presets from './presets.vue'
 export default {
   name: 'RequestTemplate',
   components: {
-    vueJsonEditor
+    vueJsonEditor,
+    Presets
   },
   props: {
     // 页面数据
@@ -160,16 +218,20 @@ export default {
   },
   data() {
     return {
+      presetTrigger: false,
+      presets: []
     }
   },
   computed: {
     ...mapGetters([
-      'wsConnectStatus'
+      'wsConnectStatus',
+      'username'
     ])
   },
   watch: {
   },
   mounted() {
+    this.getUserPresets()
   },
   created() { },
   methods: { // 按照页面功能顺序定义方法
@@ -179,16 +241,80 @@ export default {
     handleClickRequest(tab, event) {
       // console.log(tab, event)
     },
+    clearGetParam() {
+      this.pageData.getTypeParam = {}
+    },
+    clearHeaderParam() {
+      this.pageData.headerJson = {}
+    },
+    clearBodyParam() {
+      if (this.pageData.contentType === 'none') {
+        //
+      } else if (this.pageData.contentType === 'application/json') {
+        this.pageData.bodyJsonData = {}
+      } else if (this.pageData.contentType === 'form-data') {
+        this.pageData.formData = []
+      }
+    },
+    insertPersetToHeader(command) {
+      if (command === 'preSetsManage') {
+        this.openPresetDialog()
+      } else {
+        this.presets.forEach(preset => {
+          if (preset.presetId === command) {
+            const obj = JSON.parse(preset.value)
+            if (!this.pageData.headerJson ||
+              JSON.stringify(this.pageData.headerJson) === '{}') {
+              this.pageData.headerJson = JSON.parse(preset.value)
+            } else {
+              Object.keys(obj).forEach(key => {
+                this.pageData.headerJson[key] = obj[key]
+              })
+            }
+          }
+        })
+      }
+    },
+    openPresetDialog() {
+      this.presetTrigger = !this.presetTrigger
+    },
+    getUserPresets() {
+      // // test
+      // this.presets = [
+      //   {
+      //     presetId: '1',
+      //     name: 'key1',
+      //     value: JSON.stringify({
+      //       key1: 'val1'
+      //     })
+      //   },
+      //   {
+      //     presetId: '2',
+      //     name: 'key2',
+      //     value: JSON.stringify({
+      //       key2: 'val2'
+      //     })
+      //   }
+      // ]
+      const param = {
+        username: this.username
+      }
+      getUserPresets(param).then(res => {
+        if (res.data.code === '000') {
+          const data = res.data.data
+          if (data) {
+            this.presets = data
+          }
+        }
+      })
+    },
     /**
      * 点击响应值
      */
     handleClickResponse(tab, event) {
       console.log(tab, event)
     },
-    /**
-     * 发送请求
-     */
-    handleSendRequest() {
+    getRequestData() {
       let queryData = {}
       let contentType = this.pageData.contentType
       if (this.pageData.requestType === 'POST') {
@@ -212,27 +338,41 @@ export default {
               }
             }
           })
-
-          // 无论本地接口还是非本地项目只要是表单请求，都直连
-          requestLocalBlobApi(this.pageData.path, queryData).then(res => {
-            this.pageData.responseBody = res.body
-            this.pageData.responseHeader = res.headers
-          })
-
-          return
         }
       } else if (this.pageData.requestType === 'GET') {
         queryData = this.pageData.getTypeParam
         contentType = ''
       }
 
+      return {
+        contentType: contentType,
+        queryData: queryData
+      }
+    },
+    /**
+     * 发送请求
+     */
+    handleSendRequest() {
+      const requestData = this.getRequestData()
+
+      // 因为socket传输大文件麻烦所以暂时无论本地接口
+      // 还是非本地项目只要是表单请求，都直连
+      if (requestData.contentType === 'form-data') {
+        requestLocalBlobApi(this.pageData.path, requestData.queryData).then(res => {
+          this.pageData.responseBody = res.body
+          this.pageData.responseHeader = res.headers
+        })
+
+        return
+      }
+
       const req = {
         requestMethod: 'callApi',
         requestData: {
           path: this.pageData.path,
-          contentType: contentType,
+          contentType: requestData.contentType,
           headerJson: this.pageData.headerJson || {},
-          queryData: queryData || {},
+          queryData: requestData.queryData || {},
           type: this.pageData.requestType
         }
       }
@@ -270,6 +410,15 @@ export default {
             type: 'warning'
           })
         })
+      }
+    },
+    handleSendRequestAndDowload(command) {
+      if (command === 'sendAndDownlod') {
+        const requestData = this.getRequestData()
+        responseLocalBlobApi(this.pageData.path, requestData.queryData)
+          .then(res => {
+            download(res.data)
+          })
       }
     },
     /* 点击保存事件*/
@@ -358,6 +507,42 @@ export default {
   margin: 10px 10px 10px 10px;
   padding: 10px;
   border-radius: 5px;
+
+  .option-bar {
+    margin-top: 15px;
+
+    .request-operate-bar {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      margin: 0 0 4px 0;
+
+      .request-operate-left {
+        margin-right: auto;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        .request-operate-item {
+          margin-right: 8px;
+
+          cursor: pointer;
+        }
+      }
+
+      .request-operate-right {
+        margin-left: auto;
+        display: flex;
+        flex-flow: row;
+        align-items: center;
+        padding-right: 8px;
+        .request-operate-item {
+          margin-left: 8px;
+
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }
 
 .el-tag {

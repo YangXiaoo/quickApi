@@ -59,9 +59,13 @@
     - jar包和项目分离 v
     - 识别jar包 v
 
-- 请求发送新增：发送并下载
-- headers新增Presets
+
+- 请求发送新增：发送并下载 v
+- headers新增Presets(预置)
+  - 完成基本逻辑，还差服务端接口，新增时的样式
 - 请求Body仿照postman
 - 响应仿照postman显示status, Time, Size
+- 完善接口错误请求问题
 - 个人接口模块，完成 "另存为新的接口" 功能
 - 个人接口模块同一个接口也可以存储多个例子
+
