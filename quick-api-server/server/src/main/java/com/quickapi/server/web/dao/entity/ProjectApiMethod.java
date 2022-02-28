@@ -2,6 +2,7 @@ package com.quickapi.server.web.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
@@ -20,7 +21,9 @@ public class ProjectApiMethod {
   private String url;
   private String version;
   private String author;
+  @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
   private Date createTime;
+  @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
   private Date updateTime;
   private String download;
   private String token;

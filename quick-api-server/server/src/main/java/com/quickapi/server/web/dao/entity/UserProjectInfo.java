@@ -2,6 +2,7 @@ package com.quickapi.server.web.dao.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
 
@@ -13,7 +14,9 @@ public class UserProjectInfo {
   private String projectName;
   private String projectDesc;
   private String userName;
+  @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
   private Date createTime;
+  @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
   private Date updateTime;
   private String deleteFlag;
   private String userId;
