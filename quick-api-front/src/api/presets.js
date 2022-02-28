@@ -2,25 +2,25 @@ import request from '@/utils/request'
 
 const baseUrl = process.env.VUE_APP_SERVER_PATH
 
-export function getUserPresets(data) {
+export function getUserHeaderPresets(data) {
   return request({
-    url: baseUrl + '/presets/getUserPresets',
+    url: baseUrl + '/presets/getUserHeaderPresets',
     method: 'post',
     data
   })
 }
 
-export function addUserPresets(data) {
+export function addUserHeaderPresets(data) {
   return request({
-    url: baseUrl + '/presets/addUserPresets',
+    url: baseUrl + '/presets/addUserHeaderPresets',
     method: 'post',
     data
   })
 }
 
-export function deleteUserPresets(data) {
+export function deleteUserHeaderPresets(data) {
   return request({
-    url: baseUrl + '/presets/deleteUserPresets',
+    url: baseUrl + '/presets/deleteUserHeaderPresets',
     method: 'post',
     data
   })

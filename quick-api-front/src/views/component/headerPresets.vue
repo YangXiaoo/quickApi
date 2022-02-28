@@ -26,20 +26,23 @@
           </div>
         </div>
         <div v-if="addPresetVisible" class="preset-add">
-          <div class="presets-header-tips">
-            添加请求头参数
+          <div class="presets-tips">
+            配置名称
           </div>
-          <div class="preset-name">
-            <input v-model="preset.name" type="text">
-          </div>
+          <el-input v-model="preset.name" class="preset-name" type="text" />
           <div class="preset-value">
-            <input v-model="preset.value" type="textarea" :rows="2" placeholder="请求头key-value">
+
+            <div class="presets-tips">
+              请求头参数
+            </div>
+            <!-- <el-input v-model="preset.value" type="textarea" :rows="2" placeholder="请求头key-value" /> -->
+            <vue-json-editor v-model="preset.value" :show-btns="false" :mode="'code'" lang="zh" />
           </div>
         </div>
       </div>
       <div v-if="addPresetVisible" slot="footer" class="dialog-footer">
-        <el-button @click="closeAddPresetPage">取 消</el-button>
-        <el-button type="primary" @click="addUserPreset">新增</el-button>
+        <el-button @click="closeAddPresetPage">返回</el-button>
+        <el-button type="primary" @click="addUserPreset">{{ btnName }}</el-button>
       </div>
     </el-dialog>
   </div>
@@ -47,11 +50,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getUserPresets, addUserPresets, deleteUserPresets } from '@/api/presets'
+import { getUserHeaderPresets, addUserHeaderPresets, deleteUserHeaderPresets } from '@/api/presets'
+import vueJsonEditor from 'vue-json-editor'
 
 export default {
-  name: 'Presets',
-  components: { },
+  name: 'HeaderPresets',
+  components: { vueJsonEditor },
   props: {
     trigger: {
       type: Boolean,
@@ -68,21 +72,25 @@ export default {
       preset: {
         name: '',
         value: ''
-      }
+      },
+      btnName: '新增'
     }
   },
   computed: {
     ...mapGetters([
-      'username'
+      'loginName'
     ])
   },
   watch: {
     trigger(newValue) {
       this.dialogVisible = true
+      this.clearPresetPage()
+      this.closeAddPresetPage()
+      this.getUserHeaderPresets()
     }
   },
   mounted() {
-    this.getUserPresets()
+    this.getUserHeaderPresets()
   },
   methods: {
     handleClickAddUserPreset() {
@@ -90,8 +98,8 @@ export default {
       this.showAddPresetPage()
     },
     editPreset(item) {
-      console.log('editPreset', item)
       this.preset = item
+      this.btnName = '更新'
       this.showAddPresetPage()
     },
     deleteUserPreset(item) {
@@ -99,9 +107,10 @@ export default {
         presetId: item.presetId
       }
       this.removeItemFromPresets(item) // test
-      deleteUserPresets(param).then(res => {
+      deleteUserHeaderPresets(param).then(res => {
         if (res.data.code === '000') {
           this.removeItemFromPresets(item)
+          this.refresh()
         }
       })
     },
@@ -117,16 +126,20 @@ export default {
         }
       }
     },
-    getUserPresets() {
+    getUserHeaderPresets() {
       const param = {
-        username: this.username
+        userName: this.loginName
       }
-      getUserPresets(param).then(res => {
+      getUserHeaderPresets(param).then(res => {
         if (res.data.code === '000') {
           const data = res.data.data
           if (data) {
             this.presets = data
+            this.presets.forEach(item => {
+              item.value = JSON.parse(item.value)
+            })
           }
+          this.refresh()
         }
       })
     },
@@ -136,13 +149,15 @@ export default {
       }
       const param = {
         presetId: this.preset.presetId || '',
+        userName: this.loginName,
         name: this.preset.name,
-        value: this.preset.value
+        value: JSON.stringify(this.preset.value)
       }
-      addUserPresets(param).then(res => {
-        if (res.data.code === '0000') {
+      addUserHeaderPresets(param).then(res => {
+        if (res.data.code === '000') {
+          this.refresh()
           this.closeAddPresetPage()
-          this.getUserPresets()
+          this.getUserHeaderPresets()
         }
       })
     },
@@ -157,6 +172,10 @@ export default {
         name: '',
         value: ''
       }
+      this.btnName = '新增'
+    },
+    refresh() {
+      this.$emit('refresh', this.presets)
     }
   }
 }
@@ -177,8 +196,8 @@ export default {
         flex-flow: row nowrap;
         align-items: center;
         justify-content: space-around;
-        padding-bottom: 2px;
-        border-bottom: 1px solid black;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #EBEEF5FF;
         display: flex;
         .preset-data-item-left {
           margin-right: auto;
@@ -193,6 +212,19 @@ export default {
           }
         }
       }
+    }
+  }
+
+  .preset-add {
+    .presets-tips {
+      margin: 4px;
+      font-size: 14px;
+    }
+    .preset-name {
+      margin: 4px 0 0 0;
+    }
+    .preset-value {
+
     }
   }
 }

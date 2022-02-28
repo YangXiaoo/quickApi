@@ -166,7 +166,7 @@
       </el-tabs>
     </div>
 
-    <Presets :trigger="presetTrigger" />
+    <HeaderPresets :trigger="presetTrigger" @refresh="updateUserHeaderPresets" />
   </div>
 </template>
 
@@ -175,15 +175,15 @@ import { mapGetters } from 'vuex'
 import vueJsonEditor from 'vue-json-editor'
 import { requestLocalBlobApi, responseLocalBlobApi } from '@/api/localProject'
 import { callServiceApi } from '@/api/project'
-import { getUserPresets } from '@/api/presets'
+import { getUserHeaderPresets } from '@/api/presets'
 import { download } from '@/utils/commonHelper'
 
-import Presets from './presets.vue'
+import HeaderPresets from './headerPresets.vue'
 export default {
   name: 'RequestTemplate',
   components: {
     vueJsonEditor,
-    Presets
+    HeaderPresets
   },
   props: {
     // 页面数据
@@ -225,13 +225,13 @@ export default {
   computed: {
     ...mapGetters([
       'wsConnectStatus',
-      'username'
+      'loginName'
     ])
   },
   watch: {
   },
   mounted() {
-    this.getUserPresets()
+    this.getUserHeaderPresets()
   },
   created() { },
   methods: { // 按照页面功能顺序定义方法
@@ -262,48 +262,38 @@ export default {
       } else {
         this.presets.forEach(preset => {
           if (preset.presetId === command) {
-            const obj = JSON.parse(preset.value)
+            console.log('cur preset.value', preset.value)
             if (!this.pageData.headerJson ||
               JSON.stringify(this.pageData.headerJson) === '{}') {
-              this.pageData.headerJson = JSON.parse(preset.value)
+              this.pageData.headerJson = JSON.parse(JSON.stringify(preset.value))
             } else {
-              Object.keys(obj).forEach(key => {
-                this.pageData.headerJson[key] = obj[key]
+              Object.keys(preset.value).forEach(key => {
+                console.log('cur preset.value[key]', key, preset.value[key])
+                this.$set(this.pageData.headerJson, key, preset.value[key])
               })
             }
           }
         })
       }
     },
+    updateUserHeaderPresets(presets) {
+      this.presets = presets
+    },
     openPresetDialog() {
       this.presetTrigger = !this.presetTrigger
     },
-    getUserPresets() {
-      // // test
-      // this.presets = [
-      //   {
-      //     presetId: '1',
-      //     name: 'key1',
-      //     value: JSON.stringify({
-      //       key1: 'val1'
-      //     })
-      //   },
-      //   {
-      //     presetId: '2',
-      //     name: 'key2',
-      //     value: JSON.stringify({
-      //       key2: 'val2'
-      //     })
-      //   }
-      // ]
+    getUserHeaderPresets() {
       const param = {
-        username: this.username
+        userName: this.loginName
       }
-      getUserPresets(param).then(res => {
+      getUserHeaderPresets(param).then(res => {
         if (res.data.code === '000') {
           const data = res.data.data
           if (data) {
             this.presets = data
+            this.presets.forEach(item => {
+              item.value = JSON.parse(item.value)
+            })
           }
         }
       })
